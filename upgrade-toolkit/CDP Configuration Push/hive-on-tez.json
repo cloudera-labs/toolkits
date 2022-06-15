@@ -1,0 +1,93 @@
+{
+  "services" :
+  [
+    {
+      "serviceType": "HIVE_ON_TEZ",
+      "refName": "HIVE_ON_TEZ-1",
+      "roleConfigGroups": [
+        {
+          "roleType": "HIVESERVER2",
+          "refName": "Batch-VIP",
+          "base": true,
+          "configs": [
+            {"name": "hive_hs2_config_safety_valve", "value": "<property><name>hive.server2.limit.connections.per.user</name><value>200</value><description>Setasperreqs</description></property><property><name>hive.load.data.owner</name><value>hive</value><description>Reccomended</description></property><property><name>hive.acid.direct.insert.enabled</name><value>false</value><description>Disable Hive Acid</description></property><property><name>hive.security.authorization.sqlstd.confwhitelist.append</name><value>hive\\\\.typecheck\\\\.on\\\\.insert</value><description>Adding hive.typecheck.on.insert to conf </description></property><property><name>hive.server2.tez.initialize.default.sessions</name><value>false</value><description>For testing session reuse</description></property><property><name>hive.server2.tez.sessions.per.default.queue</name><value>15</value><description>For testing session reuse</description></property><property><name>hive.server2.tez.session.lifetime</name><value>1440m</value><description>For testing session reuse</description></property><property><name>hive.server2.tez.session.lifetime.jitter</name><value>60m</value><description>For testing session reuse</description></property><property><name>tez.session.am.dag.submit.timeout.secs</name><value>86400000</value><description>For testing session reuse</description></property>"},
+            {"name": "hive_on_tez_hs2_exec_local_scratch_directory_free_space_absolute_thresholds", "value": "{\"warning\":6442450944,\"critical\":3221225472}"},
+            {"name": "hive_server2_logging_operation_log_location", "value": ""},
+            {"name": "hiveserver2_auto_convert_join_noconditionaltask_size", "value": ""},
+            {"name": "hiveserver2_exec_local_scratchdir", "value": ""},
+            {"name": "hiveserver2_java_heapsize", "value": ""},
+            {"name": "hiveserver2_merge_mapredfiles", "value": "hiveserver2_merge_mapredfiles"},
+            {"name": "hiveserver2_merge_smallfiles_avgsize", "value": ""},
+            {"name": "hiveserver2_webui_port", "value": ""},
+            {"name": "log4j_safety_valve", "value": "appender.DRFA.filePattern=${log.dir}/${log.file}.%i"},
+            {"name": "oom_heap_dump_dir", "value": ""},
+            {"name": "oom_heap_dump_enabled", "value": "false"},
+            {"name": "process_auto_restart", "value": "true"},
+            {"name": "ssl_enabled", "value": "true"},
+            {"name": "ssl_server_keystore_location", "value": ""},
+            {"name": "ssl_server_keystore_password", "value": ""}
+          ]
+        },
+        {
+          "roleType": "GATEWAY",
+          "refName": "HIVE_ON_TEZ-1-GATEWAY-BASE",
+          "base": true,
+          "configs": [
+            {"name": "hive_metastore_timeout", "value": "1800"}
+          ]
+        },
+        {
+          "roleType": "HIVESERVER2",
+          "refName": "HIVE_ON_TEZ-1-HIVESERVER2-BASE",
+          "base": true,
+          "configs": [
+            {"name": "hive_on_tez_hs2_exec_local_scratch_directory_free_space_absolute_thresholds", "value": "{\"warning\":6442450944,\"critical\":3221225472}"},
+            {"name": "hive_server2_logging_operation_log_location", "value": ""},
+            {"name": "hiveserver2_auto_convert_join_noconditionaltask_size", "value": ""},
+            {"name": "hiveserver2_exec_local_scratchdir", "value": ""},
+            {"name": "hiveserver2_java_heapsize", "value": ""},
+            {"name": "hiveserver2_merge_mapredfiles", "value": "true"},
+            {"name": "hiveserver2_merge_smallfiles_avgsize", "value": ""},
+            {"name": "hiveserver2_webui_port", "value": ""},
+            {"name": "log4j_safety_valve", "value": "appender.DRFA.filePattern=${log.dir}/${log.file}.%i"},
+            {"name": "oom_heap_dump_dir", "value": ""},
+            {"name": "oom_heap_dump_enabled", "value": "false"},
+            {"name": "process_auto_restart", "value": "true"},
+            {"name": "ssl_enabled", "value": "true"},
+            {"name": "ssl_server_keystore_location", "value": ""},
+            {"name": "ssl_server_keystore_password", "value": ""}
+          ]
+        }
+      ],
+      "serviceConfigs": [
+        {"name": "atlas_service", "value": "atlas"},
+        {"name": "audit_event_log_dir", "value": ""},
+        {"name": "generate_jceks_password", "value": "false"},
+        {"name": "hbase_service", "value": "hbase"},
+        {"name": "hdfs_service", "value": "hdfs"},
+        {"name": "hive_async_log_enabled", "value": "true"},
+        {"name": "hive_aux_jars_path_dir", "value": ""},
+        {"name": "hive_compactor_worker_threads", "value": "20"},
+        {"name": "hive_create_as_acid", "value": "false"},
+        {"name": "hive_create_as_insert_only", "value": "false"},
+        {"name": "hive_service_config_safety_valve", "value": ""},
+        {"name": "hive_service_replication_config_safety_valve", "value": ""},
+        {"name": "hiveserver2_enable_ldap_auth", "value": "true"},
+        {"name": "hiveserver2_enable_ssl", "value": "true"},
+        {"name": "hiveserver2_keystore_password", "value": ""},
+        {"name": "hiveserver2_keystore_path", "value": ""},
+        {"name": "hiveserver2_ldap_basedn", "value": "dc=company,dc=com"},
+        {"name": "hiveserver2_ldap_uri", "value": "ldaps://"},
+        {"name": "hiveserver2_truststore_file", "value": ""},
+        {"name": "hiveserver2_truststore_password", "value": "changeit"},
+        {"name": "hms_connector", "value": "hive"},
+        {"name": "lineage_event_log_dir", "value": ""},
+        {"name": "mapreduce_yarn_service", "value": "yarn"},
+        {"name": "ranger_service", "value": "ranger"},
+        {"name": "smon_client_config_overrides", "value": ""},
+        {"name": "tez_service", "value": "tez"},
+        {"name": "zookeeper_service", "value": "zookeeper"}
+      ]
+    }
+  ]
+}

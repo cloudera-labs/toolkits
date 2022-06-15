@@ -1,0 +1,41 @@
+{
+  "services" :
+  [
+    {
+      "serviceType": "ATLAS",
+      "refName": "ATLAS-1",
+      "roleConfigGroups": [
+        {
+          "roleType": "ATLAS_SERVER",
+          "refName": "ATLAS-1-ATLAS_SERVER-BASE",
+          "base": true,
+          "configs": [
+            {"name": "ssl_client_truststore_location", "value": ""},
+            {"name": "ssl_client_truststore_password", "value": "changeit"},
+            {"name": "ssl_enabled", "value": "true"},
+            {"name": "ssl_server_keystore_keypassword", "value": ""},
+            {"name": "ssl_server_keystore_location", "value": ""},
+            {"name": "ssl_server_keystore_password", "value": ""}
+          ]
+        },
+        {
+          "roleType": "GATEWAY",
+          "refName": "ATLAS-1-GATEWAY-BASE",
+          "base": true,
+          "configs": [
+            {"name": "ssl_client_truststore_location", "value": ""},
+            {"name": "ssl_client_truststore_password", "value": ""}
+          ]
+        }
+      ],
+      "serviceConfigs": [
+        {"name": "hdfs_service", "value": "hdfs"},
+        {"name": "hbase_service", "value": "hbase"},
+        {"name": "kafka_service", "value": "kafka"},
+        {"name": "ranger_service", "value": "ranger"},
+        {"name": "kerberos.auth.enable", "value": "true"},
+        {"name": "solr_service", "value": "solr"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "services" :
+  [
+    {
+      "serviceType": "HDFS",
+      "refName": "HDFS-1",
+      "roleConfigGroups": [
+        {
+          "roleType": "HTTPFS",
+          "refName": "HDFS-1-HTTPFS-BASE",
+          "base": true,
+          "configs": [
+            {"name": "ssl_client_truststore_location", "value": ""},
+            {"name": "ssl_client_truststore_password", "value": "changeit"},
+            {"name": "ssl_enabled", "value": "true"},
+            {"name": "ssl_server_keystore_keypassword", "value": ""},
+            {"name": "httpfs_https_keystore_file", "value": ""},
+            {"name": "httpfs_https_keystore_file", "value": ""}
+          ]
+        },
+        {
+          "roleType": "NAMENODE",
+          "refName": "HDFS-1-NAMENODE-BASE",
+          "base": true,
+          "configs": [
+            {"name": "namenode_truststore_file", "value": ""},
+            {"name": "namenode_truststore_password", "value": "changeit"}
+          ]
+        }
+      ],
+      "serviceConfigs": [
+        {"name": "extra_auth_to_local_rules", "value": "RULE:[2:$1](^HTTP$)s/(.*)/$1/\nRULE:[1:$1](.*)s/(.*)/$1/L\nRULE:[2:$1](.*)s/(.*)/$1/L\nRULE:[1:$1@$0](.*@CORP.COMPANY.COM)s/@.*/$1/L"},
+        {"name": "ranger_audit_hdfs_spool_dir", "value": ""},
+        {"name": "ranger_audit_solr_spool_dir", "value": ""},
+        {"name": "ranger_security_safety_valve", "value": "<property><name>ranger.plugin.hdfs.chained.services</name><value>cm_hive</value><description>for Ranger RMS</description></property><property><name>ranger.plugin.hdfs.chained.services.cm_hive.impl</name><value>org.apache.ranger.chainedplugin.hdfs.hive.RangerHdfsHiveChainedPlugin</value><description>for Ranger RMS</description></property>"},
+        {"name": "ranger_audit_safety_valve", "value": "<property><name>xasecure.audit.destination.hdfs.file.rollover.sec</name><value>1800</value><description>flushing ranger audit files - roll over period</description></property><property><name>xasecure.audit.destination.solr.batch.filespool.archive.max.files</name><value>5</value><description>limiting archive spool files to 5</description></property>"},
+        {"name": "ssl_server_keystore_location", "value": ""}
+      ]
+    }
+  ]
+}

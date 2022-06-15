@@ -1,0 +1,51 @@
+{
+  "services" :
+  [
+    {
+      "serviceType": "SOLR",
+      "refName": "SOLR-1",
+      "roleConfigGroups": [
+        {
+          "roleType": "SOLR_SERVER",
+          "refName": "SOLR-1-SOLR_SERVER-BASE",
+          "base": true,
+          "configs": [
+            {"name": "process_auto_restart", "value": "true"},
+            {"name": "rlimit_fds", "value": ""},
+            {"name": "rm_cpu_shares", "value": ""},
+            {"name": "solr_data_dir", "value": "/var/lib/solr-infra"},
+            {"name": "solr_http_port", "value": ""},
+            {"name": "solr_https_port", "value": ""},
+            {"name": "solr_java_direct_memory_size", "value": ""},
+            {"name": "solr_java_heapsize", "value": ""},
+            {"name": "solr_log_dir", "value": "/var/log/solr-infra"}
+          ]
+        },
+        {
+          "roleType": "GATEWAY",
+          "refName": "SOLR-1-GATEWAY-BASE",
+          "base": true,
+          "configs": [
+            {"name": "client_config_root_dir", "value": "/etc/solr-infra"}
+          ]
+        }
+      ],
+      "serviceConfigs": [
+        {"name": "hdfs_data_dir", "value": "/solr-infra"},
+        {"name": "hdfs_service", "value": "hdfs"},
+        {"name": "ranger_audit_hdfs_dir", "value": "${ranger_base_audit_url}/solr-infra"},
+        {"name": "ranger_audit_hdfs_spool_dir", "value": "/var/log/solr-infra/audit/hdfs/spool"},
+        {"name": "ranger_audit_solr_spool_dir", "value": "/var/log/solr-infra/audit/solr/spool"},
+        {"name": "ranger_policy_cache_dir", "value": "/var/lib/ranger/solr-infra/policy-cache"},
+        {"name": "solr_https_keystore_file", "value": ""},
+        {"name": "solr_https_keystore_password", "value": ""},
+        {"name": "solr_https_truststore_file", "value": ""},
+        {"name": "solr_https_truststore_password", "value": "changeit"},
+        {"name": "solr_security_authentication", "value": "kerberos"},
+        {"name": "solr_use_ssl", "value": "true"},
+        {"name": "zookeeper_service", "value": "zookeeper"},
+        {"name": "zookeeper_znode", "value": "/solr-infra"}
+      ]
+    }
+  ]
+}

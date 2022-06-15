@@ -1,0 +1,65 @@
+{
+  "services" :
+  [
+    {
+      "serviceType": "RANGER",
+      "refName": "RANGER-1",
+      "roleConfigGroups": [
+        {
+          "roleType": "RANGER_ADMIN",
+          "refName": "RANGER-1-RANGER_ADMIN-BASE",
+          "base": true,
+          "configs": [
+            {"name": "ranger.ldap.base.dn", "value": "DC=COMPANY,DC=com"},
+            {"name": "ranger.ldap.bind.dn", "value": "user@COMPANY.com"},
+            {"name": "ranger.ldap.group.roleattribute", "value": "cn"},
+            {"name": "ranger.ldap.group.searchbase", "value": "DC=COMPANY,DC=com"},
+            {"name": "ranger.ldap.group.searchfilter", "value": ""},
+            {"name": "ranger.ldap.referral", "value": "follow"},
+            {"name": "ranger.ldap.url", "value": "ldaps://"},
+            {"name": "ranger.ldap.user.dnpattern", "value": "CN={0},CN=Users"},
+            {"name": "ranger.ldap.user.searchfilter", "value": ""},
+            {"name": "ranger.service.https.attrib.keystore.keyalias", "value": "{{RANGER_ADMIN_HOST}}"},
+            {"name": "ranger.unixauth.service.hostname", "value": "{{RANGER_USERSYNC_HOST}}"},
+            {"name": "ranger_authentication_method", "value": "LDAP"},
+            {"name": "ranger_ldap_bind_password", "value": ""},
+            {"name": "ssl_client_truststore_location", "value": ""},
+            {"name": "ssl_client_truststore_password", "value": "changeit"},
+            {"name": "ssl_enabled", "value": "true"},
+            {"name": "ssl_server_keystore_location", "value": ""},
+            {"name": "ssl_server_keystore_password", "value": ""}
+          ]
+        },
+        {
+          "roleType": "RANGER_TAGSYNC",
+          "refName": "RANGER-1-RANGER_TAGSYNC-BASE",
+          "base": true,
+          "configs": [
+            {"name": "ranger_tagsync_max_heap_size", "value": ""},
+            {"name":  "ranger_tagsync_metrics_filepath", "value": ""},
+            {"name":  "ssl_client_truststore_location", "value": ""},
+            {"name":  "ssl_client_truststore_password", "value": "changeit"},
+            {"name":  "ssl_enabled", "value": "true"},
+            {"name":  "ssl_server_keystore_location", "value": ""},
+            {"name":  "ssl_server_keystore_password", "value": ""}
+          ]
+        },
+        {
+          "roleType": "RANGER_USERSYNC",
+          "refName": "RANGER-1-RANGER_USERSYNC-BASE",
+          "base": true,
+          "configs": [
+            {"name": "ranger.usersync.group.based.role.assignment.rules", "value": ""},
+            {"name":  "ssl_client_truststore_location", "value": ""},
+            {"name":  "ssl_client_truststore_password", "value": "changeit"}
+          ]
+        }
+      ],
+      "serviceConfigs": [
+        {"name": "hdfs_service", "value": "hdfs"},
+        {"name": "solr_service", "value": "solr"}
+
+      ]
+    }
+  ]
+}

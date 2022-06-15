@@ -1,0 +1,30 @@
+# Copyright 2022 Cloudera, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+- hosts: hue_server
+  tasks:
+   - name: Delete CDP hue app.reg
+     shell: "rm -rf /opt/cloudera/parcels/CDH/lib/hue/app.reg"
+
+   - name: Restore Hue App Reg
+     unarchive:
+       src: /opt/hue_6.2.1.tgz
+       dest:  /opt/cloudera/parcels/CDH/lib/hue
+       remote_src: yes
+       mode: 0644
+  
+
+
+    
