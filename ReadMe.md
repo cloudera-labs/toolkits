@@ -7,9 +7,7 @@ This toolkit can be used to migrate an existing CDH cluster to CDP. There are mu
 a separate artifact that make up the toolkit. Each individual subdirectory contains a ReadME with directions on execution. 
 
 ### Disclaimer
-The CDP Upgrade toolkit is offered as a free utility from Cloudera and does not fall under the purview of Cloudera support. 
-For any questions/issues in implementation, Cloudera recommends you contact your account team and/or engage professional services.
-
+The CDP Upgrade toolkit is offered as a free utility from Cloudera, is open sourced under the Apache License version 2.0, is not warranted, and does not fall under the purview of Cloudera support. For any questions/issues in implementation, Cloudera recommends you contact your account team and/or engage professional services.
 ### CDP Upgrade Flow
  1. CDH Cluster Inventory  
  2. CDP Version Check
