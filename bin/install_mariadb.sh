@@ -270,10 +270,6 @@ function run_option() {
                         check_arg 1
 			restore_mariadb
                         ;;
-                run)
-                        check_arg 2
-                        run_script
-                        ;;
                 *)
                         usage
                         ;;
