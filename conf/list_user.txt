@@ -1,0 +1,12 @@
+allan_admin:admin
+bo_biz:biz
+dana_dev:dev
+denis_deng:deng
+diego_deng:deng
+fina_fin:fin
+grace_gov:gov
+hamal_hr:hr
+omar_ops:ops
+sam_sec:sec
+steff_sci:sci
+stella_sale:sale

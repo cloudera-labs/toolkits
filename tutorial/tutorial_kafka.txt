@@ -1,0 +1,54 @@
+## Hello World Example
+
+# Kafak bin
+cd /usr/hdp/current/kafka-broker/bin
+
+# Deleting a topic
+./kafak-topics.sh --delete --zookeeper master.example.com:2181 --topic Hello-World
+
+# Create topics
+./kafka-topics.sh --create --zookeeper master.example.com:2181 --replication-factor 1 --partitions 1 --topic Hello-World
+
+# List topics
+./kafka-topics.sh --list --zookeeper master.example.com:2181
+
+# Start producer to send messages
+./kafka-console-producer.sh --broker-list master.example.com:9092 --topic Hello-World 
+Hello Word
+This is my first Kafka message
+And this is my second message
+
+# Start consumer to receive messages
+./kafka-console-consumer.sh --bootstrap-server master.example.com:9092 --topic Hello-World --from-beginning
+
+# Describing a topic
+./kafak-topics.sh --describe --zookeeper master.example.com:2181 --topic Hello-World
+
+# Alter a topic
+./kafak-topics.sh --alter --zookeeper master.example.com:2181 --topic Hello-World --partition 2
+
+## NiFiLogEvents
+# Deleting a topic
+./kafak-topics.sh --delete --zookeeper master.example.com:2181 --topic NiFiLogEvents
+
+# Create topics
+./kafka-topics.sh --create --zookeeper master.example.com:2181 --replication-factor 2 --partitions 3 --topic NiFiLogEvents
+
+# List topics
+./kafka-topics.sh --list --zookeeper master.example.com:2181
+
+# View messages
+./kafka-console-consumer.sh --bootstrap-server master.example.com:9092 --topic NiFiLogEvents --from-beginning
+
+## HBaseEvents 
+# Deleting a topic
+./kafak-topics.sh --delete --zookeeper master.example.com:2181 --topic HBaseEvents
+
+# Create topics
+kafka-topics.sh --create --zookeeper master.example.com:2181 --replication-factor 1 --partitions 1 --topic HBaseEvents
+
+# List topics
+./kafka-topics.sh --list --zookeeper master.example.com:2181
+
+# View messages
+./kafka-console-consumer.sh --bootstrap-server master.example.com:9092 --topic HBaseEvents --from-beginning

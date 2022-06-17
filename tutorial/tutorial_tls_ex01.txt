@@ -1,0 +1,51 @@
+# Tutorial TLS
+# mod08_ex01:  Signing a Certificate
+
+1. 
+$ mkdir -p ~/tls/ca ~/tls/cm ~/tls/hosts ~/tls/web
+$ ls ~/tls
+$ cd ~/tls/ca
+$ openssl genrsa -out ca.key 2048
+$ cat ca.key
+$ openssl rsa -check -in ca.key
+$ openssl rsa -text -in ca.key -noout
+$ openssl req -x509 -new -key ca.key -out ca.crt
+Country Name: US
+State Name: NY
+Locality Name: New York
+Organization Name: GlobalCA
+Unit Name: Sale
+Common Name: globalca.example.com
+Email: info@globalca.example.com
+
+$ openssl x509 -text -in ca.crt -noout
+
+2. 
+$ cd ~/tls/web
+$ openssl genrsa -out web.key 2048
+
+3.
+$ openssl req -new -key web.key -out web.csr
+Country Name: US
+State: CA
+Locality Name: Santa Clara
+Organization Name: Cloudride
+Unit Name: Edu
+Common Name: cloudride.example.com
+Email: nkelly@cloudride.example.com
+
+$ openssl req -text -in web.csr -noout -verify 
+$ cp web.csr ~/tls/ca/web.csr
+
+4. 
+$ cd ~/tls/ca
+$ openssl x509 -req -CAkey ca.key -CA ca.crt -in web.csr -out web.crt -days 365 -CAcreateserial
+$ cp web.crt ~/tls/web/web.crt
+
+5.
+$ cd ~/tls/web
+$ openssl x509 -text -in web.crt -noout
+
+$ openssl pkey -pubout -in web.key | openssl md5
+$ openssl req -pubkey -in web.csr -noout | openssl md5
+$ openssl x509 -pubkey -in web.crt -noout | openssl md5

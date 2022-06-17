@@ -1,0 +1,15 @@
+mgmt-1.cloudmart.lan
+mgmt-2.cloudmart.lan
+edge-1.cloudmart.lan
+gate-1.cloudmart.lan
+master-1.cloudmart.lan
+master-2.cloudmart.lan
+master-3.cloudmart.lan
+worker-1.cloudmart.lan
+worker-2.cloudmart.lan
+worker-3.cloudmart.lan
+worker-4.cloudmart.lan
+kms-1.cloudmart.lan
+kms-2.cloudmart.lan
+kts-1.cloudmart.lan
+kts-2.cloudmart.lan

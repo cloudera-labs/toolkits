@@ -1,0 +1,5 @@
+admin01.cloudair.lan
+edge[01-02].cloudair.lan
+mgmt01.cloudair.lan
+master[01-03].cloudair.lan
+worker[01-03].cloudair.lan

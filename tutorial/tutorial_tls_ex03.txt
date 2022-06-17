@@ -1,0 +1,30 @@
+# Tutorial TLS
+# mod08_ex03: Assigning CM as an Intermediate CA
+
+1.
+$ cd ~/tls/cm
+$ keytool -genkey -keyalg RSA -keystore cm.jks -storepass BadPass@1 -keypass BadPass@1 -alias cm.key -validity 365
+First and Last Name: Ned Kelly
+Unit Name: Edu
+Organization: Cloudride
+City: Santa Clara
+State: CA
+Country: US
+
+2.
+$ keytool -importkeystore -srckeystore cm.jks -srcalias cm.key -srcstorepass BadPass@1 -deststoretype PKCS12 -destkeystore cm.p12 -deststorepass BadPass@1
+$ openssl pkcs12 -nocerts -nodes -in cm.p12 -password pass:BadPass@1 -out cm.key 
+
+3.
+$ keytool -certreq -keystore cm.jks -storepass BadPass@1 -keypass BadPass@1 -alias cm.key -keyalg RSA -file cm.csr
+$ cp cm.csr ~/tls/ca/cm.csr
+
+4.
+$ cd ~/tls/ca
+$ openssl x509 -req -CAkey ca.key -CA ca.crt  -in cm.csr -out cm.crt -days 365 -CAcreateserial
+$ cp cm.crt ~/tls/cm/cm.crt
+
+5. 
+$ cd ~/tls/cm
+$ keytool -importcert -keystore cm.jks -storepass BadPass@1 -keypass BadPass@1 -alias cm.crt -file cm.crt 
+$% keytool -list -v -keystore cm.jks -storepass BadPass@1 | less

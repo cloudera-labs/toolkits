@@ -1,0 +1,13 @@
+# Tutorial TLS
+# mod08_06: Managing x509 Format
+
+1. 
+$ cd ~/tls/hosts
+$ openssl pkcs12 -help
+$ openssl x509 -in hosts.crt -outform der -out hosts.der
+$ openssl x509 -inform der -in hosts.der -out hosts.pem
+$ openssl pkcs12 -export -inkey hosts.key -in hosts.pem -passin pass:BadPass@1 -out 2hosts.p12 -passout pass:BadPass@1
+
+2.
+$ keytool -import -keystore hosts.jks -storepass badpassword -file hosts.der -alias hosts.der
+
