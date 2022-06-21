@@ -55,15 +55,82 @@ function usage() {
 	exit 1
 }
 
-function call_include() {
-# Test for include script, which includes many run functions
+function check_sudo() {
+# Testing for sudo access to root
 
-        if [ -f ${DIR}/bin/include.sh ]; then
-                source ${DIR}/bin/include.sh
-        else
-                echo "ERROR: The file ${DIR}/bin/include.sh was not found."
-                echo "This required file provides supporting functions."
-		exit 1
+        sudo ls /root > /dev/null 2>&1
+        RESULT=$?
+        if [ $RESULT -ne 0 ]; then
+                echo "ERROR: You must have sudo to root to run this script"
+                usage
+        fi
+}
+
+function check_arg() {
+# Check if arguments exits
+
+        if [ ${NUMARGS} -ne "$1" ]; then
+                usage
+        fi
+}
+
+function check_file() {
+# Check for a file
+
+        FILE=$1
+        if [ ! -f ${FILE} ]; then
+                echo "ERROR: Input file ${FILE} not found"
+                usage
+        fi
+}
+
+function check_log_dir() {
+# Check if the log dir exists if not make the log dir
+
+        if [ ! -d "${LOGDIR}" ]; then
+                mkdir ${LOGDIR}
+        fi
+}
+
+function setup_log() {
+# Check the existance of the log directory and setup the log file.
+
+        check_log_dir
+
+        echo "******LOG ENTRY FOR ${LOGFILE}******" >> ${LOGFILE}
+        echo "" >> ${LOGFILE}
+}
+
+function yes_no() {
+        WORD=$1
+
+        while :; do
+                echo -n "${WORD} (y/n)?  "
+                read YES_NO junk
+
+                case ${YES_NO} in
+                        Y|y|YES|Yes|yes)
+                                CODE_RETURN=0
+                                break
+                        ;;
+                        N|n|NO|No|no)
+                                CODE_RETURN=1
+                                break
+                        ;;
+                        *)
+                                echo "Enter y or n"
+                        ;;
+                esac
+        done
+}
+
+function check_continue() {
+# Check if answer is correct and then break from the loop
+
+        if yes_no "Continue? "; then
+                if [ "${CODE_RETURN}" -eq 1 ]; then
+                        exit
+                fi
         fi
 }
 
@@ -76,6 +143,11 @@ function intro() {
 	echo "Once the script is completed and the host is validated"
 	echo "this host should be used by the system admins as a gold image."
 	echo "This script may also be used by a CDP admin to validate a host."
+	echo
+	echo "*** W A R N I N G  ***"
+	echo "This script should not be run on a host where Cloudera Manager"
+	echo -n "and/or a CDP Cluster is deployed. "
+	check_continue
 }
 
 ### OS CHECK
@@ -476,9 +548,6 @@ function validate_host() {
 }
 
 # MAIN
-# Source functions
-call_include
-
 # Run checks
 check_sudo
 check_arg 0 
@@ -491,7 +560,7 @@ set_epel
 
 #  Install software
 install_jdk
-#install_python
+install_python
 install_tool
 install_security
 install_lib

@@ -1,9 +1,0 @@
-adm
-biz
-dev
-fin
-hr
-gov
-key
-ops
-sci
