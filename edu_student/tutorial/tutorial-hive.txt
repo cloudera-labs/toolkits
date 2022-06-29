@@ -1,0 +1,103 @@
+# Run orders.hql
+cat hive_orders.hql
+hive -f hive_orders.hql
+
+# Validate
+hive
+DESCRIBE orders;
+SELECT count(*) FROM orders;
+SELECT username FROM orders LIMIT 10;
+
+# Select from orders
+SELECT username, ordertotal FROM orders ORDER BY ordertotal LIMIT 10;
+SELECT username, ordertotal FROM orders ORDER BY ordertotal DESC LIMIT 10;
+SELECT sum(ordertotal), year(order_date) FROM orders GROUP BY year(order_date);
+EXIT
+
+# Run hive_multifile.hql
+cat hive_multifile.hql
+hive -f hive_multifle.hql
+
+# Validate
+hdfs dfs -ls
+hdfs dfs -ls 2010_orders
+hdfs dfs -cat 2010_orders/000000_0
+hdfs dfs -ls software
+hdfs dfs -cat software/000000_0
+
+# Create a schema
+hive
+CREATE VIEW 2013_orders AS
+ SELECT orderid, order_date, username, itemlist
+FROM orders
+WHERE year(order_date) = '2013';
+
+# Validate
+SHOW TABLES;
+SELECT COUNT(*) FROM 2013_orders;
+
+# Work
+SELECT max(ordertotal), userid FROM orders GROUP BY userid;
+SELECT max(ordertotal), userid, itemlist FROM orders GROUP BY userid;
+
+# Create view 
+CREATE VIEW max_ordertotal AS
+SELECT max(ordertotal) AS maxtotal, userid
+FROM orders GROUP BY userid;
+
+# Join
+SELECT ordertotal, orders.userid, itemlist
+FROM orders
+JOIN max_ordertotal ON
+max_ordertotal.userid = orders.userid
+AND
+max_ordertotal.maxtotal = orders.ordertotal
+ORDER BY orders.userid;
+
+# Compute sums 
+SELECT sum(ordertotal), userid FROM orders GROUP BY userid;
+SELECT sum(ordertotal), userid, username
+FROM orders
+GROUP BY userid;
+
+# Group by
+SELECT sum(ordertotal), userid, collect_set(username)[0] FROM orders
+GROUP BY userid;
+
+# Over
+SELECT userid, itemlist, sum(ordertotal)
+OVER (PARTITION BY userid)
+FROM orders;
+
+# Windowing
+select order_date, sum(ordertotal)
+FROM orders
+GROUP BY order_date;
+
+# Over
+SELECT order_date, sum(ordertotal)
+OVER
+(PARTITION BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+FROM orders;
+
+# 
+SELECT order_date, ordertotal, rank()
+OVER
+(PARTITION BY order_date ORDER BY ordertotal)
+FROM orders;
+
+# 
+SELECT substr(order_date,0,7), ordertotal, rank()
+OVER
+(PARTITION BY substr(order_date,0,7) ORDER BY ordertotal)
+FROM orders; 
+
+# Histogram
+SELECT explode(histogram_numeric(ordertotal,20)) AS x
+FROM orders
+WHERE itemlist LIKE "%Microwave%";
+
+# Frequency distribution pairs
+SELECT explode(histogram_numeric(ordertotal,10)) AS x
+FROM orders
+WHERE ordertotal > 200;

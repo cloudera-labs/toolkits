@@ -1,0 +1,19 @@
+<topology>
+
+  <gateway>
+    <provider>
+      <role>hostmap</role>
+      <name>static</name>
+      <enabled>true</enabled>
+              <param>
+                        <name>name</name>
+                        <value>client02,client02.cloudair.lan</value>
+                </param>
+    </provider>
+  </gateway>
+
+  <service>
+    <role>KNOXSSOUT</role>
+  </service>
+
+</topology>

@@ -1,0 +1,36 @@
+Let's assume we have 100GB of total YARN cluster memory and 1GB minimum-allocation-mb, then we have 100 max containers. If we set the minimum allocation to 4GB, then we have 25 max containers.
+
+Each application will get the memory it asks for rounded up to the next container size. So if the minimum is 4GB and you ask for 4.5GB you will get 8GB.
+
+If the job/task Memory requirement is bigger than the allocated container size, in which case it will shoot down this container.
+
+How does YARN application master decide how much amount of Memory and CPU is required for a particular job.
+
+YARN Resource Manager (RM) allocates resources to the application through logical queues which include memory, CPU, and disks resources.
+
+By default, the RM will allow up to 8192MB ("yarn.scheduler.maximum-allocation-mb") to an Application Master (AM) container allocation request.
+
+The default minimum allocation is 1024MB ("yarn.scheduler.minimum-allocation-mb").
+
+The AM can only request resources from the RM that are in increments of ("yarn.scheduler.minimum-allocation-mb") and do not exceed ("yarn.scheduler.maximum-allocation-mb").
+
+The AM is responsible for rounding off ("mapreduce.map.memory.mb") and ("mapreduce.reduce.memory.mb") to a value divisible by the ("yarn.scheduler.minimum-allocation-mb").
+
+RM will deny an allocation greater than 8192MB and a value not divisible by 1024MB.
+
+Following YARN and Map-Reduce parameters need to set to change the default Memory requirement:-
+
+For YARN
+
+yarn.scheduler.minimum-allocation-mb
+yarn.scheduler.maximum-allocation-mb
+yarn.nodemanager.vmem-pmem-ratio
+yarn.nodemanager.resource.memory.mb
+For MapReduce
+
+mapreduce.map.java.opts
+mapreduce.map.memory.mb
+mapreduce.reduce.java.opts
+mapreduce.reduce.memory.mb
+
+So conclusion is that, application master doesn't use any logic to calculate resources (memory/CPU) requirement for a particular job. It simply use above mentioned parameters value for it. If any jobs doesn't complete in given container size (including virtual Memory), then node manager simply kills the container.

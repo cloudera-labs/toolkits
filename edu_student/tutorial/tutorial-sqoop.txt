@@ -1,0 +1,37 @@
+# Import strings for Sqoop
+# Copy and paste into the command line
+
+# Replace <IP_MYSQL> with the AWS internal IP address for the MySQL server.
+:%/s/<IP_MYSQL>/145.156.24.3/g
+
+# Full table import
+# Command line
+sqoop import --connect jdbc:mysql://<IP_MYSQL>/salary?user=root --table salaries
+
+# Column import
+# sqoop import --connect jdbc:mysql://<IP_MYSQL>/salary?user=root \
+#--table salaries \
+#--columns salary,age \
+#-m 1 \
+#--target-dir salaries2
+# Command line
+sqoop import --connect jdbc:mysql://<IP_MYSQL>/salary?user=root --table salaries
+--columns salary,age -m 1 --target-dir salaries2
+
+# Row import
+# sqoop import --connect jdbc:mysql://<IP_MYSQL>/salary?user=root \
+# --query "select * from salaries s where s.salary > 90000.00 and \ \$CONDITIONS" \
+# --split-by gender \
+# -m 2 \
+# --target-dir salaries3
+# Command line
+sqoop import --connect jdbc:mysql://<IP_MYSQL>/salary?user=root --query "select * from salaries s where s.salary > 90000.00 and \$CONDITIONS" --split-by gender -m 2 --target-dir salaries3
+
+# Table export to MySQL
+# sqoop export \
+# --connect jdbc:mysql://<IP_MYSQL>/salary?user=root \
+# --table salaries2 \
+# --export-dir salarydata \
+# --input-fields-terminated-by "," 
+# Command line
+sqoop export --connect jdbc:mysql://<IP_MYSQL>/salary?user=root --table salaries2 --export-dir salarydata --input-fields-terminated-by ","  

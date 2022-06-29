@@ -1,0 +1,28 @@
+# Copy /data into working directory using 2 mappers
+hadoop distcp -update -m 2 hdfs://cloudmartha/data/  hdfs://cloudmartha/user/prose
+
+# Allow snapshot this must be done by the user hdfs
+sudo su - hdfs
+hdfs dfsadmin -allowSnapshot /user/sysadmin
+exit
+
+# Create snapshot as the user sysadmin
+hdfs dfs -createSnapshot /user/sysadmin firstsnap
+
+# Copy snapshot using HA  
+hadoop distcp -update -m 1 hdfs://cloudmartha/user/sysadmin/.snapshot/firstsnap  hdfs://cloudmartha:8020/tmp
+
+# Delete snapshot
+hdfs dfs -deleteSnapshot /user/sysadmin firstsnap
+
+# Turn off snapshot
+sudo su -l hdfs
+hdfs dfsadmin -disallowSnapshot /user/sysadmin
+exit
+
+# OTHER EXAMPLES
+# Copy over from a single master
+hadoop distcp -update -m 8 hdfs://master03.cloudmart.lan:8020/user/sysadmin/.snapshot/firstsnap  hdfs://[SECOND_CLUSTER].cloudmart.lan:8020/tmp
+
+# Copy over from a HA masters
+hadoop distcp -update -m 8 hdfs://cloudmartha/user/sysadmin/.snapshot/firstsnap  hdfs://[SECOND_CLUSTER].cloudmart.lan:8020/tmp

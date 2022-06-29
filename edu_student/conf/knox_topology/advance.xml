@@ -1,0 +1,111 @@
+<topology>
+	<gateway>
+		<provider>
+			<role>identity-assertion</role>
+			<name>Default</name>
+			<enabled>true</enabled>
+		</provider>
+
+		<provider>
+			<role>authorization</role>
+			<name>XASecurePDPKnox</name>
+			<enabled>true</enabled>
+
+		</provider>
+
+		<provider>
+			<role>authentication</role>
+			<name>ShiroProvider</name>
+			<enabled>true</enabled>
+			<param>
+				<name>sessionTimeout</name>
+				<value>30</value>
+			</param>
+			<param>
+				<name>main.ldapContextFactory</name>
+				<value>org.apache.hadoop.gateway.shirorealm.KnoxLdapContextFactory</value>
+			</param>
+			<param>
+				<name>main.ldapRealm.contextFactory</name>
+				<value>$ldapContextFactory</value>
+			</param>
+			<param>
+				<name>main.ldapRealm</name>
+				<value>org.apache.hadoop.gateway.shirorealm.KnoxLdapRealm</value>
+			</param>
+			<param>
+				<name>main.ldapRealm.contextFactory.url</name>
+				<value>ldap://infra01.cloudair.lan:389</value>
+			</param>
+			<param>
+				<name>main.ldapRealm.userDnTemplate</name>
+				<value>uid={0},ou=users,dc=cloudair,dc=lan</value>
+			</param>
+			<param>
+				<name>main.ldapRealm.contextFactory.authenticationMechanism</name>
+				<value>simple</value>
+			</param>
+			<param>
+				<name>urls./**</name>
+				<value>authcBasic</value>
+			</param>
+		</provider>
+	</gateway>
+
+            <service>
+                <role>NAMENODE</role>
+                <url>hdfs://cloudairha</url>
+            </service>
+
+            <service>
+                <role>WEBHDFS</role>
+                <url>http://master01.cloudair.lan:50070/webhdfs</url>
+		<url>http://master03.cloudair.lan:50070/webhdfs</url>
+            </service>
+
+            <service>
+                <role>RESOURCEMANAGER</role>
+                <url>http://master03.cloudair.lan:8088/ws</url>
+            </service>
+
+            <service>
+                <role>JOBTRACKER</role>
+                <url>rpc://master03.cloudair.lan:8050</url>
+            </service>
+
+            <service>
+                <role>HIVE</role>
+                <url>http://client01.cloudair.lan:10001/cliservice</url>
+            </service>
+
+            <service>
+                <role>WEBHCAT</role>
+                <url>http://None:50111/templeton</url>
+            </service>
+
+            <service>
+                <role>OOZIE</role>
+                <url>http://None:11000/oozie</url>
+            </service>
+
+            <service>
+                <role>OOZIEUI</role>
+                <url>http://None:11000/oozie/</url>
+            </service>
+
+            <service>
+                <role>WEBHBASE</role>
+                <url>http://master03.cloudair.lan:8080</url>
+            </service>
+
+            <service>
+                <role>ZEPPELINUI</role>
+                <url>http://client02.cloudair.lan:9995</url>
+
+            </service>
+
+            <service>
+                <role>ZEPPELINWS</role>
+                <url>ws://client02.cloudair.lan:9995/ws</url>
+            </service>
+</topology>
