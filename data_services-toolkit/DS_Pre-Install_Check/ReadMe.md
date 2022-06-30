@@ -70,10 +70,10 @@
  
 
 ## Requirements
-1. Execute version_check.py from a host with passwordless ssh access to all Base Cluster & ECS Compute Hosts
+1. Execute preinstall_check.py from a host with passwordless ssh access to all Base Cluster & ECS Compute Hosts
 2. Clone entire repository including the bash scripts to the master host used for execution   
 3. python3 with the below packages
-```bash
+```python
 import os
 import subprocess
 import requests
@@ -110,6 +110,7 @@ postgres_host = "ecs-db-host.company.com"
 ## Example Execution
 
 ```bash
+pip3 install requests, xlsxwriter, cm_client
 cd /toolkits/data_services-toolkit/DS_Pre-Install_Check
-python3 version_check.py
+python3 preinstall_check.py
 ```
