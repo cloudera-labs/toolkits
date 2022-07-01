@@ -22,6 +22,7 @@ import logging
 # Install via Pip3
 import requests
 import urllib3
+from urllib.parse import quote as quote_url
 from urllib3.exceptions import InsecureRequestWarning
 import xlsxwriter
 import cm_client
@@ -39,27 +40,29 @@ class XlsxHandler:
         # Initiate workbook
         self._workbook = xlsxwriter.Workbook(self.__workbook_name)
 
-        # Initiate workbook indices
-        self.ws_idx = {x: 1 for x in self.worksheets.keys()}
-        self._alef = 'BCDEFGHIJKLMNOPQRSTUV'  # A is excluded as the header column
+        # Initiate workbook row indices
+        self.ws_idx = {x: 0 for x in self.worksheets.keys()}
 
         # Initiate worksheets and formats
         self._ws = {x: self._workbook.add_worksheet(y) for x, y in self.worksheets.items()}
         self._ft = {x: self._workbook.add_format(y) for x, y in self.formats.items()}
 
-    def write_cell(self, worksheet: str, cell: str, value, cell_format='header'):
-        self._ws[worksheet].write(cell, value, cell_format)
+    def write_cell(self, worksheet: str, cell: tuple, value, cell_format='header'):
+        # cell is a tuple of (row, column), zero indexed
+        logging.debug("writing to worksheet [{0}] in cell [{1}] with value [{2}] using format [{3}]"
+                      .format(worksheet, str(cell), value, cell_format))
+        self._ws[worksheet].write(cell[0], cell[1], value, self._ft[cell_format])
 
     def add_row(self, worksheet, header: str, values: list, header_format='header', value_format='text'):
         row_idx = self.ws_idx[worksheet]
-        self.write_cell(worksheet, 'A' + str(row_idx), header, header_format)
-        for idx, value in enumerate(values):
-            self.write_cell(worksheet, str(self._alef[idx]) + str(row_idx), value, value_format)
+        self.write_cell(worksheet, (row_idx, 0), header, header_format)
+        for col_idx, value in enumerate(values):
+            self.write_cell(worksheet, (row_idx, col_idx + 1), value, value_format)
         self.ws_idx[worksheet] = row_idx + 1
 
-    def set_column(self, worksheet, col_range, col_value):
+    def set_column(self, worksheet, first_col, last_col, width):
         # Format Worksheet cell width
-        self._ws[worksheet].set_column(col_range, col_value)
+        self._ws[worksheet].set_column(first_col, last_col, width=width)
 
     def close(self):
         self._workbook.close()
@@ -87,11 +90,13 @@ class CmHandler:
         self.cluster_api = cm_client.ClustersResourceApi(self.api_client)  # cluster_api_instance
 
     def get_uri(self, path):
-        return requests.get(
+        logging.debug("Calling URI {0}".format(self.api_url + '/' + path))
+        response = requests.get(
             self.api_url + '/' + path,
             verify=self.verify_ssl,
-            auth=(self.username, self.password)
+            auth=(self._cm_config.username, self._cm_config.password)
         )
+        return response
 
 
 class CompatibilityChecker:
@@ -127,6 +132,7 @@ class CompatibilityChecker:
         # Logging
         log_level = logging.DEBUG if debug else logging.ERROR
         logging.basicConfig(filename='DS_PreInstallCheck.log', level=log_level)
+        logging.getLogger().addHandler(logging.StreamHandler())
 
         # Init shared info collection
         self.cm = cm_handler
@@ -144,7 +150,8 @@ class CompatibilityChecker:
         self.report.add_row('kerb', 'Name of Service', ['Kerberos Parameter Name', 'Kerberos Parameter Value'],
                             value_format='header')
         # Run checks
-        self.check_os_version()  # Serves as connectivity check also
+        self.check_ssh()
+        self.check_os_version()
         self.check_db()
         self.check_clusters()
         self.check_hue_python()
@@ -179,11 +186,11 @@ class CompatibilityChecker:
 
     def finalise_report(self):
         # Format Worksheet cell width
-        self.report.set_column('summary', "A:J", 100)
-        self.report.set_column('vers', "A:J", 100)
-        self.report.set_column('tls', "A:J", 50)
-        self.report.set_column('kerb', "A:J", 50)
-
+        self.report.set_column('summary', 0, 4, 100)
+        self.report.set_column('vers', 0, 4, 100)
+        self.report.set_column('tls', 0, 4, 50)
+        self.report.set_column('kerb', 0, 4, 50)
+        logging.debug("Closing Xlsx workbook")
         self.report.close()
 
     def get_cm_db_host(self):
@@ -196,12 +203,24 @@ class CompatibilityChecker:
 
     def check_ssh(self):
         for k in self.hosts_info.items:
-            result = subprocess.getoutput("ssh %s '/bin/true'" % k.hostname)
-
+            result = subprocess.getoutput("ssh %s 'sudo tail -1 /var/log/messages'" % k.hostname)
+            if 'Permission denied' in result:
+                logging.error("Passwordlss SSH with sudo not working for {0}, response was {1}"
+                              .format(k.hostname, result))
+                raise(ConnectionError("SSH test for %s failed with %s" % (k.hostname, result)))
+            else:
+                logging.info("Passwordless SSH working for {0}, message response was {1}"
+                             .format(k.hostname, result))
 
         if self.ecs_hosts is not None:
             for k in self.ecs_hosts:
-                result = subprocess.getoutput("ssh %s '/bin/true'" % k)
+                result = subprocess.getoutput("ssh %s 'sudo tail -1 /var/log/messages'" % k)
+                if 'Permission denied' in result:
+                    logging.error("Passwordlss SSH with sudo not working for {0}, response was {1}"
+                                  .format(k, result))
+                else:
+                    logging.info("Passwordless SSH working for {0}, message response was {1}"
+                                 .format(k, result))
 
     def check_db(self):
         r = self.cm.get_uri('cm/scmDbInfo')
@@ -283,8 +302,10 @@ class CompatibilityChecker:
         for cluster_name in self.clusters.keys():
             display_name = self.clusters[cluster_name]['display_name']
             # Process TLS Result
-            r2 = self.cm.get_uri('clusters/{0}/isTlsEnabled'.format(display_name))
-            self.report.add_row('summary', "{0} is TLS Secured".format(display_name), [str.upper(r2.text), ])
+            r2 = self.cm.get_uri('clusters/{0}/isTlsEnabled'.format(quote_url(display_name)))
+            response = r2.text if r2.ok else r2.status_code
+            self.report.add_row('summary', "{0} is TLS Secured".format(display_name), [response, ])
+
             # Process Kerberos Result
             r3 = self.cm.get_uri('cm/kerberosInfo')
             second_pair = json.loads(r3.text)
@@ -528,7 +549,7 @@ class CompatibilityChecker:
                 'summary', "All base cluster nodes have enough space to accommodate the CDP Parcel (20GB)", ['Yes'])
         else:
             self.report.add_row(
-                'summary', "All base cluster nodes have enough space to accommodate the CDP Parcel (20GB)", ['NO'])
+                'summary', "All base cluster nodes have enough space to accommodate the CDP Parcel (20GB)", ['No'])
 
     def check_java_version(self):
         java_version_result_aggregate = []
@@ -633,18 +654,19 @@ class CompatibilityChecker:
             self.report.add_row('summary', "The ECS Cluster Postgres DB is Encrypted", ['No'])
 
     def run_ecs_host_checks(self):
-        ecs_checks = {
-            "All ECS nodes have clean iptables": self.check_iptables,
-            "All ECS nodes have scsi devices": self.check_scsi,
-            "All ECS nodes have devices with ftype=1": self.check_ftype,
-            "All ECS nodes are not running firewalld": self.check_firewalld,
-            "All ECS nodes are running either NTP or Chronyd": self.check_time_svcs,
-            "All ECS nodes have vm.swappiness=1": self.check_swappiness,
-            "All ECS nodes have nfs utils installed": self.check_nfs_utils,
-            "All ECS nodes have SE Linux disabled": self.check_se_linux
-        }
-        for statement, check_func in ecs_checks.items():
-            result = "Yes" if any("False" in x for x in [check_func(y) for y in self.ecs_hosts]) else "No"
+        ecs_checks = [
+            ("All ECS nodes have clean iptables", self.check_iptables),
+            ("All ECS nodes have scsi devices", self.check_scsi),
+            ("All ECS nodes have devices with ftype=1", self.check_ftype),
+            ("All ECS nodes are not running firewalld", self.check_firewalld),
+            ("All ECS nodes are running either NTP or Chronyd", self.check_time_svcs),
+            ("All ECS nodes have vm.swappiness=1", self.check_swappiness),
+            ("All ECS nodes have nfs utils installed", self.check_nfs_utils),
+            ("All ECS nodes have SE Linux disabled", self.check_se_linux)
+        ]
+        for statement, check_func in ecs_checks:
+            logging.info("Checking: {0}".format(statement))
+            result = "Yes" if all([check_func(y) for y in self.ecs_hosts]) else "No"
             self.report.add_row('summary', statement, [result])
 
 
