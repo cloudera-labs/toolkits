@@ -15,6 +15,8 @@
 # Default
 import json
 import os
+import socket
+from socket import gaierror
 import subprocess
 import re
 import logging
@@ -100,8 +102,8 @@ class CmHandler:
 
 
 class CompatibilityChecker:
-    def __init__(self, cm_handler, report_handler=None, ecs_hosts=None, ecs_db_host=None, debug=False,
-                 ssh_key_path=None):
+    def __init__(self, cm_handler=None, report_handler=None, ecs_hosts=None, ecs_db_host=None, debug=False):
+        # static values
         self.supported_postgres_versions = ["10", "11", "12", "14"]
         self.supported_mysql_versions = ["8.0", "5.7", "5.6"]
         self.supported_mariaDB_versions = ["10.5", "10.4", "10.3", "10.2"]
@@ -126,47 +128,85 @@ class CompatibilityChecker:
         ]
         self.oracle_java_versions = ["1.8"]
         self.open_jdk_versions = ["1.8", "11"]
-
-        self.ecs_hosts = ecs_hosts
+        self.ssh_errors = [
+            'Could not resolve hostname',
+            'Permission denied'
+        ]
 
         # Logging
         log_level = logging.DEBUG if debug else logging.ERROR
         logging.basicConfig(filename='DS_PreInstallCheck.log', level=log_level)
         logging.getLogger().addHandler(logging.StreamHandler())
 
-        # Init shared info collection
-        self.cm = cm_handler
-        self.report = report_handler if report_handler is not None else self.init_report()
-        self.cm_db_host = self.get_cm_db_host()
+        # user inputs
+        self.ecs_hosts = ecs_hosts
         self.ecs_db_host = ecs_db_host
-        self.hosts_info = self.cm.hosts_api.read_hosts(view='FULL')
-        self.clusters = self.get_cluster_info()
-        self.init_report()
+        self.cm = cm_handler
+        self.report = report_handler
+
+        # Init shared info
+        self.cm_db_host = None
+        self.hosts_info = None
+        self.clusters = None
 
     def main_process(self):
-        # Write report worksheet headers
+        # Init report
+        self.report = self.report if self.report is not None else self.init_report()
         self.report.add_row('vers', 'Hostname', ['Error on Host'], value_format='header')
         self.report.add_row('tls', 'Hostname', ['SSL Parameter Name', 'SSL Enabled?'], value_format='header')
         self.report.add_row('kerb', 'Name of Service', ['Kerberos Parameter Name', 'Kerberos Parameter Value'],
                             value_format='header')
-        # Run checks
+
+        # Fetch hosts list from CM, if connected
+        if self.cm:
+            self.check_dns(self.cm.host)
+            self.hosts_info = self.cm.hosts_api.read_hosts(view='FULL')
+        # Check DNS resolution for ECS hosts, if provided
+        if self.ecs_hosts:
+            _ = [self.check_dns(x) for x in self.ecs_hosts]
+        # Check passwordless SSH to all ECS hosts, and CM hosts, if provided
         self.check_ssh()
-        self.check_os_version()
-        self.check_db()
-        self.check_clusters()
-        self.check_hue_python()
-        for cluster in self.clusters:
-            self.check_services_security(
-                self.clusters[cluster]['display_name'],
-                self.clusters[cluster]['service_names']
-            )
-        self.check_parcel_space()
-        self.check_java_version()
+
+        # Run CDP Base checks if CmHandler is setup
+        if self.cm:
+            self.cm_db_host = self.get_cm_db_host()
+            self.clusters = self.get_cluster_info()
+            self.check_os_version()
+            self.check_db()
+            self.check_clusters()
+            self.check_hue_python()
+            for cluster in self.clusters:
+                self.check_services_security(
+                    self.clusters[cluster]['display_name'],
+                    self.clusters[cluster]['service_names']
+                )
+            self.check_parcel_space()
+            self.check_java_version()
+
+        # Run ECS checks
         if self.ecs_hosts:
             self.run_ecs_host_checks()
         if self.ecs_db_host:
             self.check_postgres_encryption(self.ecs_db_host)
+
+        # Close report
         self.finalise_report()
+
+    def run_ecs_host_checks(self):
+        ecs_checks = [
+            ("All ECS nodes have clean iptables", self.check_iptables),
+            ("All ECS nodes have scsi devices", self.check_scsi),
+            ("All ECS nodes have devices with ftype=1", self.check_ftype),
+            ("All ECS nodes are not running firewalld", self.check_firewalld),
+            ("All ECS nodes are running either NTP or Chronyd", self.check_time_svcs),
+            ("All ECS nodes have vm.swappiness=1", self.check_swappiness),
+            ("All ECS nodes have nfs utils installed", self.check_nfs_utils),
+            ("All ECS nodes have SE Linux disabled", self.check_se_linux)
+        ]
+        for statement, check_func in ecs_checks:
+            logging.info("Checking: {0}".format(statement))
+            result = "Yes" if all([check_func(y) for y in self.ecs_hosts]) else "No"
+            self.report.add_row('summary', statement, [result])
 
     @staticmethod
     def init_report():
@@ -202,15 +242,17 @@ class CompatibilityChecker:
         return m.group('host')
 
     def check_ssh(self):
-        for k in self.hosts_info.items:
-            result = subprocess.getoutput("ssh %s 'sudo tail -1 /var/log/messages'" % k.hostname)
-            if 'Permission denied' in result:
-                logging.error("Passwordlss SSH with sudo not working for {0}, response was {1}"
-                              .format(k.hostname, result))
-                raise(ConnectionError("SSH test for %s failed with %s" % (k.hostname, result)))
-            else:
-                logging.info("Passwordless SSH working for {0}, message response was {1}"
-                             .format(k.hostname, result))
+        # Avoiding additional dependency of Paramiko, but it means we need to handle our own SSH errors
+        if self.hosts_info is not None:
+            for k in self.hosts_info.items:
+                result = subprocess.getoutput("ssh %s 'sudo tail -1 /var/log/messages'" % k.hostname)
+                if any(x in result for x in self.ssh_errors):
+                    logging.error("Passwordlss SSH with sudo not working for {0}, response was {1}"
+                                  .format(k.hostname, result))
+                    raise(ConnectionError("SSH test for %s failed with %s" % (k.hostname, result)))
+                else:
+                    logging.info("Passwordless SSH working for {0}, message response was {1}"
+                                 .format(k.hostname, result))
 
         if self.ecs_hosts is not None:
             for k in self.ecs_hosts:
@@ -645,6 +687,14 @@ class CompatibilityChecker:
             self.report.add_row('vers', host, ["SE Linux needs to be set to disabled or permissive"])
             return False
 
+    @staticmethod
+    def check_dns(host: str):
+        try:
+            logging.debug("Checking DNS for {0}".format(host))
+            _ = socket.getaddrinfo(host, 22)
+        except gaierror:
+            raise
+
     def check_postgres_encryption(self, host: str):
         encryption_result = subprocess.getoutput(
             "ssh %s \'cat /var/lib/pgsql/10/data/postgresql.conf | grep \"ssl =\"\'" % host)
@@ -652,22 +702,6 @@ class CompatibilityChecker:
             self.report.add_row('summary', "The ECS Cluster Postgres DB is Encrypted", ['Yes'])
         else:
             self.report.add_row('summary', "The ECS Cluster Postgres DB is Encrypted", ['No'])
-
-    def run_ecs_host_checks(self):
-        ecs_checks = [
-            ("All ECS nodes have clean iptables", self.check_iptables),
-            ("All ECS nodes have scsi devices", self.check_scsi),
-            ("All ECS nodes have devices with ftype=1", self.check_ftype),
-            ("All ECS nodes are not running firewalld", self.check_firewalld),
-            ("All ECS nodes are running either NTP or Chronyd", self.check_time_svcs),
-            ("All ECS nodes have vm.swappiness=1", self.check_swappiness),
-            ("All ECS nodes have nfs utils installed", self.check_nfs_utils),
-            ("All ECS nodes have SE Linux disabled", self.check_se_linux)
-        ]
-        for statement, check_func in ecs_checks:
-            logging.info("Checking: {0}".format(statement))
-            result = "Yes" if all([check_func(y) for y in self.ecs_hosts]) else "No"
-            self.report.add_row('summary', statement, [result])
 
 
 def main():
