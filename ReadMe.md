@@ -78,3 +78,8 @@ This script should be run after the CDP Upgrade to ensure functionality of all s
 This script will generate an output displaying the status of each service test.
 
 Please see the ReadMe in the CDP Smoke Test directory for more information.
+
+### CDP PvC DS Pre-Req Check
+This script should be run prior to a Data Services Installation to verify that all nodes have the necessary packages and utilities installed.
+
+Please see the ReadMe in the data_services-toolkit directory for more information.
