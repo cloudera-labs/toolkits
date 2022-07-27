@@ -1,0 +1,12 @@
+---
+fetch_local: false
+databases:
+ - scm
+ - amon
+ - rman
+ - hue
+ - metastore
+ - sentry
+ - oozie
+ - navms
+ - nav
