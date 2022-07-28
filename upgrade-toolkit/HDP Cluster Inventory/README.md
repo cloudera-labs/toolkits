@@ -24,7 +24,7 @@
 
 
 ## Requirements: 
-> 1. AMBARI user and password must have Read privileges on Cloudera Manager
+> 1. AMBARI user and password must have Read privileges on AMBARI API
 > 2. The script must be run from a node that has password-less ssh acess to all hosts in the cluster
 > 3. python3 must be installed
 > 4. Import the following packages
