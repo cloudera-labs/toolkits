@@ -30,12 +30,7 @@
 > 4. Import the following packages
 > 5. Ambari_domain is inout to python script
 
-```sh
-import subprocess
-import requests
-import json
-import xlsxwriter
-```
+
 
 ## Directions to Execute
 
