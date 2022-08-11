@@ -1,0 +1,24 @@
+
+1.- Download the latest version of s3fs (which is a FUSE backend for S3) from http://code.google.com/p/s3fs/downloads/list
+wget http://s3fs.googlecode.com/files/s3fs-r177-source.tar.gz
+
+2.- Unpack it:
+tar zxf s3fs-r177-source.tar.gz
+
+3.- Install dependencies for building. In my Ubuntu AMI was:
+apt-get install build-essential libxml2-dev libfuse-dev libcurl4-openssl-dev
+
+4.- Build and install the code (this copies the binary s3fs to /usr/bin):
+cd s3fs; make install
+
+5.- Edit a config file for storing your keys (you can check them out under AWS Menu -> Your Account -> Security Credentials)
+touch /etc/passwd-s3fs && chmod 640 /etc/passwd-s3fs && echo &#39;AccessKey:SecretKey&#39; > /etc/passwd-s3fs
+If you dont want to leave any trace of your secret key in your shell history, use a text editor to edit the file rather than echoing it.
+
+6.- Create a directory for mounting the S3 filesystem and mount it. Note that you can mount the s3fs anywhere you like:
+/usr/bin/s3fs bucketname /mnt/mountpoint
+
+7.- Check it is woking correctly:
+grep s3fs /etc/mtab
+
+set the ACL on the bucket to allow Read Only for the datasets and scripts
