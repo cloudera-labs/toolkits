@@ -1,0 +1,99 @@
+# Basic HDFS command lines
+
+#
+ssh sysadmin@admin01
+
+# Explore basic syntax
+hdfs
+hdfs dfs
+
+# Explore file system
+# Notice how hdfs appends /user/username for working directories
+hdfs dfs -ls /
+hdfs dfs -ls /user
+hdfs dfs -ls /user/sysadmin
+hdfs dfs -ls
+
+# Change to the local data directory
+cd ~/data/latin
+ls
+cat latin.txt
+
+# Create HDFS directory 
+hdfs dfs -mkdir /user/sysadmin/first
+hdfs dfs -ls
+
+# Load data into HDFS
+hdfs dfs -put latin.txt first 
+hdfs dfs -ls
+hdfs dfs -cat first/latin.txt
+
+# Copy data in HDFS
+hdfs dfs -mkdir second 
+hdfs dfs -cp first/latin.txt second
+hdfs dfs -ls second 
+
+# Learn about .Trash
+hdfs dfs -rm first/latin.txt
+hdfs dfs -ls  
+hdfs dfs -rm -r -skipTrash first 
+hdfs dfs -ls
+
+# Change to the local data directory 
+cd ~/data/books
+
+# Create hdfs directory
+hdfs dfs -mkdir library
+hdfs dfs -mv library books
+
+# Learn about shell expansion 
+hdfs dfs -put *txt books
+hdfs dfs -ls books
+hdfs dfs -cat books/book01.txt | grep the
+hdfs dfs -cat books/book01.txt > /tmp/book01.txt
+
+# Learn about the -D option
+cd ~/data/nyse
+hdfs dfs -mkdir nyse
+
+# Create small HDFS data blocks for exercise purposes
+hdfs dfs -D dfs.blocksize=2097152 -put stocks.csv nyse
+hdfs dfs -ls nyse
+
+# Learn about the master user hdfs
+# Change user to sysadmin
+exit
+ssh sysadmin@admin01
+
+# Explore power user hdfs
+sudo su - hdfs
+whoami
+hdfs dfs -ls /user
+
+# Explore administrative commands
+# Notice the working directory for hdfs is /
+hdfs dfs -ls
+
+# Admin fsck command
+hdfs fsck /user/sysadmin/nyse
+hdfs fsck /user/sysadmin/nyse -files -blocks 
+hdfs fsck /user/sysadmin/nyse -files -blocks -locations
+hdfs fsck /user/sysadmin/nyse -files -blocks -locations -racks
+
+# Write down the block ID and one of the IP addresses
+
+# Lookup block ID and IP address
+ssh sysadmin@<IP_ADDRESS>
+
+# Explore the /hadoop scratch directory
+sudo su -
+cd /hadoop/hdfs
+
+# Find the block ID
+find . -name <BLOCK_ID>
+cd /hadoop/hdfs/data/current/BP-xxxxx/current/finalized/subdirx
+ls -lh
+file *
+stat *
+cat <BLOCK_ID>
+vim <BLOCK_ID>

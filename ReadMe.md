@@ -1,6 +1,12 @@
+# CDP Toolkits
+
+## CDP Educational Toolkit
+
+### Summary
+This toolkit consists of administrative scripts, data, ddl, notebooks, and tutorials used in classes taught by Cloudera Educational Services. This toolkit is intended for educational purposes only.
 
 
-# CDP Upgrade Toolkit
+## CDP Upgrade Toolkit
 
 ### Summary
 This toolkit can be used to migrate an existing CDH cluster to CDP. There are multiple directories each of which represent 
