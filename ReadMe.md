@@ -95,4 +95,3 @@ Please see the ReadMe in the data_services-toolkit directory for more informatio
 This Discovery Tool is a lightweight automation package can run against a CDH or CDP cluster to produce a "Discovery Bundle" that is useful for CDP migration planning.
 
 Please see the ReadMe in the CDH-Discovery-Tool directory for more information.
-
