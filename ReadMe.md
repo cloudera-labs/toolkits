@@ -28,7 +28,7 @@ The CDP Upgrade toolkit is offered as a free utility from Cloudera, is open sour
 > 1. Service Type
 > 2. Service Name
 
-Please see the ReadME in the CDH Cluster Inventory directory for more information
+Please see the ReadME in the cdh-cluster-inventory directory for more information
 
 ### CDP Version Check
 This script should be run prior to the CDP Upgrade to determine if the versions of critical components present in the cluster will pose any risks to the upgrade. The script will compare versions installed against the CDP Support matrix that can be found at: https://supportmatrix.cloudera.com/
@@ -37,7 +37,7 @@ This script should be run prior to the CDP Upgrade to determine if the versions 
 > 1. Status Summary
 >2. Incompatible Versions Error Log 
 
-Please see the ReadME in the CDP Version Check directory for more information.
+Please see the ReadME in the cdp-version-check directory for more information.
 
 ### Ansible Hostfile Generation
 
@@ -46,17 +46,17 @@ The nodes.py script will generate an ansible formatted hostfile for the cluster 
 Please see the ReadME in the utilities directory for more information.
 
 ### Backup Playbooks
-These playbooks will collect backups of all services and databases prior to a CDP Upgrade.  
+These playbooks will collect backups of all services and databases prior to a CDP Upgrade.
 You may have to edit some paths in the playbooks to point to your specific configuration.
 
-Please see the ReadME in the Backup Playbooks directory for more information.
+Please see the ReadME in the backup-playbooks directory for more information.
 
 ### CDP In-Place Upgrade
 Utilize the Cloudera Manager wizard to complete the CDP Upgrade
 
 ### Rollback
 This set of playbooks and scripts can utilized to rollback a CDP Upgrade back to CDH. The directions to complete a full 
-rollback are detailed in the ReadME file found in the Rollback Playbook directory.
+rollback are detailed in the ReadME file found in the rollback-playbooks directory.
 
 ### CDP Configuration Push
 
@@ -71,10 +71,10 @@ Utilize the apply_properties.py script and json objects to push CM Configuration
 * Kafka
 * CDP Infra SOLR
 
-Please see the ReadMe in the CDP Configuration Push directory for more information.
+Please see the ReadMe in the cdp-configuration-push directory for more information.
 
 ### CDP Smoke Test
 This script should be run after the CDP Upgrade to ensure functionality of all services on the newly upgraded CDP Cluster.
 This script will generate an output displaying the status of each service test.
 
-Please see the ReadMe in the CDP Smoke Test directory for more information.
+Please see the ReadMe in the cdp-smoke-test directory for more information.
