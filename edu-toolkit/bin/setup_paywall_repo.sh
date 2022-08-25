@@ -56,7 +56,7 @@
 NUMARGS=$#
 OPTION=$1
 DIR=${HOME}
-PAYWALL=[username]:[password]
+#PAYWALL=[username]:[password]
 REPO_DIR=/home/training/software
 CM_VER=7.4.4
 CDH_VER=7.1.7
@@ -67,12 +67,13 @@ CFM_PARCEL=CFM-2.1.4.1000-5-el7.parcel
 NIFI_JAR=NIFI-1.16.0.2.1.4.1000-5.jar
 NIFIREGISTRY_JAR=NIFIREGISTRY-1.16.0.2.1.4.1000-5.jar
 NIFI_STANDALONE=nifi-1.16.0.2.1.4.1000-5-bin.tar.gz
+SPARK3_VER=3.1
 DATETIME=$(date +%Y%m%d%H%M)
 LOGFILE=${DIR}/log/setup-local-repo.log
 
 # FUNCTIONS
 function usage() {
-        echo "Usage: $(basename $0) [all|cm|cdh|cfm|httpd]"
+        echo "Usage: $(basename $0) [all|cm|cdh|cfm|spark3|httpd]"
         exit 1
 }
 
@@ -98,14 +99,17 @@ function check_file() {
 function make_dir() {
 # Create Cloudera repos directory
 
-	if [ ! -d ${REPO_DIR}/cloudera/cm7 ]; then
-		sudo mkdir -p ${REPO_DIR}/cloudera/cm7/${CM_VER}
+	if [ ! -d ${REPO_DIR}/cloudera-repos/cm7 ]; then
+		sudo mkdir -p ${REPO_DIR}/cloudera-repos/cm7/${CM_VER}
 	fi
-	if [ ! -d ${REPO_DIR}/cloudera/cdh7 ]; then
-		sudo mkdir -p ${REPO_DIR}/cloudera/cdh7/${CDH_VER}
+	if [ ! -d ${REPO_DIR}/cloudera-repos/cdh7 ]; then
+		sudo mkdir -p ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}
 	fi
-	if [ ! -d ${REPO_DIR}/cloudera/cfm2 ]; then
-		sudo mkdir -p ${REPO_DIR}/cloudera/cfm2/${CFM_VER}
+	if [ ! -d ${REPO_DIR}/cloudera-repos/cfm2 ]; then
+		sudo mkdir -p ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}
+	fi
+	if [ ! -d ${REPO_DIR}/cloudera-repos/spark3 ]; then
+		sudo mkdir -p ${REPO_DIR}/cloudera-repos/spark3/${SPARK3_VER}
 	fi
 }
 
@@ -116,11 +120,11 @@ function repo_cm() {
 
 	# Install repo from Cloudera paywall 
 
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cm7/7.4.4-24429768/repo-as-tarball/cm${CM_VER}-redhat7.tar.gz -P ${REPO_DIR}/cloudera/cm7/${CM_VER}/
-	sudo tar xvfz ${REPO_DIR}/cloudera/cm7/${CM_VER}/cm${CM_VER}-redhat7.tar.gz -C ${REPO_DIR}/cloudera/cm7/${CM_VER}/ --strip-components=1
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cm7/7.4.4-24429768/repo-as-tarball/cm${CM_VER}-redhat7.tar.gz -P ${REPO_DIR}/cloudera-repos/cm7/${CM_VER}/
+	sudo tar xvfz ${REPO_DIR}/cloudera-repos/cm7/${CM_VER}/cm${CM_VER}-redhat7.tar.gz -C ${REPO_DIR}/cloudera-repos/cm7/${CM_VER}/ --strip-components=1
 
-	sudo rm ${REPO_DIR}/cloudera/cm7/${CM_VER}/cm${CM_VER}-redhat7.tar.gz
-	sudo chmod -R ugo+rX ${REPO_DIR}/cloudera/cm7
+	sudo rm ${REPO_DIR}/cloudera-repos/cm7/${CM_VER}/cm${CM_VER}-redhat7.tar.gz
+	sudo chmod -R ugo+rX ${REPO_DIR}/cloudera-repos/cm7
 }
 
 function repo_cdh() {
@@ -129,12 +133,12 @@ function repo_cdh() {
 	echo "Install CDH repo"
 
 	# Install repo from Cloudera paywall 
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/manifest.json -O ${REPO_DIR}/cloudera/cdh7/${CDH_VER}/manifest.json
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${CDH_PARCEL} -O ${REPO_DIR}/cloudera/cdh7/${CDH_VER}/${CDH_PARCEL}
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${CDH_PARCEL}.sha1 -O ${REPO_DIR}/cloudera/cdh7/${CDH_VER}/${CDH_PARCEL}.sha1
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${CDH_PARCEL}.sha256 -O ${REPO_DIR}/cloudera/cdh7/${CDH_VER}/${CDH_PARCEL}.sha256
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/manifest.json -O ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}/manifest.json
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${CDH_PARCEL} -O ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}/${CDH_PARCEL}
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${CDH_PARCEL}.sha1 -O ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}/${CDH_PARCEL}.sha1
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${CDH_PARCEL}.sha256 -O ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}/${CDH_PARCEL}.sha256
 
-	sudo chmod -R ugo+rX ${REPO_DIR}/cloudera/cdh7
+	sudo chmod -R ugo+rX ${REPO_DIR}/cloudera-repos/cdh7
 }
 
 function repo_keytrustee() {
@@ -143,8 +147,8 @@ function repo_keytrustee() {
 	echo "Install Keytrustee repo"
 
 	# Install repo from Cloudera paywall 
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${KEYTRUSTEE_PARCEL} -O ${REPO_DIR}/cloudera/cdh7/${CDH_VER}/${KEYTRUSTEE_PARCEL}
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${KEYTRUSTEE_PARCEL}.sha -O ${REPO_DIR}/cloudera/cdh7/${CDH_VER}/${KEYTRUSTEE_PARCEL}.sha
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${KEYTRUSTEE_PARCEL} -O ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}/${KEYTRUSTEE_PARCEL}
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cdh7/7.1.7.78/parcels/${KEYTRUSTEE_PARCEL}.sha -O ${REPO_DIR}/cloudera-repos/cdh7/${CDH_VER}/${KEYTRUSTEE_PARCEL}.sha
 }
 
 function repo_cfm() {
@@ -153,26 +157,34 @@ function repo_cfm() {
 	echo "Install CFM repo"
 
 	# Install repo from Cloudera paywall 
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/manifest.json -O ${REPO_DIR}/cloudera/cfm2/${CFM_VER}/manifest.json
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${CFM_PARCEL} -O ${REPO_DIR}/cloudera/cfm2/${CFM_VER}/${CFM_PARCEL} 
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${CFM_PARCEL}.sha -O ${REPO_DIR}/cloudera/cfm2/${CFM_VER}/${CFM_PARCEL}.sha 
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/manifest.json -O ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}/manifest.json
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${CFM_PARCEL} -O ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}/${CFM_PARCEL} 
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${CFM_PARCEL}.sha -O ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}/${CFM_PARCEL}.sha 
 
-	sudo chmod -R ugo+rX ${REPO_DIR}/cloudera/cfm2
+	sudo chmod -R ugo+rX ${REPO_DIR}/cloudera-repos/cfm2
 }
 
 function repo_csd() {
 # The CSD files are need by Cloudera Manager to install the services. 
-# They are jar files to be placed into /opt/cloudera/csd on the CM host.
+# They are jar files to be placed into /opt/cloudera-repos/csd on the CM host.
 
 	echo "Install CSD repo in support of CFM"
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${NIFI_JAR} -O ${REPO_DIR}/cloudera/cfm2/${CFM_VER}/${NIFI_JAR}
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${NIFIREGISTRY_JAR} -O ${REPO_DIR}/cloudera/cfm2/${CFM_VER}/${NIFIREGISTRY_JAR}
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${NIFI_JAR} -O ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}/${NIFI_JAR}
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/parcel/${NIFIREGISTRY_JAR} -O ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}/${NIFIREGISTRY_JAR}
 }
 
 function repo_nifi() {
 # NiFi standalone file
 
-	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/nifi/${NIFI_STANDALONE} -O ${REPO_DIR}/cloudera/cfm2/${CFM_VER}/${NIFI_STANDALONE}
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/cfm2/2.1.4.1000/redhat7/yum/tars/nifi/${NIFI_STANDALONE} -O ${REPO_DIR}/cloudera-repos/cfm2/${CFM_VER}/${NIFI_STANDALONE}
+}
+
+function repo_spark3() {
+# Install Spark3 Repo 
+
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/spark3/3.1.7270.0/parcels/manifest.json -O ${REPO_DIR}/cloudera-repos/spark3/${SPARK3_VER}/manifest.json
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/spark3/3.1.7270.0/parcels/SPARK3-3.1.1.3.1.7270.0-253-1.p0.11638568-el7.parcel -O ${REPO_DIR}/cloudera-repos/spark3/${SPARK3_VER}/SPARK3-3.1.1.3.1.7270.0-253-1.p0.11638568-el7.parcel
+	sudo wget https://${PAYWALL}@archive.cloudera.com/p/spark3/3.1.7270.0/parcels/SPARK3-3.1.1.3.1.7270.0-253-1.p0.11638568-el7.parcel.sha1 -O ${REPO_DIR}/cloudera-repos/spark3/${SPARK3_VER}/SPARK3-3.1.1.3.1.7270.0-253-1.p0.11638568-el7.parcel.sha1
 }
 
 function install_httpd() {
@@ -205,7 +217,7 @@ function restart_http() {
 function check_repo() {
 
 	echo "Verify the repos at:"
-	echo "http://local-repo.example.com:8064/cloudera"
+	echo "http://local-repo.example.com:8064/cloudera-repos"
 }
 
 function run_option() {
@@ -251,11 +263,15 @@ function run_option() {
 			restart_http
 			check_repo
 			;;
+		spark3)
+			check_arg 1
+			make_dir
+			repo_spark3
+			;;
 		httpd)
 			check_arg 1
 			install_httpd
 			;;
-
 		*)
 			usage
 			;;
