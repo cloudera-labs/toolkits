@@ -31,7 +31,7 @@ git clone <repo_url>
 
 Go to the project directory:
 ```shell
-cd /opt/toolkits/upgrade-toolkit/CDH\ Discovery\ Tool/
+cd /opt/toolkits/upgrade-toolkit/CDH-Discovery-Tool/
 ```
 
 Create a new virtual environment inside the project directory:

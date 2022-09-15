@@ -59,7 +59,7 @@ Login to a node with internet access, and download the project
 cd /tmp
 yum -y install git
 git clone <repo_url>
-cd /tmp/toolkits/upgrade-toolkit/CDH\ Discovery\ Tool/
+cd /tmp/toolkits/upgrade-toolkit/CDH-Discovery-Tool/
 ```
 
 **Imporant** same version of pythons should be used to resolve the dependencies on the temporary location.
@@ -80,7 +80,7 @@ rsync  -Paz --exclude={'.git','.venv'}  /tmp/mac-cdh-discovery-bundle-builder <t
 
 Go to the project directory:
 ```shell
-cd /opt/toolkits/upgrade-toolkit/CDH\ Discovery\ Tool/
+cd /opt/toolkits/upgrade-toolkit/CDH-Discovery-Tool/
 ```
 
 Create a new virtual environment inside the project directory:
@@ -104,7 +104,7 @@ pip install -r requirements.txt
 - Set the Cloudera Manager credentials in [config.ini](./mac-discovery-bundle-builder/config/config.ini). 
 - Provide the path the JDBC driver for the HMS and Sentry databases. Usually it is located under **/usr/share/java/**
 ```shell
-vi /opt/toolkits/upgrade-toolkit/CDH\ Discovery\ Tool/mac-discovery-bundle-builder/config/config.ini
+vi /opt/toolkits/upgrade-toolkit/CDH-Discovery-Tool/mac-discovery-bundle-builder/config/config.ini
 
 #Edit the file
 [credentials]
