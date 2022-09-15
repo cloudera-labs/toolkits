@@ -1,0 +1,121 @@
+Cheatsheet:
+https://cheatography.com/davechild/cheat-sheets/regular-expressions/
+
+Regex Special Characters
+^ $ \ * + ? {} . [ ]  < > 
+Rule 1: Regex special characters need \\ to esacpe.
+Rule 2: A space in the text is used as a field delimiter. 
+Rule 3: Divided up the line of text into fields and write groups for each field. use ().
+Rule 4: Identify the character class and assign.
+Rule 5: Determine the quanity, use to set boundaries.
+
+WebLog File:
+10.21.147.9 - - [31/May/2013:00:00:04 -0800] "GET /tablet.html HTTP/1.1" 200 9652 "http://www.google.com/search?q=tablet" "ACME Browser 1.0" "SESSIONID=280493516274"
+
+Regex to convert to fields:
+"^([\\d.]+) \\S+ \\S+ \\[(.+?)\\] \"(.+?)\" (\\d{3}) (\\d+) \"(.+?)\" \"(.+?)\" \"SESSIONID=(\\d+)\"\\s*"
+
+^   	From the begining of the line of text.
+
+10.21.147.9
+([\\d.]+)  In this field match a digit and any character repeatedly
+()	Group a regex for a field
+\\d  	Match any single digit
+.    	Match any single digit or any character
+\\d. 	Match any single digit and any digit or any character 
+[]	A range
+[\\d.]  Match digit and character in a range
++	Match one or more times
+[\\d.]+ Match a digit and any character repeatedly
+
+
+-
+\\S+  	Match one or more characters except a whitespace
+\\S   	Match any character except any whitespace 
++     	Match one or more characters
+
+
+[31/May/2013:00:00:04]
+\\[(.+?)\\]
+\\[   	Escape to match [ 
+\\]  	Escape to match ]
+	Regex characters require \\ escape.
+()	Group a regex for a field
+.     	Match any single character
++     	Match one or more 
+? 	Preceding character is optional
+.+? 	Match any string or not, this makes this ungreedy
+(.+?) 	Group match any string with but not required if no character match. 
+
+
+"Get /tablet.html HTTP/1.1"
+\"(.+?)\"
+\"  	Escape quote to match ", " is not a regex, so only 1 escape \
+\" 	Escape quote to match "
+()	Group
+.     	Match any single character
++     	Match one or more 
+? 	Preceding character is optional
+.+? 	Match any string or not    
+(.+?) 	Group match any string with but not required if no character match. 
+
+
+200
+(\\d{3}) Group to match any 3 digits
+()	Group
+\\d 	Match any digit
+\\d{3} 	Match exactly any 3 digits
+
+
+9652
+(\\d+) 	Group to match one or more digits
+()	Group
+\\d 	Match any digit
++ 	Match one or more items
+
+
+"http://www.google.com/search?q=tablet"
+\"(.+?)\"
+\"  	Escape quote to match ", " is not a regex, so only 1 escape \
+\" 	Escape quote to match "
+()	Group
+.     	Match any single character
++     	Match one or more 
+? 	Preceding character is optional
+.+? 	Match any string or not    
+(.+?) 	Group match any string with but not required if no character match. 
+
+
+"ACME Browser 1.0"
+\"(.+?)\"
+\"  	Escape quote to match ", " is not a regex, so only 1 escape \
+\" 	Escape quote to match "
+()	Group
+.     	Match any single character
++     	Match one or more 
+? 	Preceding character is optional
+.+? 	Match any string or not    
+(.+?) 	Group match any string with but not required if no character match. 
+
+
+"SESSIONID=2804935156247"
+\"SESSIONID=(\\d+)\"
+\"  	Escape quote to match ", " is not a regex, so only 1 escape \
+\" 	Escape quote to match "
+	Match SESSIONID=
+()	Group
+\\d 	Any digit
++ 	May occur one or more times
+(\\d+) 	Group any digit may occcur one or more times
+
+
+\\s*
+\\s 	Match any white space character
+* 	Preceding zero or more times
+\\s* 	Match any white space character zero or more times.
+
+
+
+
+
+

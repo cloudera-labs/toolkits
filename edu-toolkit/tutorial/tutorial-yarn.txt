@@ -1,0 +1,43 @@
+# Display syntax and help
+yarn
+yarn -help
+yarn application
+
+# Submitting jobs
+yarn jar <Jar_File>  <mainClass> <inputpath> <outputpath> [args]
+yarn jar wordcount.jar lan.cloudmart.WordCount /data/book output
+yarn jar wordcount.jar lan.cloudmart.WordCount /data/book output -D mapreduce.jobs.queuename=Eng
+
+# Running YARN examples
+YARN=$HADOOP_HOME/share/yarn/
+yarn jar $YARN/hadoop-mapreduce-examples.jar 
+
+# List running jobs
+yarn application -list
+
+# Check status of job
+yarn application -status <Application_ID>
+
+# Kill running jobs
+yarn application -kill <Application_ID>
+
+# Display help for YARN logs
+yarn logs -help
+
+# View log files
+yarn logs -applicationId <Application ID>
+yarn logs -applicationId <Application ID> -log_files <log_file_type>
+yarn logs -applicationId <Application ID> -log_files stderr
+
+# List container IDs
+yarn logs -applicationId <Application ID> -show_application_log_info
+
+# View log files for one Container
+yarn logs -applicationId <Application ID> -containerId <Container ID>
+yarn logs -applicationId <Application ID> -show_container_log_info
+
+# Check Resource Manager
+yarn rmadmin -checkHealth
+
+
+

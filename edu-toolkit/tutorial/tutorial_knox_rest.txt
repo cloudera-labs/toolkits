@@ -1,0 +1,132 @@
+KNOX CLI
+bin/knoxcli.sh [--help]
+
+ADMIN URL
+https://{gateway-host}:{gateway-port}/{gateway-path}/admin/api/v1
+
+curl -iku admin:admin-password {GatewayAPI}/topologies/admin -H Accept:application/json
+
+LDAP
+The current release of Knox ships with an authentication provider based on the Apache Shiro project and is initially configured for BASIC authentication against an LDAP store. This has been specifically tested against Apache Directory Server and Active Directory.
+
+MASTER SECRET
+The master secret is required to start the server. This secret is used to access secured artifacts by the gateway instance. By default, the keystores, trust stores, and credential stores are all protected with the master secret. 
+
+The values for {gateway-host}, {gateway-port}, {gateway-path} are provided via the gateway configuration file (i.e. {GATEWAY_HOME}/conf/gateway-site.xml).
+
+The value for {cluster-name} is derived from the file name of the cluster topology descriptor (e.g. {GATEWAY_HOME}/deployments/{cluster-name}.xml).
+
+The value for {webhdfs-host}, {webhcat-host}, {oozie-host}, {hbase-host} and {hive-host} are provided via the cluster topology descriptor (e.g. {GATEWAY_HOME}/conf/topologies/{cluster-name}.xml).
+
+
+COPY IN XML FILES TO CLIENT03
+# Copy to cloudair topology
+cd conf/knox
+scp *xml client03:/tmp
+ssh client03 sudo mv /tmp/*xml /etc/knox/conf/topologies
+CM > Knox Service > Actions > Restart
+
+ON CLIENT03
+sudo curl -i -k -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/default/webhdfs/v1/?op=LISTSTATUS'
+
+LIST FILE ON REMOTE HOST
+sudo curl -i -k -u slee:BadPassW0rd!9 https://client03.cloudair.com:8443/gateway/default/webhdfs/v1/user?op=LISTSTATUS
+sudo curl -i -k -u slee:BadPassW0rd!9 https://client03.cloudair.com:8443/gateway/default/webhdfs/v1/user/slee?op=LISTSTATUS
+
+PUT FILE ON REMOTE HOST
+curl -i -k -u slee:BadPassW0rd!9 -X PUT \
+    'https://client03.cloudair.com:8443/gateway/cloudair/webhdfs/v1/tmp/LICENSE?op=CREATE'
+
+curl -i -k -u slee:BadPassW0rd!9 -T LICENSE -X PUT \
+    '{Value of Location header from response above}'
+
+GET FILE ON REMOTE HOST
+curl -i -k -u slee:BadPassW0rd!9 -X GET \
+    'https://client03.cloudair.com:8443/gateway/cloudair/webhdfs/v1/tmp/LICENSE?op=OPEN'
+
+curl -i -k -u slee:BadPassW0rd!9 -X GET \
+    '{Value of Location header from command response above}'
+
+sudo curl -i -k -u slee:BadPassW0rd!9 -X PUT 'https://client03.cloudair.com:8443/gateway/cloudair/webhdfs/v1/tmp/latin.txt?op=CREATE'
+
+sudo curl -ik -u slee:BadPassW0rd!9 https://client03.cloudair.com:8443/gateway/cloudair/webhdfs/v1/tmp/testfile.txt?op=OPEN
+
+
+REST API for YARN
+# 0. Getting cluster info
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster'
+
+# 1. Getting cluster metrics
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/metrics'
+
+To get the same information in an xml format
+
+curl -ikv -u slee:BadPassW0rd!9 -H Accept:application/xml -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/metrics'
+
+# 2. Getting scheduler information
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/scheduler'
+
+# 3. Getting all the applications listed and their information
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps'
+
+# 4. Getting applications statistics
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/appstatistics'
+
+Also query params can be used as below to filter the results
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/appstatistics?states=accepted,running,finished&applicationTypes=mapreduce'
+
+# 5. To get a specific application (please note, replace the application id with a real value)
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps/{application_id}'
+
+# 6. To get the attempts made for a particular application
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps/{application_id}/appattempts'
+
+# 7. To get information about the various nodes
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/nodes'
+
+Also to get a specific node, use an id obtained in the response from above (the node id is scrambled) and issue the following
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/nodes/{node_id}'
+
+# 8. To create a new Application
+
+curl -ikv -u slee:BadPassW0rd!9 -X POST 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps/new-application'
+
+An application id is returned from the request above and this can be used to submit an application.
+
+# 9. To submit an application, put together a request containing the application id received in the above response (please refer to Yarn REST
+API documentation).
+
+curl -ikv -u slee:BadPassW0rd!9 -T request.json -H Content-Type:application/json -X POST 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps'
+
+Here the request is saved in a file called request.json
+
+#10. To get application state
+
+curl -ikv -u slee:BadPassW0rd!9 -X GET 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps/{application_id}/state'
+
+curl -ikv -u slee:BadPassW0rd!9 -H Content-Type:application/json -X PUT -T state-killed.json 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps/application_1409008107556_0007/state'
+
+# 11. To kill an application that is running issue the below command with the application id of the application that is to be killed.
+The contents of the state-killed.json file are :
+
+{
+  "state":"KILLED"
+}
+
+
+curl -ikv -u slee:BadPassW0rd!9 -H Content-Type:application/json -X PUT -T state-killed.json 'https://client03.cloudair.com:8443/gateway/cloudair/resourcemanager/v1/cluster/apps/{application_id}/state'
+
+
+### Reaching other webui
+https://client03.cloudair.com:8443/gateway/cloudair/oozie/
+https://client03.cloudair.com:8443/gateway/cloudair/zeppelin/
