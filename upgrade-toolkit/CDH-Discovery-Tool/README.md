@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Discovery Tool is a lighweight automation package that can run against a CDH or CDP cluster to produce a "Discovery Bundle" that is useful for CDP migration planning. It uses CM/cluster APIs to gather the following data:
+This Discovery Tool is a lightweight automation package can run against a CDH or CDP cluster to produce a "Discovery Bundle" that is useful for CDP migration planning. It uses CM/cluster APIs to gather the following data:
  - Cluster specs & layout
  - Cluster configurations 
  - Data & table details 

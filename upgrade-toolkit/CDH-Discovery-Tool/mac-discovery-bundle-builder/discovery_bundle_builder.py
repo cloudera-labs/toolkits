@@ -176,7 +176,7 @@ if __name__ == '__main__':
     if module == 'all' or module == 'mapreduce_extractor':
         yarn_workloads_to_collect.append("mapreduce")
 
-    if module == 'all' or module == 'spark_extractor':
+    if module == 'spark_extractor':
         yarn_workloads_to_collect.append("spark")
 
     if module == 'all' or module == 'tez_extractor':
