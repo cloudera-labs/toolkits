@@ -70,6 +70,10 @@ if __name__ == '__main__':
                       default='all',
                       help='Select a module to be executed. Defaults to all')
 
+    parser.add_option('--collect-wxm-service-logs', action='store_true',
+                      dest='collect_wxm_service_logs', default=False,
+                      help='Collect application logs for SPARK, MAPREDUCE, TEZ, and IMPALA. Discovery Bundle size can grow significantly if the logs are included.')
+
     parser.add_option('--cm-host', action='store', type='string',
                       dest='cm_host',
                       metavar='<cm_host>',
@@ -98,7 +102,7 @@ if __name__ == '__main__':
     now = datetime.datetime.now()
     dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
 
-    module, cm_host, output_dir, time_range_in_days, sensitive_values_redacted = options.module, options.cm_host, options.output_dir, options.time_range_in_days, options.sensitive_values_redacted
+    module, cm_host, output_dir, time_range_in_days, sensitive_values_redacted, collect_wxm_service_logs = options.module, options.cm_host, options.output_dir, options.time_range_in_days, options.sensitive_values_redacted, options.collect_wxm_service_logs
 
     output_dir = output_dir + "_" + dt_string
 
@@ -124,6 +128,7 @@ if __name__ == '__main__':
     log.info("*** output-dir: %s", output_dir)
     log.info("*** time-range: %s", time_range_in_days)
     log.info("*** disable-redaction: %s", (not sensitive_values_redacted))
+    log.info("*** collect-wxm-service-logs: %s", collect_wxm_service_logs)
     log.info("*** INVOCATION PARAMETERS END   ***")
 
 
@@ -173,13 +178,13 @@ if __name__ == '__main__':
 
     yarn_workloads_to_collect = []
 
-    if module == 'all' or module == 'mapreduce_extractor':
+    if collect_wxm_service_logs:
         yarn_workloads_to_collect.append("mapreduce")
 
-    if module == 'spark_extractor':
+    if collect_wxm_service_logs:
         yarn_workloads_to_collect.append("spark")
 
-    if module == 'all' or module == 'tez_extractor':
+    if collect_wxm_service_logs:
         yarn_workloads_to_collect.append("tez")
 
     if yarn_workloads_to_collect:
@@ -193,8 +198,9 @@ if __name__ == '__main__':
         thread.join()
 
     # Following modules depend on the diagnostic bundle export
-    if module == 'all' or module == 'impala_profiles':
+    if collect_wxm_service_logs:
         impala_workload_extractor = ImpalaProfilesExtractor(output_dir)
         Thread(target=impala_workload_extractor.collect_impala_profiles, name="impala_profiles_thread").start()
 
     log.info(f"Finished discovery bundle extraction, results available at: {output_dir}")
+

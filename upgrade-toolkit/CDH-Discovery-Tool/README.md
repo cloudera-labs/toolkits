@@ -64,7 +64,7 @@ cd /tmp/toolkits/upgrade-toolkit/CDH-Discovery-Tool/
 
 **Imporant** same version of pythons should be used to resolve the dependencies on the temporary location.
 
-Download the project dependencies, **wheelhouse.tar.gz** is createad as a result
+Download the project dependencies, **wheelhouse.tar.gz** is created as a result
 ```shell
 python3.7 -m venv .venv
 source .venv/bin/activate
@@ -149,15 +149,20 @@ Available modules:
   - Communicates with the hive metastore, fetches the table information
 - sentry_extractor
   - Collects information about the sentry policies
-- mapreduce_extractor
-  - Fetches the mapreduce job history logs from hdfs. if the cluster is secured you must kinit with a hdfs superusergroup member (or a user with permission to access the mapreduce job history logs in HDFS) before executing the script. HIVE queries are collected as part of the mapreduce jobs. Results are collected in a WXM compatible format.
-- spark_extractor
-  - Fetches the spark job history logs from hdfs. if the cluster is secured you must kinit with a hdfs superusergroup member (or a user with permission to access the spark event log directory in HDFS) before executing the script. Results are collected in a WXM compatible format.
-- impala_profiles
-  - diagnostic_bundle module must be executed before it. The module collects the impala profiles from the diag bundles in a WXM compatible format
 - **all**
   - default module, executes all the modules above.
 
+To enable the service log collection for WXM use the following flag:
+
+```shell
+./discovery_bundle_builder.sh --cm-host http(s)://<cm-hostname>:<cm-port> --collect-wxm-service-logs --time-range=7 --module all --output-dir /tmp/discovery_bundle 
+```
+
+As a result the following activities will happen:
+- Fetches the mapreduce job history logs from hdfs. if the cluster is secured you must kinit with a hdfs superusergroup member (or a user with permission to access the mapreduce job history logs in HDFS) before executing the script. HIVE queries are collected as part of the mapreduce jobs. Results are collected in a WXM compatible format.
+- Fetches the spark job history logs from hdfs. if the cluster is secured you must kinit with a hdfs superusergroup member (or a user with permission to access the spark event log directory in HDFS) before executing the script. Results are collected in a WXM compatible format.
+- Fetches the spark job history logs from hdfs. if the cluster is secured you must kinit with a hdfs superusergroup member (or a user with permission to access the spark event log directory in HDFS) before executing the script. Results are collected in a WXM compatible format.
+- diagnostic_bundle module must be executed before it. The module collects the impala profiles from the diag bundles in a WXM compatible format
 
 ### Configurable parameters:
 ```shell
@@ -173,6 +178,10 @@ Options:
                         days.
   --disable-redaction   Option to disable redaction. If option not set, it
                         defaults to redacting sensitive values.
+  --collect-wxm-service-logs
+                      Collect application logs for SPARK, MAPREDUCE, TEZ,
+                      and IMPALA. Discovery Bundle size can grow
+                      significantly if the logs are included.
 ```
 
 ### About redaction
@@ -181,3 +190,4 @@ Redaction is a process that obscures data. It helps organizations to comply with
 **By default, the Discovery Bundle toolkit enables redaction**, even if your cluster configuration has not been [set up in this way](https://docs.cloudera.com/documentation/enterprise/latest/topics/cm_intro_api.html#concept_dnn_cr5_mr__section_ogy_zrd_gw). This guarantess that API calls to Cloudera Manager for configuration data do not include the sensitive information.
 
 If you prefer to switch off redaction, you can set the `--disable-redaction` parameter.
+
