@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Discovery Tool is a lighweight automation package that can run against a CDH or CDP cluster to produce a "Discovery Bundle" that is useful for CDP migration planning. It uses CM/cluster APIs to gather the following data:
+This Discovery Tool is a lightweight automation package can run against a CDH or CDP cluster to produce a "Discovery Bundle" that is useful for CDP migration planning. It uses CM/cluster APIs to gather the following data:
  - Cluster specs & layout
  - Cluster configurations 
  - Data & table details 
@@ -59,12 +59,12 @@ Login to a node with internet access, and download the project
 cd /tmp
 yum -y install git
 git clone <repo_url>
-cd /tmp/mac-cdh-discovery-bundle-builder/
+cd /tmp/toolkits/upgrade-toolkit/CDH-Discovery-Tool/
 ```
 
 **Imporant** same version of pythons should be used to resolve the dependencies on the temporary location.
 
-Download the project dependencies, **wheelhouse.tar.gz** is createad as a result
+Download the project dependencies, **wheelhouse.tar.gz** is created as a result
 ```shell
 python3.7 -m venv .venv
 source .venv/bin/activate
@@ -80,7 +80,7 @@ rsync  -Paz --exclude={'.git','.venv'}  /tmp/mac-cdh-discovery-bundle-builder <t
 
 Go to the project directory:
 ```shell
-cd /opt/mac-cdh-discovery-bundle-builder/
+cd /opt/toolkits/upgrade-toolkit/CDH-Discovery-Tool/
 ```
 
 Create a new virtual environment inside the project directory:
@@ -104,7 +104,7 @@ pip install -r requirements.txt
 - Set the Cloudera Manager credentials in [config.ini](./mac-discovery-bundle-builder/config/config.ini). 
 - Provide the path the JDBC driver for the HMS and Sentry databases. Usually it is located under **/usr/share/java/**
 ```shell
-vi /opt/mac-cdh-discovery-bundle-builder/mac-discovery-bundle-builder/config/config.ini
+vi /opt/toolkits/upgrade-toolkit/CDH-Discovery-Tool/mac-discovery-bundle-builder/config/config.ini
 
 #Edit the file
 [credentials]
@@ -128,7 +128,7 @@ export HADOOP_USER_NAME=hdfs
 Use the following command to execute the collection:
 
 ```shell
-./discovery_bundle_builder.sh --cm-host https(s)://<cm-hostname>:<cm-port> --time-range=7 --output-dir /tmp/discovery_bundle
+./discovery_bundle_builder.sh --cm-host http(s)://<cm-hostname>:<cm-port> --time-range=7 --output-dir /tmp/discovery_bundle
 ```
 
 To execute a selected module:
@@ -164,18 +164,11 @@ As a result the following activities will happen:
 - Fetches the spark job history logs from hdfs. if the cluster is secured you must kinit with a hdfs superusergroup member (or a user with permission to access the spark event log directory in HDFS) before executing the script. Results are collected in a WXM compatible format.
 - diagnostic_bundle module must be executed before it. The module collects the impala profiles from the diag bundles in a WXM compatible format
 
-
 ### Configurable parameters:
 ```shell
 Options:
   -h, --help            show this help message and exit
   --module=<module>     Select a module to be executed. Defaults to all
-  
-  --collect-wxm-service-logs
-                      Collect application logs for SPARK, MAPREDUCE, TEZ,
-                      and IMPALA. Discovery Bundle size can grow
-                      significantly if the logs are included.
-
   --cm-host=<cm_host>   Cloudera Manager host.
   --output-dir=<output_dir>
                         Output of the discovery bundle. Defaults to
@@ -185,6 +178,10 @@ Options:
                         days.
   --disable-redaction   Option to disable redaction. If option not set, it
                         defaults to redacting sensitive values.
+  --collect-wxm-service-logs
+                      Collect application logs for SPARK, MAPREDUCE, TEZ,
+                      and IMPALA. Discovery Bundle size can grow
+                      significantly if the logs are included.
 ```
 
 ### About redaction
