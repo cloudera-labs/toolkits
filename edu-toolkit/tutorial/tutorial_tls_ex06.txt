@@ -1,0 +1,13 @@
+# Tutorial TLS
+# mod08_06: Managing x509 Format
+
+3. Convert x509 format
+$ cd ~/tls/hosts
+$ openssl pkcs12 -help
+$ openssl x509 -in host.crt -outform der -out host.der
+$ openssl x509 -inform der -in host.der -out host.pem
+$ openssl pkcs12 -export -inkey host.key -in host.pem -passin pass:BadPass@1 -out host.p12 -passout pass:BadPass@1
+
+4. Import x509 format into keystore
+$ keytool -import -keystore host.jks -storepass badpassword -file host.der -alias host.der
+

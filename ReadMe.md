@@ -1,6 +1,12 @@
+# CDP Toolkits
+
+## CDP Educational Toolkit
+
+### Summary
+This toolkit consists of administrative scripts, data, ddl, notebooks, and tutorials used in classes taught by Cloudera Educational Services. This toolkit is intended for educational purposes only.
 
 
-# CDP Upgrade Toolkit
+## CDP Upgrade Toolkit
 
 ### Summary
 This toolkit can be used to migrate an existing CDH cluster to CDP. There are multiple directories each of which represent 
@@ -83,3 +89,10 @@ Please see the ReadMe in the CDP Smoke Test directory for more information.
 This script should be run prior to a Data Services Installation to verify that all nodes have the necessary packages and utilities installed.
 
 Please see the ReadMe in the data_services-toolkit directory for more information.
+
+
+### CDH-Discovery-Tool
+This Discovery Tool is a lightweight automation package can run against a CDH or CDP cluster to produce a "Discovery Bundle" that is useful for CDP migration planning.
+
+Please see the ReadMe in the CDH-Discovery-Tool directory for more information.
+

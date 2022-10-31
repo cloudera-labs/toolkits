@@ -1,0 +1,40 @@
+# Tutorial TLS
+# mod08_ex05: Creating Host Keystore
+
+3. Create the host keystore
+$ cd ~/tls/hosts
+$ keytool -genkey -keyalg RSA -keystore host.jks -storepass BadPass@1 -keypass BadPass@1 -alias host.key -validity 365
+First and Last Name: Prim Rose
+Unit: Edu
+Organization: Cloudride
+City: Santa Clara
+State: CA
+Country: US
+
+4. Export the key
+$ keytool -importkeystore -srckeystore host.jks -srcalias host.key -srcstorepass BadPass@1 -deststoretype PKCS12 -destkeystore host.p12 -deststorepass BadPass@1
+$ openssl pkcs12 -nocerts -nodes -in host.p12 -password pass:BadPass@1 -out host.key
+
+5. Create a signing request
+$ keytool -certreq -keyalg RSA -keystore host.jks -storepass BadPass@1 -keypass BadPass@1 -alias host.key -file host.csr
+$ cp host.csr ~/tls/cm/host.csr
+
+6. Sign the request
+$ cd ~/tls/cm
+$ openssl x509 -req -CAkey cm.key -CA cm.crt -in host.csr -out host.crt -days 365 -CAcreateserial
+$ cp host.crt ~/tls/host/host.crt
+
+7. Import the signed request
+$ cd ~/tls/hosts
+$ keytool -importcert -keystore host.jks -storepass BadPass@1 -keypass BadPass@1 -alias host.crt -file host.crt 
+
+8. Verify the cert
+% keytool -list -v -keystore host.jks  -storepass BadPass@1 | less
+
+9. Manage the keystore
+$ keytool -storepasswd -keystore host.jks -storepass BadPass@1 -new badpassword
+$ keytool -keypasswd -keystore host.jks -storepass badpassword -keypass BadPass@1 -alias host.key -new badpassword
+$ keytool -changealias -keystore host.jks -storepass badpassword -alias host.key -destalias badalias
+$ keytool -delete -keystore host.jks -storepass badpassword -alias badalias
+$ keytool -list -v -keystore host.jks  -storepass <password> | less
+ 

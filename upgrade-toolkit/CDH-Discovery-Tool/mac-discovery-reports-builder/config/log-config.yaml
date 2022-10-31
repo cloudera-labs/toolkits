@@ -1,0 +1,26 @@
+version: 1
+disable_existing_loggers: true
+formatters:
+  simple:
+    format: '%(levelname)s - %(threadName)s - %(module)s - %(asctime)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+  file:
+    class: logging.FileHandler
+    formatter: simple
+    level: DEBUG
+    filename: logs/mac-discovery-reports-builder.log
+    mode: w
+loggers:
+  main:
+    level: DEBUG
+    handlers: [console,file]
+    propagate: no
+root:
+    level: DEBUG
+    handlers: [console,file]
+    propagate: no
