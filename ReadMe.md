@@ -5,7 +5,6 @@
 ### Summary
 This toolkit consists of administrative scripts, data, ddl, notebooks, and tutorials used in classes taught by Cloudera Educational Services. This toolkit is intended for educational purposes only.
 
-
 ## CDP Upgrade Toolkit
 
 ### Summary
