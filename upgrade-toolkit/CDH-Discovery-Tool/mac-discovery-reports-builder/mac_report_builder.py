@@ -75,7 +75,7 @@ class MacReportBuilder:
                         dist_report["disk_available"] = dist_report["disk_available"] + int(
                             matched.group(4)) / math.pow(1024, 2)
         except EnvironmentError:
-            log.error(f"Unable to open file, exception happened: {disk_report_path}")
+            log.debug(f"Unable to open file, exception happened: {disk_report_path}")
         return dist_report
 
     def __create_cpu_report(self, hostname):
@@ -88,7 +88,7 @@ class MacReportBuilder:
                     if bool(matched):
                         cpu_report["cpu_mac_MHz"] = matched.group(2)
         except EnvironmentError:
-            log.error(f"Unable to open file, exception happened: {cpu_report_path}")
+            log.debug(f"Unable to open file, exception happened: {cpu_report_path}")
         return cpu_report
 
     def __create_java_report(self, hostname):
@@ -101,7 +101,7 @@ class MacReportBuilder:
                     if bool(matched):
                         java_version['java_version'] = matched.group(2)
         except EnvironmentError:
-            log.error(f"Unable to open file, exception happened: {cpu_report_path}")
+            log.debug(f"Unable to open file, exception happened: {cpu_report_path}")
         return java_version
 
     def __create_os_report(self, hostname):
@@ -121,7 +121,7 @@ class MacReportBuilder:
                     if bool(matched):
                         os_report["release"] = matched.group(2)
         except EnvironmentError:
-            log.error(f"Unable to open file, exception happened: {os_report_path}")
+            log.debug(f"Unable to open file, exception happened: {os_report_path}")
         return os_report
 
     def create_node_report(self):
@@ -142,7 +142,7 @@ class MacReportBuilder:
 
             self.workbook['Nodes'].append([
                 host.hostname,
-                host.cluster_ref.cluster_name,
+                "Not PRESENT" if host.cluster_ref is None else host.cluster_ref.cluster_name,
                 os_report['os_description'],
                 java_report['java_version'],
                 host.num_cores,
@@ -244,13 +244,16 @@ class MacReportBuilder:
             list_of_workload_metrics = timeseries_resource.items[0].time_series
             for metric in list_of_workload_metrics:
                 for data in metric.data:
-                    ws.cell(row=row, column=1).value = workload_metric.parent.name
-                    ws.cell(row=row, column=2).value = metric.metadata.metric_name
-                    ws.cell(row=row, column=3).value = datetime.datetime.strptime(
-                        parser.parse(data.timestamp[:-1]).isoformat(), "%Y-%m-%dT%H:%M:%S.%f")
-                    ws.cell(row=row, column=4).value = data.value
-                    ws.cell(row=row, column=5).value = metric.metadata.unit_numerators[0]
-                    row += 1
+                    try:
+                        ws.cell(row=row, column=1).value = workload_metric.parent.name
+                        ws.cell(row=row, column=2).value = metric.metadata.metric_name
+                        ws.cell(row=row, column=3).value = datetime.datetime.strptime(
+                            parser.parse(data.timestamp[:-1]).isoformat(), "%Y-%m-%dT%H:%M:%S.%f")
+                        ws.cell(row=row, column=4).value = data.value
+                        ws.cell(row=row, column=5).value = metric.metadata.unit_numerators[0]
+                        row += 1
+                    except Exception:
+                        log.warning(f"Unable to add metric: {data}")
         log.debug("Service Metrics report building has been finished.")
 
     def create_service_report(self):
@@ -360,7 +363,7 @@ class MacReportBuilder:
 
     def create_cluster_report(self):
         for cluster in self.deployment.clusters:
-            cluster_hosts = list(filter(lambda host: host.cluster_ref.cluster_name == cluster.name, self.hosts.items))
+            cluster_hosts = list(filter(lambda host: ("Not PRESENT" if host.cluster_ref is None else host.cluster_ref.cluster_name) == cluster.name, self.hosts.items))
             hms_report_map = self.__fetch_latest_hms_deployment_info(cluster.display_name)
             host_assignments, role_types = self.__create_role_assignment_map(cluster)
             hdfs_data = self.__get_latest_hdfs_map(cluster.display_name)
