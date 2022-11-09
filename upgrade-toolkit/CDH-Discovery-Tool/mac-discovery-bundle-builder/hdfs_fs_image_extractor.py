@@ -59,6 +59,7 @@ class HdfsFsImageExtractor:
             run_cmd(
                 ['hdfs', 'oiv', '-p', 'Delimited', '-delimiter', '","', '-i',
                  fs_image_path, '-o', hdfs_fs_csv_path])
+	    os.remove(fs_image_path)
             return hdfs_fs_csv_path
         else:
             log.error("No local FSImage copy could be created due to previous error - skipping CSV conversion!")
