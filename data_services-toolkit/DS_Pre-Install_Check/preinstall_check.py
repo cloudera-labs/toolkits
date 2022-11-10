@@ -20,6 +20,7 @@ from socket import gaierror
 import subprocess
 import re
 import logging
+import yaml
 
 # Install via Pip3
 import requests
@@ -102,7 +103,8 @@ class CmHandler:
 
 
 class CompatibilityChecker:
-    def __init__(self, cm_handler=None, report_handler=None, ecs_hosts=None, ecs_db_host=None, debug=False):
+    def __init__(self, cm_handler=None, report_handler=None, ecs_hosts=None, ecs_db_host=None, debug=False,
+                 ssh_user=None, ssh_key=None, ssh_disable_strict=False):
         # static values
         self.supported_postgres_versions = ["10", "11", "12", "14"]
         self.supported_mysql_versions = ["8.0", "5.7", "5.6"]
@@ -127,7 +129,7 @@ class CompatibilityChecker:
             "CentOS Linux release 7.6.1810 (Core)"
         ]
         self.oracle_java_versions = ["1.8"]
-        self.open_jdk_versions = ["1.8", "11"]
+        self.open_jdk_versions = ["1.8", "11.0"]
         self.ssh_errors = [
             'Could not resolve hostname',
             'Permission denied'
@@ -143,8 +145,13 @@ class CompatibilityChecker:
         self.ecs_db_host = ecs_db_host
         self.cm = cm_handler
         self.report = report_handler
+        self.ssh_key = ssh_key
+        self.ssh_user = ssh_user
+        self.ssh_host_key_checks_disable = ssh_disable_strict
 
         # Init shared info
+        self.ssh_cmd = None
+        self.scp_cmd = None
         self.cm_db_host = None
         self.hosts_info = None
         self.clusters = None
@@ -156,6 +163,8 @@ class CompatibilityChecker:
         self.report.add_row('tls', 'Hostname', ['SSL Parameter Name', 'SSL Enabled?'], value_format='header')
         self.report.add_row('kerb', 'Name of Service', ['Kerberos Parameter Name', 'Kerberos Parameter Value'],
                             value_format='header')
+        # Init Connectivity Controls
+        self.init_connectivity()
 
         # Fetch hosts list from CM, if connected
         if self.cm:
@@ -184,13 +193,25 @@ class CompatibilityChecker:
             self.check_java_version()
 
         # Run ECS checks
-        if self.ecs_hosts:
+        if self.ecs_hosts is not None:
             self.run_ecs_host_checks()
-        if self.ecs_db_host:
+        if self.ecs_db_host is not None:
             self.check_postgres_encryption(self.ecs_db_host)
 
         # Close report
         self.finalise_report()
+
+    def init_connectivity(self):
+        self.ssh_cmd = 'ssh'
+        if self.ssh_key is not None:
+            self.ssh_cmd += '-i ' + os.path.expanduser(self.ssh_key)
+        if self.ssh_host_key_checks_disable:
+            self.ssh_cmd += ' -o StrictHostKeyChecking=no'
+        if self.ssh_user is not None:
+            self.ssh_cmd += ' ' + self.ssh_user
+
+
+        self.scp_cmd = 'scp'
 
     def run_ecs_host_checks(self):
         ecs_checks = [
@@ -245,9 +266,9 @@ class CompatibilityChecker:
         # Avoiding additional dependency of Paramiko, but it means we need to handle our own SSH errors
         if self.hosts_info is not None:
             for k in self.hosts_info.items:
-                result = subprocess.getoutput("ssh %s 'sudo tail -1 /var/log/messages'" % k.hostname)
+                result = subprocess.getoutput("%s %s 'sudo tail -1 /var/log/messages'" % (self.ssh_cmd, k.hostname))
                 if any(x in result for x in self.ssh_errors):
-                    logging.error("Passwordlss SSH with sudo not working for {0}, response was {1}"
+                    logging.error("Passwordless SSH with sudo not working for {0}, response was {1}"
                                   .format(k.hostname, result))
                     raise(ConnectionError("SSH test for %s failed with %s" % (k.hostname, result)))
                 else:
@@ -256,7 +277,7 @@ class CompatibilityChecker:
 
         if self.ecs_hosts is not None:
             for k in self.ecs_hosts:
-                result = subprocess.getoutput("ssh %s 'sudo tail -1 /var/log/messages'" % k)
+                result = subprocess.getoutput("%s %s 'sudo tail -1 /var/log/messages'" % (self.ssh_cmd, k))
                 if 'Permission denied' in result:
                     logging.error("Passwordlss SSH with sudo not working for {0}, response was {1}"
                                   .format(k, result))
@@ -345,7 +366,7 @@ class CompatibilityChecker:
             display_name = self.clusters[cluster_name]['display_name']
             # Process TLS Result
             r2 = self.cm.get_uri('clusters/{0}/isTlsEnabled'.format(quote_url(display_name)))
-            response = r2.text if r2.ok else r2.status_code
+            response = 'Yes' if r2.ok else r2.status_code
             self.report.add_row('summary', "{0} is TLS Secured".format(display_name), [response, ])
 
             # Process Kerberos Result
@@ -376,7 +397,7 @@ class CompatibilityChecker:
                 for k in self.hosts_info.items:
                     for l in k.role_refs:
                         if self.hue_services[i][j] in l.role_name and i in l.role_name:
-                            installed_python_version = subprocess.getoutput("ssh %s 'python -V'" % k.hostname)
+                            installed_python_version = subprocess.getoutput("%s %s 'python -V'" % (self.ssh_cmd, k.hostname))
                             python_result = any(
                                 installed_python_version in string for string in self.python_hue_version
                             )
@@ -557,7 +578,7 @@ class CompatibilityChecker:
     def check_os_version(self):
         linux_version_result_aggregate = []
         for k in self.hosts_info.items:
-            installed_os_version = subprocess.getoutput("ssh %s 'cat /etc/redhat-release'" % k.hostname)
+            installed_os_version = subprocess.getoutput("%s %s 'cat /etc/redhat-release'" % (self.ssh_cmd, k.hostname))
             os_result = any(installed_os_version in string for string in self.rhel_versions) or any(
                 installed_os_version in string for string in self.centos_versions)
             if not os_result:
@@ -577,7 +598,7 @@ class CompatibilityChecker:
         for k in self.hosts_info.items:
             # Check if there is enough space on parcel directory to accommodate CDP Parcel
             parcel_space = subprocess.getoutput(
-                "ssh %s df -h /opt/cloudera/parcels | awk \'{print $4}\' | egrep \"G\" | sed \"s/G//\"" % k.hostname)
+                "%s %s df -h /opt/cloudera/parcels | awk \'{print $4}\' | egrep \"G\" | sed \"s/G//\"" % (self.ssh_cmd, k.hostname))
             parcel_space = int(parcel_space)
             if parcel_space < 20:
                 self.report.add_row('vers', k.hostname, ["20GB not free on /opt/cloudera/parcels dir"])
@@ -598,13 +619,13 @@ class CompatibilityChecker:
         for k in self.hosts_info.items:
             # Check Java Version
             installed_java_version = subprocess.getoutput(
-                "ssh %s java -version 2>&1 | grep \"version\" 2>&1 | awk -F\\\" '{ split($2,a,\".\"); print a[1]\".\"a[2]}'" % k.hostname)
+                "%s %s java -version 2>&1 | grep \"version\" 2>&1 | awk -F\\\" '{ split($2,a,\".\"); print a[1]\".\"a[2]}'" % (self.ssh_cmd, k.hostname))
             java_result = any(installed_java_version in string for string in self.oracle_java_versions) or any(
                 installed_java_version in string for string in self.open_jdk_versions)
 
             # If version is unsupported, add the hostname and java version that is not supported to the spreadsheet
             if not java_result:
-                full_java_ver_info = subprocess.getoutput("ssh %s 'java -version'" % k.hostname)
+                full_java_ver_info = subprocess.getoutput("%s %s 'java -version'" % (self.ssh_cmd, k.hostname))
                 self.report.add_row('vers', k.hostname, [full_java_ver_info])
                 java_version_result_aggregate.append(str(java_result))
             else:
@@ -619,9 +640,9 @@ class CompatibilityChecker:
                 'summary', "All base cluster nodes are running the supported version of Java", ['No'])
 
     def check_iptables(self, host: str):
-        os.system("scp virgin_iptable.txt %s:/tmp/" % host)
-        os.system("scp iptable_check.sh %s:/tmp/" % host)
-        iptable_check = subprocess.getoutput("ssh %s 'sh /tmp/iptable_check.sh'" % host)
+        os.system("%s virgin_iptable.txt %s:/tmp/" % (self.scp_cmd, host))
+        os.system("%s iptable_check.sh %s:/tmp/" % (self.scp_cmd, host))
+        iptable_check = subprocess.getoutput("%s %s 'sh /tmp/iptable_check.sh'" % (self.ssh_cmd, host))
         if "clean iptables" in iptable_check:
             return True
         else:
@@ -629,8 +650,8 @@ class CompatibilityChecker:
             return False
 
     def check_scsi(self, host: str):
-        os.system("scp scsi_check.sh %s:/tmp/" % host)
-        scsi_check = subprocess.getoutput("ssh %s 'sh /tmp/scsi_check.sh'" % host)
+        os.system("%s scsi_check.sh %s:/tmp/" % (self.scp_cmd, host))
+        scsi_check = subprocess.getoutput("%s %s 'sh /tmp/scsi_check.sh'" % (self.ssh_cmd, host))
         if "all devices are scsi" in scsi_check:
             return True
         else:
@@ -638,8 +659,8 @@ class CompatibilityChecker:
             return False
 
     def check_ftype(self, host: str):
-        os.system("scp ftype.sh %s:/tmp/" % host)
-        ftype_check = subprocess.getoutput("ssh %s 'sh /tmp/ftype.sh'" % host)
+        os.system("%s ftype.sh %s:/tmp/" % (self.scp_cmd, host))
+        ftype_check = subprocess.getoutput("%s %s 'sh /tmp/ftype.sh'" % (self.ssh_cmd, host))
         if "ftype=1" == ftype_check:
             return True
         else:
@@ -647,7 +668,7 @@ class CompatibilityChecker:
             return False
 
     def check_firewalld(self, host: str):
-        firewalld_output = subprocess.getoutput("ssh %s 'systemctl status firewalld.service | grep Active'" % host)
+        firewalld_output = subprocess.getoutput("%s %s 'systemctl status firewalld.service | grep Active'" % (self.ssh_cmd, host))
         if "inactive" in firewalld_output or "Unit firewalld.service could not be found." in firewalld_output:
             return True
         else:
@@ -655,8 +676,8 @@ class CompatibilityChecker:
             return False
 
     def check_time_svcs(self, host: str):
-        chronyd_output = subprocess.getoutput("ssh %s 'systemctl status chronyd.service | grep Active'" % host)
-        ntpd_output = subprocess.getoutput("ssh %s 'systemctl status ntpd.service | grep Active'" % host)
+        chronyd_output = subprocess.getoutput("%s %s 'systemctl status chronyd.service | grep Active'" % (self.ssh_cmd, host))
+        ntpd_output = subprocess.getoutput("%s %s 'systemctl status ntpd.service | grep Active'" % (self.ssh_cmd, host))
         if "running" in chronyd_output or "running" in ntpd_output:
             return True
         else:
@@ -664,7 +685,7 @@ class CompatibilityChecker:
             return False
 
     def check_swappiness(self, host: str):
-        vm_output = subprocess.getoutput("ssh %s 'cat /etc/sysctl.conf | grep vm.swappiness'" % host)
+        vm_output = subprocess.getoutput("%s %s 'cat /etc/sysctl.conf | grep vm.swappiness'" % (self.ssh_cmd, host))
         if "1" in vm_output:
             return True
         else:
@@ -672,7 +693,7 @@ class CompatibilityChecker:
             return False
 
     def check_nfs_utils(self, host: str):
-        nfs_output = subprocess.getoutput("ssh %s 'rpm -qa | grep nfs-utils'" % host)
+        nfs_output = subprocess.getoutput("%s %s 'rpm -qa | grep nfs-utils'" % (self.ssh_cmd, host))
         if "nfs-utils" in nfs_output:
             return True
         else:
@@ -680,7 +701,7 @@ class CompatibilityChecker:
             return False
 
     def check_se_linux(self, host: str):
-        se_output = subprocess.getoutput("ssh %s 'sestatus'" % host)
+        se_output = subprocess.getoutput("%s %s 'sestatus'" % (self.ssh_cmd, host))
         if "disabled" in se_output or "permissive" in se_output or "bash: sestatus: command not found" in se_output:
             return True
         else:
@@ -697,7 +718,7 @@ class CompatibilityChecker:
 
     def check_postgres_encryption(self, host: str):
         encryption_result = subprocess.getoutput(
-            "ssh %s \'cat /var/lib/pgsql/10/data/postgresql.conf | grep \"ssl =\"\'" % host)
+            "%s %s \'cat /var/lib/pgsql/10/data/postgresql.conf | grep \"ssl =\"\'" % (self.ssh_cmd, host))
         if encryption_result in "ssl = on":
             self.report.add_row('summary', "The ECS Cluster Postgres DB is Encrypted", ['Yes'])
         else:
@@ -705,22 +726,21 @@ class CompatibilityChecker:
 
 
 def main():
+    with open('config.yml', 'r') as config_s:
+        try:
+            config = yaml.safe_load(config_s)
+        except yaml.YAMLError as e:
+            raise e
+
     CompatibilityChecker(
         cm_handler=CmHandler(
-            host='demo1-base-ms01.cloudera.com',
-            username='changeme',
-            password='changeme'
+            host=config['cm']['host'],
+            username=config['cm']['username'],
+            password=config['cm']['password']
         ),
-        ecs_hosts=[
-            'demo1-ecs-ws01.cloudera.com',
-            'demo1-ecs-ws02.cloudera.com',
-            'demo1-ecs-ws03.cloudera.com',
-            'demo1-ecs-ws04.cloudera.com',
-            'demo1-ecs-ws05.cloudera.com',
-            'demo1-ecs-ws06.cloudera.com'
-        ],
-        ecs_db_host=None,
-        debug=True
+        ecs_hosts=config['ecs']['hosts'],
+        ecs_db_host=config['ecs']['db_host'],
+        debug=config['debug'] if 'debug' in config else False
     ).main_process()
 
 

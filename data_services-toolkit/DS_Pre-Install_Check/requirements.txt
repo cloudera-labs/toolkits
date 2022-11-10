@@ -1,0 +1,4 @@
+requests
+cm_client
+xlsxwriter
+pyyaml

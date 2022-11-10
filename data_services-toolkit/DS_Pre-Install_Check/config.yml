@@ -1,0 +1,14 @@
+# Change all these values as required
+cm:
+  host: cm0.lab.local
+  username: admin
+  password: MySecretPassword1!
+
+ecs:
+  hosts:
+    - ecs0.lab.local
+    - ecs1.lab.local
+    - ecs2.lab.local
+  db_host:
+
+debug: True
