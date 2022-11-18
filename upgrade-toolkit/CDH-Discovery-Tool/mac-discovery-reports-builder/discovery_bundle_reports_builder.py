@@ -50,6 +50,12 @@ if __name__ == '__main__':
                       metavar='<report-depth>',
                       default=3,
                       help='Directory level depth to aggregate the statistics. If ')
+
+    parser.add_option('--compute-hdfs-structure', action='store_true',
+                      dest='compute_hdfs_structure', default=False,
+                      metavar='<compute_hdfs_structure>',
+                      help='Computes HDFS structure, it may take a long time.')
+
     #parser.add_option("--wxm-upload",
     #                  action="store_true", dest="wxm_upload", default=False,
     #                  help="Use this flag to upload the tarballs to WXM")
@@ -73,6 +79,7 @@ if __name__ == '__main__':
     log.info("*** discovery-bundle-path: %s", options.input_path)
     log.info("*** reports-path: %s", options.output_path)
     log.info("*** hdfs-report-depth: %s", options.hdfs_report_depth)
+    log.info("*** compute-hdfs-structure: %s", options.compute_hdfs_structure)
     #log.info("*** wxm-upload: %s", options.wxm_upload)
     log.info("*** INVOCATION PARAMETERS END   ***")
 
@@ -88,13 +95,14 @@ if __name__ == '__main__':
         Thread(target=mac_reports_builder.create_workload_metrics_report, name="workload_report_builder_thread"),
         Thread(target=mac_reports_builder.create_configuration_report, name="config_report_builder_thread"),
         Thread(target=mac_reports_builder.create_hive_metastore_report, name="hms_report_builder_thread"),
-        Thread(target=mac_reports_builder.create_hdfs_report, name="hdfs_report_builder_thread",
-               args=(options.hdfs_report_depth,)),
         Thread(target=mac_reports_builder.create_sentry_policies_report,
                name="sentry_policies_report_builder_thread"),
         Thread(target=mac_reports_builder.create_cluster_report, name="cluster_builder_thread"),
         Thread(target=mac_reports_builder.create_cm_report, name="create_cm_report")
     ]
+    if options.compute_hdfs_structure:
+        threads.append(Thread(target=mac_reports_builder.create_hdfs_report, name="hdfs_report_builder_thread",
+                              args=(options.hdfs_report_depth,)))
 
     # if options.wxm_upload:
     #    threads.append(Thread(target=WxmUploader(options.input_path, wb).upload_workloads, name="wxm_uploader_thread"))
