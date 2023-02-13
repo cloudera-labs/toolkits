@@ -19,7 +19,7 @@ SELECT * FROM my_table WHERE column = '${hiveconf:test_var}';
 If you would like to also scan your properties file the file must have the extension .properties i.e. hive.properties
 
 ## Requirements:
-* python3 must be installed
+* python3 must be installed (any version is fine)
 * Provide the path to hql files
 * Install the required packages
 
