@@ -1,7 +1,7 @@
 # Hive Code Scanner
 
 Utilize this code scanner to scan hql files and property files to assess changes that need to be made after upgrade to CDP which utilizes Hive 3
-The first file will contain the recommendations for converting your HQL files to be compatible with Hive 3. The second file will contain the table operations such as create, alter and drop with the line number, database and table names that need to be modified with backticks.
+
 
 ## Limitations
 
