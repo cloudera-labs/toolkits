@@ -23,7 +23,6 @@ input_hql_dir = 'test_hqls/'
 result_output_dir = 'output/'
 hive3_cnvsn_fn=result_output_dir+'hive3_conversion_recommendations.csv'
 
-
 hql_files = []
 
 if __name__ == '__main__':
