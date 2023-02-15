@@ -32,7 +32,7 @@ The CDP Upgrade toolkit is offered as a free utility from Cloudera, is open sour
 > 2. Cloudera Version Information
 
 #### A sheet will be created for every cluster that is managed within the CM env specified that contains:
-> 1. Service Type
+> 1. Service Type 
 > 2. Service Name
 
 Please see the ReadME in the CDH Cluster Inventory directory for more information
