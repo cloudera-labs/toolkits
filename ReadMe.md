@@ -17,12 +17,13 @@ The CDP Upgrade toolkit is offered as a free utility from Cloudera, is open sour
 ### CDP Upgrade Flow
  1. CDH Cluster Inventory  
  2. CDP Version Check
- 3. Backup Playbooks
- 4. CDP Upgrade 
- 5. Rollback (if necessary) 
- 6. CDP Upgrade 
- 7. CDP Configuration Push 
- 8. CDP Smoke Test 
+ 3. Hive Code Scanner   
+ 4. Backup Playbooks
+ 5. CDP Upgrade 
+ 6. Rollback (if necessary) 
+ 7. CDP Upgrade 
+ 8. CDP Configuration Push 
+ 9. CDP Smoke Test 
 
 ### CDH Cluster Inventory
 
@@ -31,7 +32,7 @@ The CDP Upgrade toolkit is offered as a free utility from Cloudera, is open sour
 > 2. Cloudera Version Information
 
 #### A sheet will be created for every cluster that is managed within the CM env specified that contains:
-> 1. Service Type
+> 1. Service Type 
 > 2. Service Name
 
 Please see the ReadME in the CDH Cluster Inventory directory for more information
@@ -44,6 +45,11 @@ This script should be run prior to the CDP Upgrade to determine if the versions 
 >2. Incompatible Versions Error Log 
 
 Please see the ReadME in the CDP Version Check directory for more information.
+
+# Hive Code Scanner
+
+Utilize this code scanner to scan hql files and property files to assess changes that need to be made after upgrade to CDP which utilizes Hive 3
+
 
 ### Ansible Hostfile Generation
 

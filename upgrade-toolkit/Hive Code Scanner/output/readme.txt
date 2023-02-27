@@ -1,0 +1,1 @@
+This directory is here to contain output of recommendations or potential pre-parsed hql files. 
