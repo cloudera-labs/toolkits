@@ -1,0 +1,89 @@
+---
+- name: Configure Auto-TLS
+  block:
+    - name: Remove previous files
+      file:
+        path: /usr/java/default/jre/lib/security/{{ item }}
+        state: absent
+      loop:
+        - jssecacerts
+        - jssecacerts.p12
+        - jssecacerts.pem
+
+    - name: Copy the cacerts file to jssecacerts
+      shell: |
+        cp /usr/java/default/jre/lib/security/cacerts /usr/java/default/jre/lib/security/jssecacerts
+
+    - name: Change the password on the jssecacerts file
+      shell: |
+        /usr/java/jdk1.8.0_232-cloudera/bin/keytool -storepasswd -keystore /usr/java/default/jre/lib/security/jssecacerts -storepass changeit -new BadPass@1
+
+    - name: Export from the jssecacerts keystore to the pkcs12 format
+      shell: |
+        /usr/java/jdk1.8.0_232-cloudera/bin/keytool -importkeystore \
+          -srckeystore /usr/java/default/jre/lib/security/jssecacerts \
+          -srcstorepass BadPass@1 \
+          -deststoretype PKCS12 \
+          -destkeystore /usr/java/default/jre/lib/security/jssecacerts.p12 \
+          -deststorepass BadPass@1
+
+    - name: Convert the pkcs12 format to the pem format.
+      shell: |
+        /usr/bin/openssl pkcs12 -in /usr/java/default/jre/lib/security/jssecacerts.p12 \
+          -passin pass:BadPass@1 \
+          -out /usr/java/default/jre/lib/security/jssecacerts.pem
+
+    - name: Pick the template
+      set_fact:
+        autotls_template_json: "{{ lookup('template', 'auto-tls.j2', convert_data=False) }}"
+
+    - name: Enable Auto-TLS
+      cm_api:
+        endpoint: "/cm/commands/generateCmca"
+        method: POST
+        body: "{{ autotls_template_json|to_json }}"
+        timeout: 360
+      register: _autotls_result
+
+    - name: debug previous command result
+      debug:
+        msg: "{{ _autotls_result.json.resultMessage }}"
+      when: _autotls_result.json.success
+
+    - name: restart cloudera-scm-server
+      service:
+        name: cloudera-scm-server
+        state: restarted
+
+    - name: wait cloudera-scm-server
+      wait_for:
+        host: localhost
+        port: 7183
+        delay: 5
+        state: started
+        timeout: 300
+
+    - name: Restart Cloudera Management Services
+      include_role:
+        name: operations/restart_cms
+
+    - name: Remove previous CA Certs files
+      shell: |
+        rm -rf /etc/pki/ca-trust/source/anchors/cm-auto-*
+        update-ca-trust extract
+
+    - name: Copy CM CA cacerts files to the host ca-trust and update CA Certs
+      shell: |
+        cp /var/lib/cloudera-scm-agent/agent-cert/cm-auto-global_cacerts.pem /etc/pki/ca-trust/source/anchors/
+        update-ca-trust extract
+
+    - name: Clear Firefox cache files and Cookies
+      shell: |
+        pkill -9 firefox
+        rm -rf /home/training/.cache/mozilla/firefox/*
+        rm -rf /home/training/.mozilla/firefox/*default/*.sqlite 
+#        rm -rf /home/training/.mozilla/firefox/*default/cookies.sqlite 
+
+# If you use Google Chrome, run the following commands to delete the browser’s cache.
+# rm ~/.config/google-chrome/Default/ 
+# rm ~/.cache/google-chrome 

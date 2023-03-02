@@ -1,0 +1,54 @@
+---
+- name: Apply Lab Advancing steps
+  hosts: cloudera_manager
+  become: yes
+  tasks:
+    - name: Apply After Cluster deployment Configs
+      block:
+        - name: External PAM  
+          include_role:
+            name: configuration/ldapconfigs
+
+        - name: Manage Ranger
+          include_role:
+            name: configuration/ranger
+          when: "security | default(false) and sdx == 'yes' | default('no')"
+
+        - name: Restart CMS
+          include_role:
+            name: operations/restart_cms
+
+- name: Apply Lab Advancing steps
+  hosts: edge
+  become: yes
+  tasks:
+    - name: Config Zeppelin
+      block:
+        - name: 
+          include_role:
+            name: configuration/zeppelin
+
+
+#    - name: CM TLS Config
+#      block:
+#        - name: Auto-TLS
+#          include_role:
+#            name: configuration/autotls 
+
+#    - name: Configure Kerberos
+#      block:
+#        - name: KRB
+#            name: configuration/kerberos
+
+
+
+#- name: Apply Lab Advancing steps
+#  hosts: cmhost
+#  become: yes
+#  tasks:
+#    - name: Config Ranger
+#      block:
+#        - name:
+#          include_role:
+#            name: configuration/ranger
+##

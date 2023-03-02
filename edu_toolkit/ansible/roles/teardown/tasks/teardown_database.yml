@@ -1,0 +1,47 @@
+---
+   - name: Create .my.cnf file for root user
+     copy:
+       dest: "/root/.my.cnf"
+       content: |
+         [client]
+         user=root
+         password=BadPass@1
+    
+   - name: Restart mysqld service
+     service:
+       name: mariadb
+       state: restarted
+
+
+   - name: Drop users
+     mysql_user:
+       name: "{{ item }}"
+       host_all: yes
+       state: absent
+     with_items:
+       - scm
+       - rman
+       - amon
+       - hive
+       - hue
+       - oozie
+       - schemaregistry
+       - smm
+       - rangeradmin
+       - rangerkms
+
+   - name: Drop configured Databases
+     mysql_db:
+       name:
+         - scm
+         - amon
+         - rman
+         - metastore
+         - hue
+         - oozie
+         - schemaregistry
+         - smm
+         - ranger
+         - rangerkms
+       state: absent
+

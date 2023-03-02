@@ -1,0 +1,5 @@
+#!/usr/bin/expect
+spawn mail
+sleep 3
+expect "&" { send "q\r"}
+sleep 4

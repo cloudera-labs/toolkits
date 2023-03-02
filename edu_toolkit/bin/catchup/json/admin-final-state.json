@@ -1,0 +1,449 @@
+{
+  "cdhVersion" : "5.15.2",
+  "displayName" : "Cluster 1",
+  "cmVersion" : "5.15.2",
+  "repositories" : [ "https://archive.cloudera.com/cdh5/parcels/{latest_supported}/", "https://archive.cloudera.com/cdh4/parcels/latest/", "https://archive.cloudera.com/impala/parcels/latest/", "https://archive.cloudera.com/search/parcels/latest/", "https://archive.cloudera.com/accumulo/parcels/1.4/", "https://archive.cloudera.com/accumulo-c5/parcels/latest/", "https://archive.cloudera.com/kafka/parcels/latest/", "https://archive.cloudera.com/navigator-keytrustee5/parcels/latest/", "https://archive.cloudera.com/spark/parcels/latest/", "https://archive.cloudera.com/sqoop-connectors/parcels/latest/", "http://archive.cloudera.com/spark2/parcels/2.3.0.cloudera4/", "http://archive.cloudera.com/kudu/parcels/latest/" ],
+  "products" : [ {
+    "version" : "3.0.0-1.3.0.0.p0.40",
+    "product" : "KAFKA"
+  }, {
+    "version" : "5.15.2-1.cdh5.15.2.p0.3",
+    "product" : "CDH"
+  }, {
+    "version" : "2.3.0.cloudera4-1.cdh5.13.3.p0.611179",
+    "product" : "SPARK2"
+  }, {
+    "version" : "4.3.1",
+    "product" : "Anaconda"
+  } ],
+  "services" : [ {
+    "refName" : "hive",
+    "serviceType" : "HIVE",
+    "serviceConfigs" : [ {
+      "name" : "hive_metastore_database_user",
+      "variable" : "hive-hive_metastore_database_user"
+    }, {
+      "name" : "hive_metastore_database_password",
+      "variable" : "hive-hive_metastore_database_password"
+    }, {
+      "name" : "hive_metastore_database_host",
+      "variable" : "hive-hive_metastore_database_host"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hive-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hive-HIVESERVER2-BASE",
+      "roleType" : "HIVESERVER2",
+      "base" : true
+    }, {
+      "refName" : "hive-HIVEMETASTORE-BASE",
+      "roleType" : "HIVEMETASTORE",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "sqoop_client",
+    "serviceType" : "SQOOP_CLIENT",
+    "roleConfigGroups" : [ {
+      "refName" : "sqoop_client-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "spark_on_yarn",
+    "serviceType" : "SPARK_ON_YARN",
+    "serviceConfigs" : [ {
+      "name" : "yarn_service",
+      "ref" : "yarn"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE",
+      "roleType" : "SPARK_YARN_HISTORY_SERVER",
+      "base" : true
+    }, {
+      "refName" : "spark_on_yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "zookeeper",
+    "serviceType" : "ZOOKEEPER",
+    "roleConfigGroups" : [ {
+      "refName" : "zookeeper-SERVER-BASE",
+      "roleType" : "SERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "oozie",
+    "serviceType" : "OOZIE",
+    "roleConfigGroups" : [ {
+      "refName" : "oozie-OOZIE_SERVER-BASE",
+      "roleType" : "OOZIE_SERVER",
+      "configs" : [ {
+        "name" : "oozie_database_user",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_user"
+      }, {
+        "name" : "oozie_database_host",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_host"
+      }, {
+        "name" : "oozie_database_type",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_type"
+      }, {
+        "name" : "oozie_database_password",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_password"
+      } ],
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hue",
+    "serviceType" : "HUE",
+    "serviceConfigs" : [ {
+      "name" : "database_type",
+      "variable" : "hue-database_type"
+    }, {
+      "name" : "database_password",
+      "variable" : "hue-database_password"
+    }, {
+      "name" : "database_host",
+      "variable" : "hue-database_host"
+    }, {
+      "name" : "database_user",
+      "variable" : "hue-database_user"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hue-HUE_SERVER-BASE",
+      "roleType" : "HUE_SERVER",
+      "base" : true
+    }, {
+      "refName" : "hue-HUE_LOAD_BALANCER-BASE",
+      "roleType" : "HUE_LOAD_BALANCER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hdfs",
+    "serviceType" : "HDFS",
+    "serviceConfigs" : [],
+    "roleConfigGroups" : [ {
+      "refName" : "hdfs-FAILOVERCONTROLLER-BASE",
+      "roleType" : "FAILOVERCONTROLLER",
+      "base" : true
+    }, {
+      "refName" : "hdfs-NAMENODE-1",
+      "roleType" : "NAMENODE",
+      "configs" : [ {
+        "name" : "dfs_federation_namenode_nameservice",
+        "value" : "my-name-service"
+      }, {
+        "name" : "dfs_namenode_quorum_journal_name",
+        "value" : "my-name-service"
+      }, {
+        "name" : "autofailover_enabled",
+        "value" : "true"
+      } ],
+      "base" : false
+    }, {
+      "refName" : "hdfs-DATANODE-BASE",
+      "roleType" : "DATANODE",
+      "base" : true
+    }, {
+      "refName" : "hdfs-BALANCER-BASE",
+      "roleType" : "BALANCER",
+      "base" : true
+    }, {
+      "refName" : "hdfs-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hdfs-JOURNALNODE-BASE",
+      "roleType" : "JOURNALNODE",
+      "configs" : [ {
+        "name" : "dfs_journalnode_edits_dir",
+        "variable" : "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir"
+      } ],
+      "base" : true
+    }, {
+      "refName" : "hdfs-HTTPFS-BASE",
+      "roleType" : "HTTPFS",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "impala",
+    "serviceType" : "IMPALA",
+    "serviceConfigs" : [ {
+      "name" : "kudu_service",
+      "ref" : "kudu"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "impala-IMPALAD-BASE",
+      "roleType" : "IMPALAD",
+      "base" : true
+    }, {
+      "refName" : "impala-STATESTORE-BASE",
+      "roleType" : "STATESTORE",
+      "base" : true
+    }, {
+      "refName" : "impala-CATALOGSERVER-BASE",
+      "roleType" : "CATALOGSERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "yarn",
+    "serviceType" : "YARN",
+    "serviceConfigs" : [ {
+      "name" : "yarn_fs_scheduled_allocations",
+      "value" : "{\"defaultFairSharePreemptionThreshold\":null,\"defaultFairSharePreemptionTimeout\":null,\"defaultMinSharePreemptionTimeout\":null,\"defaultQueueSchedulingPolicy\":\"fair\",\"queueMaxAMShareDefault\":null,\"queueMaxAppsDefault\":null,\"queuePlacementRules\":[{\"create\":true,\"name\":\"specified\",\"queue\":null,\"rules\":null},{\"create\":true,\"name\":\"nestedUserQueue\",\"queue\":null,\"rules\":[{\"create\":true,\"name\":\"default\",\"queue\":\"users\",\"rules\":null}]},{\"create\":null,\"name\":\"default\",\"queue\":null,\"rules\":null}],\"queues\":[{\"aclAdministerApps\":\"*\",\"aclSubmitApps\":\"*\",\"allowPreemptionFrom\":null,\"fairSharePreemptionThreshold\":null,\"fairSharePreemptionTimeout\":null,\"minSharePreemptionTimeout\":null,\"name\":\"root\",\"queues\":[{\"aclAdministerApps\":null,\"aclSubmitApps\":null,\"allowPreemptionFrom\":null,\"fairSharePreemptionThreshold\":null,\"fairSharePreemptionTimeout\":null,\"minSharePreemptionTimeout\":null,\"name\":\"default\",\"queues\":[],\"schedulablePropertiesList\":[{\"impalaDefaultQueryMemLimit\":null,\"impalaDefaultQueryOptions\":null,\"impalaMaxMemory\":null,\"impalaMaxQueuedQueries\":null,\"impalaMaxRunningQueries\":null,\"impalaQueueTimeout\":null,\"maxAMShare\":null,\"maxChildResources\":null,\"maxResources\":null,\"maxRunningApps\":null,\"minResources\":null,\"scheduleName\":\"default\",\"weight\":1.0}],\"schedulingPolicy\":\"drf\",\"type\":null},{\"aclAdministerApps\":null,\"aclSubmitApps\":null,\"allowPreemptionFrom\":null,\"fairSharePreemptionThreshold\":null,\"fairSharePreemptionTimeout\":null,\"minSharePreemptionTimeout\":null,\"name\":\"users\",\"queues\":[],\"schedulablePropertiesList\":[{\"impalaDefaultQueryMemLimit\":null,\"impalaDefaultQueryOptions\":null,\"impalaMaxMemory\":null,\"impalaMaxQueuedQueries\":null,\"impalaMaxRunningQueries\":null,\"impalaQueueTimeout\":null,\"maxAMShare\":null,\"maxChildResources\":null,\"maxResources\":null,\"maxRunningApps\":null,\"minResources\":null,\"scheduleName\":\"default\",\"weight\":1.0}],\"schedulingPolicy\":\"drf\",\"type\":\"parent\"},{\"aclAdministerApps\":null,\"aclSubmitApps\":null,\"allowPreemptionFrom\":null,\"fairSharePreemptionThreshold\":null,\"fairSharePreemptionTimeout\":null,\"minSharePreemptionTimeout\":null,\"name\":\"pool2\",\"queues\":[],\"schedulablePropertiesList\":[{\"impalaDefaultQueryMemLimit\":null,\"impalaDefaultQueryOptions\":null,\"impalaMaxMemory\":null,\"impalaMaxQueuedQueries\":null,\"impalaMaxRunningQueries\":null,\"impalaQueueTimeout\":null,\"maxAMShare\":null,\"maxChildResources\":null,\"maxResources\":null,\"maxRunningApps\":null,\"minResources\":null,\"scheduleName\":\"default\",\"weight\":4.0}],\"schedulingPolicy\":\"drf\",\"type\":null}],\"schedulablePropertiesList\":[{\"impalaDefaultQueryMemLimit\":null,\"impalaDefaultQueryOptions\":null,\"impalaMaxMemory\":null,\"impalaMaxQueuedQueries\":null,\"impalaMaxRunningQueries\":null,\"impalaQueueTimeout\":null,\"maxAMShare\":null,\"maxChildResources\":null,\"maxResources\":null,\"maxRunningApps\":null,\"minResources\":null,\"scheduleName\":\"default\",\"weight\":1.0}],\"schedulingPolicy\":\"drf\",\"type\":null}],\"userMaxAppsDefault\":null,\"users\":[]}"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "yarn-RESOURCEMANAGER-BASE",
+      "roleType" : "RESOURCEMANAGER",
+      "base" : true
+    }, {
+      "refName" : "yarn-NODEMANAGER-BASE",
+      "roleType" : "NODEMANAGER",
+      "base" : true
+    }, {
+      "refName" : "yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "configs" : [ {
+        "name" : "mapreduce_map_java_opts_max_heap",
+        "value" : "1048576000"
+      }, {
+        "name" : "mapreduce_map_memory_mb",
+        "value" : "1229"
+      } ],
+      "base" : true
+    }, {
+      "refName" : "yarn-JOBHISTORY-BASE",
+      "roleType" : "JOBHISTORY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "spark2_on_yarn",
+    "serviceType" : "SPARK2_ON_YARN",
+    "roleConfigGroups" : [ {
+      "refName" : "spark2_on_yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "spark2_on_yarn-SPARK2_YARN_HISTORY_SERVER-BASE",
+      "roleType" : "SPARK2_YARN_HISTORY_SERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "flume",
+    "serviceType" : "FLUME",
+    "serviceConfigs" : [ {
+      "name" : "hdfs_service",
+      "ref" : "hdfs"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "flume-AGENT-3",
+      "roleType" : "AGENT",
+      "configs" : [ {
+        "name" : "agent_config_file",
+        "value" : "collector1.sources = src1\ncollector1.channels = ch1\ncollector1.sinks = sink1\n\ncollector1.sources.src1.type = avro\ncollector1.sources.src1.bind = worker-2\ncollector1.sources.src1.port = 6000\ncollector1.sources.src1.channels = ch1\n\ncollector1.channels.ch1.type = memory\ncollector1.channels.ch1.capacity = 500\n\ncollector1.sinks.sink1.type = hdfs\ncollector1.sinks.sink1.hdfs.path = hdfs://master-1/user/flume/collector1\ncollector1.sinks.sink1.hdfs.filePrefix = access_log\ncollector1.sinks.sink1.channel = ch1\n\n# Optional\n# collector1.sinks.sink1.hdfs.rollSize = 2048\n# collector1.sinks.sink1.hdfs.rollCount = 100\n# collector1.sinks.sink1.hdfs.rollInterval = 60"
+      }, {
+        "name" : "agent_name",
+        "value" : "collector1"
+      } ],
+      "base" : false
+    }, {
+      "refName" : "flume-AGENT-2",
+      "roleType" : "AGENT",
+      "configs" : [ {
+        "name" : "agent_config_file",
+        "value" : "agent1.sources = webserver-log-source\nagent1.sinks = kafka-sink\nagent1.channels = memory-channel\n\nagent1.sources.webserver-log-source.type = spooldir\nagent1.sources.webserver-log-source.spoolDir = /flume/weblogs_spooldir\nagent1.sources.webserver-log-source.channels = memory-channel\n\nagent1.sinks.kafka-sink.type = org.apache.flume.sink.kafka.KafkaSink\nagent1.sinks.kafka-sink.batchSize = 20\nagent1.sinks.kafka-sink.channel = memory-channel\nagent1.sinks.kafka-sink.topic = weblogs\nagent1.sinks.kafka-sink.brokerList = master-1:9092,master-2:9092,worker-2:9092\n\nagent1.channels.memory-channel.type = memory\nagent1.channels.memory-channel.capacity = 100000\nagent1.channels.memory-channel.transactionCapacity = 1000"
+      }, {
+        "name" : "agent_name",
+        "value" : "agent1"
+      } ],
+      "base" : false
+    } ]
+  }, {
+    "refName" : "kudu",
+    "serviceType" : "KUDU",
+    "roleConfigGroups" : [ {
+      "refName" : "kudu-KUDU_MASTER-BASE",
+      "roleType" : "KUDU_MASTER",
+      "configs" : [ {
+        "name" : "fs_wal_dir",
+        "variable" : "kudu-KUDU_MASTER-BASE-fs_wal_dir"
+      }, {
+        "name" : "fs_data_dirs",
+        "variable" : "kudu-KUDU_MASTER-BASE-fs_data_dirs"
+      } ],
+      "base" : true
+    }, {
+      "refName" : "kudu-KUDU_TSERVER-BASE",
+      "roleType" : "KUDU_TSERVER",
+      "configs" : [ {
+        "name" : "fs_wal_dir",
+        "variable" : "kudu-KUDU_TSERVER-BASE-fs_wal_dir"
+      }, {
+        "name" : "fs_data_dirs",
+        "variable" : "kudu-KUDU_TSERVER-BASE-fs_data_dirs"
+      } ],
+      "base" : true
+    } ]
+  }, {
+    "refName" : "kafka",
+    "serviceType" : "KAFKA",
+    "serviceConfigs" : [ {
+      "name" : "zookeeper_service",
+      "ref" : "zookeeper"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "kafka-KAFKA_BROKER-1",
+      "roleType" : "KAFKA_BROKER",
+      "base" : false
+    }, {
+      "refName" : "kafka-KAFKA_BROKER-BASE",
+      "roleType" : "KAFKA_BROKER",
+      "configs" : [ {
+        "name" : "broker_max_heap_size",
+        "value" : "256"
+      } ],
+      "base" : true
+    } ]
+  } ],
+  "hostTemplates" : [ {
+    "refName" : "HostTemplate-0-from-worker-3.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "hdfs-JOURNALNODE-BASE", "impala-IMPALAD-BASE", "kudu-KUDU_MASTER-BASE", "kudu-KUDU_TSERVER-BASE", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-1-from-worker-1.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "impala-IMPALAD-BASE", "kudu-KUDU_TSERVER-BASE", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-2-from-master-2.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-FAILOVERCONTROLLER-BASE", "hdfs-NAMENODE-1", "hive-HIVEMETASTORE-BASE", "hive-HIVESERVER2-BASE", "impala-CATALOGSERVER-BASE", "impala-STATESTORE-BASE", "kafka-KAFKA_BROKER-BASE", "kudu-KUDU_MASTER-BASE", "oozie-OOZIE_SERVER-BASE", "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-3-from-master-1.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-BALANCER-BASE", "hdfs-FAILOVERCONTROLLER-BASE", "hdfs-HTTPFS-BASE", "hdfs-JOURNALNODE-BASE", "hdfs-NAMENODE-1", "kafka-KAFKA_BROKER-1", "kudu-KUDU_MASTER-BASE", "spark2_on_yarn-SPARK2_YARN_HISTORY_SERVER-BASE", "spark_on_yarn-GATEWAY-BASE", "yarn-JOBHISTORY-BASE", "yarn-RESOURCEMANAGER-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-4-from-cmhost.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "flume-AGENT-2", "hdfs-GATEWAY-BASE", "hive-GATEWAY-BASE", "hue-HUE_LOAD_BALANCER-BASE", "hue-HUE_SERVER-BASE", "spark2_on_yarn-GATEWAY-BASE", "sqoop_client-GATEWAY-BASE", "yarn-GATEWAY-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-5-from-worker-2.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "flume-AGENT-3", "hdfs-DATANODE-BASE", "hdfs-JOURNALNODE-BASE", "impala-IMPALAD-BASE", "kafka-KAFKA_BROKER-BASE", "kudu-KUDU_TSERVER-BASE", "yarn-NODEMANAGER-BASE" ]
+  } ],
+  "instantiator" : {
+    "clusterName" : "Cluster1",
+    "hosts" : [ {
+      "hostName" : "cmhost.example.com",
+      "hostTemplateRefName" : "HostTemplate-4-from-cmhost.example.com"
+    }, {
+      "hostName" : "master-1.example.com",
+      "hostTemplateRefName" : "HostTemplate-3-from-master-1.example.com"
+    }, {
+      "hostName" : "master-2.example.com",
+      "hostTemplateRefName" : "HostTemplate-2-from-master-2.example.com"
+    }, {
+      "hostName" : "worker-1.example.com",
+      "hostTemplateRefName" : "HostTemplate-1-from-worker-1.example.com"
+    }, {
+      "hostName" : "worker-2.example.com",
+      "hostTemplateRefName" : "HostTemplate-5-from-worker-2.example.com"
+    }, {
+      "hostName" : "worker-3.example.com",
+      "hostTemplateRefName" : "HostTemplate-0-from-worker-3.example.com"
+    } ],
+    "variables" : [ {
+      "name" : "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir",
+      "value" : "/dfs/jn"
+    }, {
+      "name" : "hive-hive_metastore_database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "hive-hive_metastore_database_password",
+      "value" : "password"
+    }, {
+      "name" : "hive-hive_metastore_database_user",
+      "value" : "hiveuser"
+    }, {
+      "name" : "hue-database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "hue-database_password",
+      "value" : "password"
+    }, {
+      "name" : "hue-database_type",
+      "value" : "mysql"
+    }, {
+      "name" : "hue-database_user",
+      "value" : "hueuser"
+    }, {
+      "name" : "kudu-KUDU_MASTER-BASE-fs_data_dirs",
+      "value" : "/kudu/master/data"
+    }, {
+      "name" : "kudu-KUDU_MASTER-BASE-fs_wal_dir",
+      "value" : "/kudu/master/wal"
+    }, {
+      "name" : "kudu-KUDU_TSERVER-BASE-fs_data_dirs",
+      "value" : "/kudu/ts/data"
+    }, {
+      "name" : "kudu-KUDU_TSERVER-BASE-fs_wal_dir",
+      "value" : "/kudu/ts/wal"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_password",
+      "value" : "password"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_type",
+      "value" : "mysql"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_user",
+      "value" : "oozieuser"
+    }, {
+      "name" : "yarn-NODEMANAGER-1-yarn_nodemanager_local_dirs",
+      "value" : "/yarn/nm"
+    }, {
+      "name" : "yarn-NODEMANAGER-2-yarn_nodemanager_local_dirs",
+      "value" : "/yarn/nm"
+    } ],
+    "roleConfigGroups" : [ {
+      "rcgRefName" : "hdfs-NAMENODE-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "hdfs-DATANODE-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "hdfs-DATANODE-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "impala-IMPALAD-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "impala-IMPALAD-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-GATEWAY-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-NODEMANAGER-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-NODEMANAGER-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "flume-AGENT-3",
+      "name" : ""
+    }, {
+      "rcgRefName" : "flume-AGENT-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "flume-AGENT-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "kafka-KAFKA_BROKER-1",
+      "name" : ""
+    } ]
+  }
+}

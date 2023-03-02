@@ -1,0 +1,14 @@
+---
+
+- name: Restart Cloudera Management Service
+  cm_api:
+    endpoint: /cm/service/commands/restart
+    method: POST
+    register: _command_result
+    timeout: "{{ cluster_restart_timeout | default(3000) }}"
+
+
+#- name: Debug previous command result
+#  debug:
+#    msg: "{{ _command_result.json.resultMessage }}"
+#  when: _command_result.json.success

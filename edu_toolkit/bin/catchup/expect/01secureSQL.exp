@@ -1,0 +1,13 @@
+#!/usr/bin/expect
+spawn /home/training/training_materials/admin/scripts/catchup/01secureSQL.sh
+sleep 5
+
+expect -re "Enter current password for root *" { send "\r" }
+expect -re "Set root password*" { send "Y\r" }
+expect -re "New password*" { send "training\r" }
+expect -re "Re-enter new password*" { send "training\r" }
+expect -re "Remove anonymous users*" { send "Y\r" }
+expect -re "Disallow root login remotely*" { send "n\r" }
+expect -re "Remove test database and access to it*" { send "Y\r" }
+expect -re "Reload privilege tables*" { send "Y\r" }
+sleep 1

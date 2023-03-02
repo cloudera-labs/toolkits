@@ -1,0 +1,14 @@
+{ "items": [ {
+        "name" : "hdfs-HTTPFS-c838e0b3b26cd439ffd2442fc1047eb1",
+        "type" : "HTTPFS",
+        "hostRef" : {
+          "hostId" : "61f8e12f-e474-4d64-9065-85881ddee4c5"
+        },
+        "config" : {
+          "items" : [ ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "hdfs-HTTPFS-BASE"
+        }
+      }
+]}

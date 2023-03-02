@@ -1,0 +1,15 @@
+# Tutorial TLS
+# 08-05 Creating CM Truststore
+
+2. Open a Mate terminal
+
+3. Transfer the certs
+$ cd ~/tls/cm
+$ cp ~/tls/ca/ca.crt ca.crt
+
+4. Import the certs
+$ keytool -import -keystore cm_truststore.jks -storepass <password> -alias rootCA -file ca.crt 
+$ keytool -import -keystore cm_truststore.jks -storepass <password> -alias cm.crt -file cm.crt 
+
+5. Transfer the truststore
+$ cp cm_truststore.jks ~/tls/hosts/cm_truststore.jks

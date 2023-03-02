@@ -1,0 +1,54 @@
+# This README is for training purposes only and is to be used only
+# in support of approved training. The author assumes no liability
+# for use outside of a training environments. Unless required by
+# applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+# OR CONDITIONS OF ANY KIND, either express or implied.
+
+# Title: README.txt 
+# Author: WKD
+# Date: 1MAY20
+
+Purpose: This provides the tasks to be completed to create signed
+certificates in support of generating the keys for HDP.
+
+GENERATE A PCKS12 File
+1. Login into the Microsoft Certificate Authority.
+2. From the top, expand Certificates (Local Computer)
+3. Expand the Personal folder
+4. Click on the Certificates sub-folder
+5. Locate the SSL certificate in the list on the right
+6. Right-click on the certificate and select All Tasks > Export.
+7. Select "Yes, Export the private key"
+8. Click Next
+9. In the Export File Format window, ensure the option for "Personal Information Exchange  - PKCS#12 (.pfx)" is selected
+10. Select "Include all certificates in the certification path if possible"
+11. Click Next
+12. Enter and confirm a password to protect the pfx file. 
+13. Click Next
+14. Click Next
+14. Browse to the location where the pfx file should be saved. 
+15. Enter a name for the file. In our case we are using "cloudair.lan".
+16. Click Next
+17. Read the summary and verify that the information is correct.
+18. Click Finish
+19. Transfer the p12 file to the ssl directory for the certificates. 
+
+EXTRACT THE CERT FILES
+1. The generate script requires all of these files in the certificates directory.
+
+2. Change into the certs directory.
+
+	% cd <path>/certs
+
+3. This command extracts the certificate in a .pem format. We are going to identify it as the .cer file.
+
+	% openssl pkcs12 -in cloudair-ca.p12 -out cloudair.lan.cer
+
+4. This command converts the pem file into a x509 binary der format. 
+
+	% openssl x509 -outform der -in cloudair.lan.pem -out cloudair.lan.der
+
+5. This command extracts the private key:
+
+	% openssl pkcs12 -in cloudair-ca.p12 -out cloudair.lan.key -nodes -nocerts

@@ -1,0 +1,68 @@
+{ "items": [ 
+     { "name" : "hive",
+      "type" : "HIVE",
+      "config" : {
+        "items" : [ { "name" : "hive_metastore_database_host", "value" : "lion" }, 
+        { "name" : "hive_metastore_database_password", "value" : "password" }, 
+        { "name" : "hive_metastore_database_user", "value" : "hiveuser" }, 
+        { "name" : "mapreduce_yarn_service", "value" : "yarn" }, 
+        { "name" : "zookeeper_service", "value" : "zookeeper"} ]
+      },
+      "roles" : [ 
+      { "name" : "hive-GATEWAY-814026d35bd67b44573c805843e63664",
+        "type" : "GATEWAY",
+        "hostRef" : { "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "hive-GATEWAY-BASE" } }, 
+      { "name" : "hive-HIVEMETASTORE-814026d35bd67b44573c805843e63664",
+        "type" : "HIVEMETASTORE",
+        "hostRef" : { "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "hive-HIVEMETASTORE-BASE" } }, 
+      { "name" : "hive-HIVESERVER2-814026d35bd67b44573c805843e63664",
+        "type" : "HIVESERVER2",
+        "hostRef" : { "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "hive-HIVESERVER2-BASE" } } ],
+      "displayName" : "Hive",
+      "roleConfigGroups" : [ {
+        "name" : "hive-GATEWAY-BASE",
+        "displayName" : "Gateway Default Group",
+        "roleType" : "GATEWAY",
+        "base" : true,
+        "serviceRef" : { "clusterName" : "cluster", "serviceName" : "hive" }, 
+        "config" : { "items" : [ ] }
+      }, {
+        "name" : "hive-HIVEMETASTORE-BASE",
+        "displayName" : "Hive Metastore Server Default Group",
+        "roleType" : "HIVEMETASTORE",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "hive"
+        },
+        "config" : { "items" : [ { "name" : "hive_metastore_java_heapsize", "value" : "52428800" } ] }
+      }, {
+        "name" : "hive-HIVESERVER2-BASE",
+        "displayName" : "HiveServer2 Default Group",
+        "roleType" : "HIVESERVER2",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "hive"
+        },
+        "config" : { "items" : [ { "name" : "hiveserver2_java_heapsize", "value" : "52428800" } ] }
+      }, {
+        "name" : "hive-WEBHCAT-BASE",
+        "displayName" : "WebHCat Server Default Group",
+        "roleType" : "WEBHCAT",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "hive"
+        },
+        "config" : { "items" : [ ] }
+      } ],
+      "replicationSchedules" : [ ]
+    }
+    ]}

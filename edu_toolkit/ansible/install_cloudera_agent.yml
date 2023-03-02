@@ -1,0 +1,13 @@
+---
+- name: Install Cloudera Manager agent
+  hosts: cluster
+  become: yes
+  tasks:
+    - block:
+        - name: Install Cloudera Manager agents
+          include_role:
+            name: cloudera_manager/agent
+
+        - name: Configure Cloudera Manager agents
+          include_role:
+            name: cloudera_manager/agent_config

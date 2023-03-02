@@ -1,0 +1,8 @@
+{
+  "items": [ 
+    { 
+      "name": "datanode_free_space_thresholds", 
+      "value": "{\"warning\":\"10.0\",\"critical\":\"5.0\"}" 
+    } 
+  ] 
+}

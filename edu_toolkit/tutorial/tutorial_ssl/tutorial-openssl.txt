@@ -1,0 +1,45 @@
+OpenSSL Commands to Convert Certificate Formats
+
+To know about all the commands, apply the help command.
+Openssl> help
+
+To get help on a particular command, use -help after a command.
+Openssl> pkcs12 -help
+
+The following are main commands to convert certificate file formats.
+
+Convert PEM to DER Format
+openssl> x509 -outform der -in certificate.pem -out certificate.der
+
+Convert PEM to P7B Format
+openssl> crl2pkcs7 -nocrl -certfile certificate.cer -out certificate.p7b -certfile CACert.cer
+
+Convert PEM to PFX Format
+openssl> pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt -certfile CACert.crt
+
+Convert DER to PEM Format
+openssl> x509 -inform der -in certificate.cer -out certificate.pem
+
+Convert P7B to PEM Format
+openssl> pkcs7 -print_certs -in certificate.p7b -out certificate.cer
+
+Convert P7B to PFX Format
+openssl> pkcs7 -print_certs -in certificate.p7b -out certificate.cer openssl> pkcs12 -export -in certificate.cer -inkey privateKey.key -out certificate.pfx -certfile CACert.cer
+
+Convert PFX to PEM Format
+openssl> pkcs12 -in certificate.pfx -out certificate.cer -nodes
+
+The following are the main commands for extacting keys.
+
+This command extracts the public key from the p12 file:
+        % openssl pkcs12 -in cloudair-ca.p12 -out cloudair.lan.crt -nodes -nokey
+
+This command extracts the private key from the p12 file:
+        % openssl pkcs12 -in cloudair-ca.p12 -out cloudair.lan.key -nodes -nocerts
+
+This command extracts the certificate in a .pem format. We are going to identify it as the .pem file as it has both keys in it.
+        % openssl pkcs12 -in cloudair-ca.p12 -out cloudair.lan.pem
+
+This command converts the pem file into a der file, which is the public key in a binary format.              
+        % openssl x509 -outform der -in cloudair.lan.pem -out cloudair.lan.der
+

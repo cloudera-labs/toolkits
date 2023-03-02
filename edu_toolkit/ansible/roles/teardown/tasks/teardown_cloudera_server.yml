@@ -1,0 +1,17 @@
+- name: Stop Cloudera server
+  service:
+    name: cloudera-scm-server
+    state: stopped
+    enabled: no
+  ignore_errors: true
+
+- name: Remove Cloudera manager package
+  package:
+    name: cloudera-manager-server
+    state: absent
+
+- name: Delete Cloudera manager directory
+  file:
+    path: /var/lib/cloudera-scm-server
+    state: absent
+  ignore_errors: true

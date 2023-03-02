@@ -1,0 +1,58 @@
+---
+- name: Configure Zeppelin
+  block:
+    - name: Clean up
+      file:
+        state: absent
+        path: /var/lib/zeppelin/{{ item }}
+      with_items:
+        - conf
+        - notebook 
+
+    - name: Copy zeppelin configs to the destination node
+      copy:
+        src: "{% if security | default(false) %}zeppelin_configs_secured_min.tar.gz{% else %}zeppelin_conf.tar.gz{% endif%}"
+        dest: /tmp/zeppelin-configs.tar.gz
+        remote_src: no
+
+    - name: Extract the zip file into /var/lib/zeppelin
+      ansible.builtin.unarchive:
+        src: /tmp/zeppelin-configs.tar.gz
+        dest: /var/lib/zeppelin/
+        remote_src: yes
+
+    - name: Install the shell interpreter jar file
+      shell: |
+        cd /opt/cloudera/parcels/CDH/lib/zeppelin
+        ./bin/install-interpreter.sh --name shell --artifact interpreter/sh/zeppelin-shell-0.8.2.7.1.7.0-551.jar
+
+    - name: Maintain zeppelin keytab
+      file:
+        state: absent
+        path: /etc/security/keytabs
+
+    - name: Manage zeppelin keytab
+      file:
+        state: directory
+        path: /etc/security/keytabs
+
+    - name: Pick the latest zeppelin server process directory
+      shell: /usr/bin/ls -Art /var/run/cloudera-scm-agent/process/ | grep -i zeppelin | tail -n 1
+      register: _command_result
+
+    - name: Parse CM clusters summary
+      set_fact:
+        zeppelin_server_dir: "{{ _command_result.stdout }}"
+
+    - name: Copy Keytab
+      shell: |
+        cp /var/run/cloudera-scm-agent/process/{{ zeppelin_server_dir }}/zeppelin.keytab /etc/security/keytabs/
+        chown zeppelin:zeppelin /etc/security/keytabs/zeppelin.keytab 
+
+    - name: Restart Zeppelin Service
+      include_role:
+        name: operations/restart_service
+      vars:
+        cluster_restart_timeout: 3600
+        service_to_restart:
+          - zeppelin

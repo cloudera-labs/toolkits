@@ -1,0 +1,76 @@
+{ "items": [{
+      "name" : "hue",
+      "type" : "HUE",
+      "config" : {
+        "items" : [ {
+          "name" : "database_host",
+          "value" : "lion"
+        }, {
+          "name" : "database_password",
+          "value" : "password"
+        }, {
+          "name" : "database_type",
+          "value" : "mysql"
+        }, {
+          "name" : "database_user",
+          "value" : "hueuser"
+        }, {
+          "name" : "hive_service",
+          "value" : "hive"
+        }, {
+          "name" : "hue_webhdfs",
+          "value" : "hdfs-HTTPFS-c838e0b3b26cd439ffd2442fc1047eb1"
+        }, {
+          "name" : "impala_service",
+          "value" : "impala"
+        }, {
+          "name" : "oozie_service",
+          "value" : "oozie"
+        }, {
+          "name" : "zookeeper_service",
+          "value" : "zookeeper"
+        } ]
+      },
+      "roles" : [ {
+        "name" : "hue-HUE_SERVER-c838e0b3b26cd439ffd2442fc1047eb1",
+        "type" : "HUE_SERVER",
+        "hostRef" : {
+          "hostId" : "61f8e12f-e474-4d64-9065-85881ddee4c5"
+        },
+        "config" : {
+          "items" : [ {
+            "name" : "secret_key",
+            "value" : "v5BhFyJlCdCn4FbFPGhOnDLtRymiLh"
+          } ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "hue-HUE_SERVER-BASE"
+        }
+      } ],
+      "displayName" : "Hue",
+      "roleConfigGroups" : [ {
+        "name" : "hue-HUE_SERVER-BASE",
+        "displayName" : "Hue Server Default Group",
+        "roleType" : "HUE_SERVER",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "hue"
+        },
+        "config" : {
+          "items" : [ ]
+        }
+      }, {
+        "name" : "hue-KT_RENEWER-BASE",
+        "displayName" : "Kerberos Ticket Renewer Default Group",
+        "roleType" : "KT_RENEWER",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "hue"
+        },
+        "config" : {
+          "items" : [ ]
+        }
+      } ]
+    } ] }

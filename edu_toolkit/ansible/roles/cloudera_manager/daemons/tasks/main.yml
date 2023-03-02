@@ -1,0 +1,7 @@
+---
+
+- name: Install Cloudera Manager Daemon
+  package:
+    name: cloudera-manager-daemons
+    update_cache: yes
+    state: present

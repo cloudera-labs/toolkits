@@ -1,0 +1,35 @@
+{ "items": [{
+      "name" : "sqoop_client",
+      "type" : "SQOOP_CLIENT",
+      "config" : {
+        "items" : [ ]
+      },
+      "roles" : [ {
+        "name" : "sqoop_client-GATEWAY-814026d35bd67b44573c805843e63664",
+        "type" : "GATEWAY",
+        "hostRef" : {
+          "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8"
+        },
+        "config" : {
+          "items" : [ ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "sqoop_client-GATEWAY-BASE"
+        }
+      } ],
+      "displayName" : "Sqoop 1 Client",
+      "roleConfigGroups" : [ {
+        "name" : "sqoop_client-GATEWAY-BASE",
+        "displayName" : "Gateway Default Group",
+        "roleType" : "GATEWAY",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "sqoop_client"
+        },
+        "config" : {
+          "items" : [ ]
+        }
+      } ]
+    }]
+}

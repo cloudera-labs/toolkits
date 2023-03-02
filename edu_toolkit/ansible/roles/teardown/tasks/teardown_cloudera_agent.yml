@@ -1,0 +1,50 @@
+- name: Stop CM agents on all nodes
+  service:
+    name: cloudera-scm-agent
+    state: stopped
+  ignore_errors: true
+
+- name: Hard Stop CM agents on all nodes
+  service: 
+    name: supervisord
+    state: stopped
+  ignore_errors: true
+
+- name: Remove Cloudera agent package
+  package:
+    name: cloudera-manager-agent
+    state: absent
+
+- name: Get the PID of running process
+  ignore_errors: yes
+  shell: "ps -ef | grep -i cloudera | awk '{print $2}'"
+  register: running_processes
+
+- name: Kill running processes
+  ignore_errors: yes
+  shell: "sudo kill -9 {{ item }}"
+  with_items: "{{ running_processes.stdout_lines }}"
+  when: running_processes.stdout_lines != []
+
+- name: Check the agent run directory for existance
+  find:
+    path: /var/run/cloudera-scm-agent/process
+  register: run_agent_process_dir_files
+
+- name: Remove agent run directory
+  command: rm -rf /var/run/cloudera-scm-agent/process/*
+  when: run_agent_process_dir_files.matched > 0
+
+- name: Remove agent var directory
+  file:
+    path: /var/lib/cloudera-scm-agent
+    state: absent
+
+- name: Unmount cm_processes FS
+  mount:
+    path: /run/cloudera-scm-agent/process
+    state: unmounted
+  register: result
+  retries: 20
+  delay: 10
+  until: result is not failed

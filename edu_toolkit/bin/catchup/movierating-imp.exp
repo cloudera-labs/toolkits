@@ -1,0 +1,9 @@
+#!/usr/bin/expect
+spawn ./movierating-imp.sh
+sleep 2
+expect "*>" { send "CONNECT horse;\r"}
+expect "*>" { send "INVALIDATE METADATA;\r"}
+expect "*>" { send "SELECT COUNT(*) FROM movierating;\r"}
+puts "now running an Impala query."
+expect "*>" { send "quit;\r"}
+	

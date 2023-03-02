@@ -1,0 +1,254 @@
+#!/bin/bash
+
+# -------------------------[ Documentation ]------------------------------
+#
+# (1) Check that the script is running on cmhost, if not exit.  
+#    The cleanup script depends on named nodes and that it is homed on cmhost
+#    
+# (2) Echo's the hostname where the script is running
+#
+# (3) Kill all scm agents and servers on all nodes
+#    killAllProcessesOnAllNodes = Kills all scm agents and server process on all nodes
+#
+# (4) Uninstall yum RPMS beginning with "cloudera*" on all nodes
+#    uninstallRPMsOnAllNodes =  calls next and uninstalls all RPMS on all nodes
+#        uninstallRPMsOnOneNode = Uninstalls yum RPMS named cloudera*
+#   
+# (5) Unmount the temporary file system used by cm_process on all nodes
+#    unmountTmpfs = Unmounts cm_processes temporary file system on all nodes
+#
+# (6) Deletes a long list of common generated files on all nodes
+#    deleteFilesOnAllNodes =  calls next and delets files on all nodes
+#       deleteFilesOnOneNode =  deletes common files on one node
+#   
+# (7) Deletes the databases and users from MySQL on node cmhost
+#     deleteDBsAndUsers = Deletes the four MySQL database on cmhost
+# 
+# (8) Configure command line tools to use CDH7.1.2 as default
+#
+
+
+
+deleteFilesOnAllNodes() {
+ sudo rm -rf /disk1
+ sudo rm -rf /disk2
+ sudo rm -rf /dfs
+ sudo rm -rf /mapred
+ sudo rm -rf /etc/cloudera*
+ sudo rm -rf /etc/default/impala
+ sudo rm -rf /etc/flume-ng
+ sudo rm -rf /etc/hadoop
+ sudo rm -rf /etc/hbase*
+ sudo rm -rf /etc/hive*
+ sudo rm -rf /etc/hue
+ sudo rm -rf /etc/impala
+ sudo rm -rf /etc/llama
+ sudo rm -rf /etc/oozie
+ sudo rm -rf /etc/pig
+ sudo rm -rf /etc/solr
+ sudo rm -rf /etc/spark
+ sudo rm -rf /etc/sqoop*
+ sudo rm -rf /etc/zookeeper
+ sudo rm -rf /etc/alternatives/flume*
+ sudo rm -rf /etc/alternatives/hadoop*
+ sudo rm -rf /etc/alternatives/hbase*
+ sudo rm -rf /etc/alternatives/hive*
+ sudo rm -rf /etc/alternatives/hue*
+ sudo rm -rf /etc/alternatives/impala*
+ sudo rm -rf /etc/alternatives/llama*
+ sudo rm -rf /etc/alternatives/oozie*
+ sudo rm -rf /etc/alternatives/pig*
+ sudo rm -rf /etc/alternatives/solr*
+ sudo rm -rf /etc/alternatives/spark*
+ sudo rm -rf /etc/alternatives/sqoop*
+ sudo rm -rf /etc/alternatives/zookeeper*
+ sudo rm -rf /home/training/backup_config
+# sudo rm -rf /opt/cloudera/parcels/*
+# sudo rm -rf /opt/cloudera/parcel-cache/*
+ sudo rm -rf /tmp/*scm*
+ sudo rm -rf /tmp/.*scm*
+ sudo rm -rf /tmp/hadoop*
+ sudo rm -rf /var/cache/yum/cloudera*
+ sudo rm -rf /usr/lib/hadoop*
+ sudo rm -rf /usr/lib/hive*
+ sudo rm -rf /usr/lib/hue
+ sudo rm -rf /usr/lib/oozie
+ sudo rm -rf /usr/lib/parquet
+ sudo rm -rf /usr/lib/spark
+ sudo rm -rf /usr/lib/sqoop
+ sudo rm -rf /usr/share/cmf
+ sudo rm -rf /usr/share/hue
+ sudo rm -rf /var/lib/cloudera*
+ sudo rm -rf /var/lib/flume-ng
+ sudo rm -rf /var/lib/hadoop*
+ sudo rm -rf /var/lib/hdfs
+ sudo rm -rf /var/lib/hive*
+ sudo rm -rf /var/lib/hue
+ sudo rm -rf /var/lib/impala
+ sudo rm -rf /var/lib/oozie
+ sudo rm -rf /var/lib/sqoop*
+ sudo rm -rf /var/lib/spark
+ sudo rm -rf /var/lib/solr
+ sudo rm -rf /var/lib/zookeeper
+ sudo rm -rf /var/lib/alternatives/flume*
+ sudo rm -rf /var/lib/alternatives/hadoop*
+ sudo rm -rf /var/lib/alternatives/hbase*
+ sudo rm -rf /var/lib/alternatives/hive*
+ sudo rm -rf /var/lib/alternatives/hue*
+ sudo rm -rf /var/lib/alternatives/impala*
+ sudo rm -rf /var/lib/alternatives/llama*
+ sudo rm -rf /var/lib/alternatives/oozie*
+ sudo rm -rf /var/lib/alternatives/pig*
+ sudo rm -rf /var/lib/alternatives/solr*
+ sudo rm -rf /var/lib/alternatives/spark*
+ sudo rm -rf /var/lib/alternatives/sqoop*
+ sudo rm -rf /var/lib/alternatives/zookeeper*
+ sudo rm -rf /var/lock/subsys/cloudera*
+ sudo rm -rf /var/lock/subsys/flume-ng*
+ sudo rm -rf /var/lock/subsys/hadoop*
+ sudo rm -rf /var/lock/subsys/hbase*
+ sudo rm -rf /var/lock/subsys/hdfs*
+ sudo rm -rf /var/lock/subsys/hive*
+ sudo rm -rf /var/lock/subsys/hue*
+ sudo rm -rf /var/lock/subsys/impala*
+ sudo rm -rf /var/lock/subsys/llama*
+ sudo rm -rf /var/lock/subsys/oozie*
+ sudo rm -rf /var/lock/subsys/solr*
+ sudo rm -rf /var/lock/subsys/spark*
+ sudo rm -rf /var/lock/subsys/sqoop*
+ sudo rm -rf /var/lock/subsys/zookeeper*
+ sudo rm -rf /var/log/cloudera*
+ sudo rm -rf /var/log/flume-ng
+ sudo rm -rf /var/log/hadoop*
+ sudo rm -rf /var/log/hbase*
+ sudo rm -rf /var/log/hive*
+ sudo rm -rf /var/log/hue
+ sudo rm -rf /var/log/impala*
+ sudo rm -rf /var/log/llama
+ sudo rm -rf /var/log/oozie
+ sudo rm -rf /var/log/solr
+ sudo rm -rf /var/log/sqoop2
+ sudo rm -rf /var/log/spark
+ sudo rm -rf /var/log/zookeeper
+ sudo rm -rf /var/run/cloudera*
+ sudo rm -rf /var/run/flume-ng
+ sudo rm -rf /var/run/hadoop*
+ sudo rm -rf /var/run/hbase*
+ sudo rm -rf /var/run/hdfs*
+ sudo rm -rf /var/run/hive
+ sudo rm -rf /var/run/impala
+ sudo rm -rf /var/run/llama
+ sudo rm -rf /var/run/oozie
+ sudo rm -rf /var/run/solr
+ sudo rm -rf /var/run/spark
+ sudo rm -rf /var/run/sqoop2
+ sudo rm -rf /var/run/zookeeper
+ sudo rm -rf /yarn
+ sudo rm -rf /var/log/nifi
+ sudo rm -rf /var/log/yarn
+ sudo rm -rf /var/local/kafka/data/meta.properties
+ sudo rm -rf /etc/kafka
+ sudo rm -rf /etc/kafka_connect_ext
+ sudo rm -rf /var/lib/hadoop-yarn
+ sudo rm -rf /var/lib/keytrustee/.keytrustee
+ sudo rm -rf /var/lib/keytrustee/db
+ sudo rm -rf /var/lib/keytrustee/kt*
+ sudo rm -rf /var/lib/keytrustee/dead.letter
+ sudo rm -rf /var/lib/keytrustee/logs
+ sudo rm -rf /var/lib/keytrustee/.gnupg
+ sudo rm -rf /var/lib/kms-keytrustee
+ sudo rm -rf /var/lib/hadoop-ozone
+ sudo rm -rf /hadoop-ozone
+ sudo rm -rf /etc/ozone
+ sudo rm -rf /var/lib/alternatives/ozone
+ sudo rm -rf /var/lib/alternatives/ozone-conf
+ sudo rm -rf /etc/alternatives/ozone-conf
+ sudo rm -rf /etc/alternatives/ozone
+}
+
+cleanCmdlineDefaults() {
+	# Use Alternatives uitlity command to reset commnad line defaults.
+
+	# Reset hdfs
+	#sudo alternatives --remove hdfs /opt/cloudera/parcels/CDH-5.14.4-1.cdh5.14.4.p0.3/bin/hdfs
+    #sudo alternatives --remove hdfs /opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/bin/hdfs
+    sudo alternatives --remove hdfs /opt/cloudera/parcels/CDH-7.1.2-1.cdh7.1.2.p0.4253134/bin/hdfs
+    sudo alternatives --remove hdfs /opt/cloudera/parcels/CDH-7.1.3-1.cdh7.1.3.p0.4992530/bin/hdfs
+    #sudo alternatives --remove hdfs /opt/cloudera/parcels/CDH-7*/bin/hdfs
+
+	# Reset yarn
+	#sudo alternatives --remove yarn /opt/cloudera/parcels/CDH-5.14.4-1.cdh5.14.4.p0.3/bin/yarn
+	#sudo alternatives --remove yarn /opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/bin/yarn
+    sudo alternatives --remove yarn /opt/cloudera/parcels/CDH-7.1.2-1.cdh7.1.2.p0.4253134/bin/yarn
+    sudo alternatives --remove yarn /opt/cloudera/parcels/CDH-7.1.3-1.cdh7.1.3.p0.4992530/bin/yarn
+    #sudo alternatives --remove yarn /opt/cloudera/parcels/CDH-7*/bin/yarn
+
+	# Reset beeline
+	#sudo alternatives --remove beeline /opt/cloudera/parcels/CDH-5.14.4-1.cdh5.14.4.p0.3/bin/beeline
+	#sudo alternatives --remove beeline /opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/bin/beeline
+    sudo alternatives --remove beeline /opt/cloudera/parcels/CDH-7.1.2-1.cdh7.1.2.p0.4253134/bin/beeline
+    sudo alternatives --remove beeline /opt/cloudera/parcels/CDH-7.1.3-1.cdh7.1.3.p0.4992530/bin/beeline
+    #sudo alternatives --remove beeline /opt/cloudera/parcels/CDH-7*/bin/beeline
+
+	# Reset mapred
+	#sudo alternatives --remove mapred /opt/cloudera/parcels/CDH-5.14.4-1.cdh5.14.4.p0.3/bin/mapred
+	#sudo alternatives --remove mapred /opt/cloudera/parcels/CDH-5.15.2-1.cdh5.15.2.p0.3/bin/mapred
+    sudo alternatives --remove mapred /opt/cloudera/parcels/CDH-7.1.2-1.cdh7.1.2.p0.4253134/bin/mapred
+    sudo alternatives --remove mapred /opt/cloudera/parcels/CDH-7.1.3-1.cdh7.1.3.p0.4992530/bin/mapred
+    #sudo alternatives --remove mapred /opt/cloudera/parcels/CDH-7*/bin/mapred
+}
+
+setCmdlineDefaults712() {
+
+  # Use Expect script to configure command line tools to use CDH5.14 as default:
+  # hdfs, yarn, beeline, mapred
+
+  #Configure hdfs to use CDH5.14
+  expect -c "set timeout -1
+spawn sudo alternatives --config hdfs
+expect -re \"Enter *\"
+send \"1\r\"
+expect eof"
+
+  #Configure yarn to use CDH5.14
+  expect -c "set timeout -1
+spawn sudo alternatives --config yarn
+expect -re \"Enter *\"
+send \"1\r\"
+expect eof"
+
+
+  #Configure beeline to C5.14
+  expect -c "set timeout -1
+spawn sudo alternatives --config beeline
+expect -re \"Enter *\"
+send \"1\r\"
+expect eof"
+
+  #Configure mapred to C5.14
+  expect -c "set timeout -1
+spawn sudo alternatives --config mapred
+expect -re \"Enter *\"
+send \"1\r\"
+expect eof"
+
+}
+
+
+#setOwnership() {
+#}
+
+
+
+MYHOST="`hostname`: "
+echo
+echo $MYHOST "Running " $0"."
+echo
+
+deleteFilesOnAllNodes 
+cleanCmdlineDefaults 
+setCmdlineDefaults712 
+
+echo
+echo $MYHOST $0 "done."
+echo

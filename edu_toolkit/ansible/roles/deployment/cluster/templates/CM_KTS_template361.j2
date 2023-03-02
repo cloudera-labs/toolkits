@@ -1,0 +1,133 @@
+{
+    "cdhVersion": "7.1.7",
+    "displayName": "Key Trustee Server Cluster",
+    "cmVersion": "7.6.1",
+    "repositories": [
+        ""
+    ],
+    "products": [
+        {
+			"version": "7.1.7-1.cdh7.1.7.p1000.24102687",
+			"product": "CDH"
+		},
+        {
+            "version": "7.1.7.1000-1.keytrustee7.1.7.1000.p0.24102687",
+            "product": "KEYTRUSTEE_SERVER"
+        }
+    ],
+    "services": [
+        {
+            "refName": "keytrustee_server",
+            "serviceType": "KEYTRUSTEE_SERVER",
+            "displayName": "Key Trustee Server",
+            "roleConfigGroups": [
+                {
+                    "refName": "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE",
+                    "roleType": "KEYTRUSTEE_ACTIVE_SERVER",
+                    "configs": [
+                        {
+                            "name": "ssl_server_ca_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_privatekey_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_privatekey_password",
+                            "variable": "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE-ssl_server_privatekey_password",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        }
+                    ],
+                    "base": true
+                },
+                {
+                    "refName": "keytrustee_server-DB_ACTIVE-BASE",
+                    "roleType": "DB_ACTIVE",
+                    "base": true
+                },
+                {
+                    "refName": "keytrustee_server-DB_PASSIVE-BASE",
+                    "roleType": "DB_PASSIVE",
+                    "base": true
+                },
+                {
+                    "refName": "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE",
+                    "roleType": "KEYTRUSTEE_PASSIVE_SERVER",
+                    "configs": [
+                        {
+                            "name": "ssl_server_ca_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_privatekey_password",
+                            "variable": "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE-ssl_server_privatekey_password",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_privatekey_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        }
+                    ],
+                    "base": true
+                }
+            ]
+        }
+    ],
+    "hostTemplates": [
+        {
+            "refName": "HostTemplate-0-from-kts-1.example.com",
+            "cardinality": 1,
+            "roleConfigGroupsRefNames": [
+                "keytrustee_server-DB_ACTIVE-BASE",
+                "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE"
+            ]
+        },
+        {
+            "refName": "HostTemplate-1-from-kts-2.example.com",
+            "cardinality": 1,
+            "roleConfigGroupsRefNames": [
+                "keytrustee_server-DB_PASSIVE-BASE",
+                "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE"
+            ]
+        }
+    ],
+    "instantiator": {
+        "clusterName": "kts_cluster",
+        "hosts": [
+            {
+                "hostName":"kts-1.example.com",
+                "hostTemplateRefName":"HostTemplate-0-from-kts-1.example.com"
+            },
+            {
+                "hostName":"kts-2.example.com",
+                "hostTemplateRefName":"HostTemplate-1-from-kts-2.example.com"
+            }
+        ],
+        "variables": [
+            {
+                "name": "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE-ssl_server_privatekey_password",
+                "value": "{{ keystore_password }}"
+            },
+            {
+                "name": "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE-ssl_server_privatekey_password",
+                "value": "{{ keystore_password }}"
+            }
+        ],
+        "lenient": false
+    }
+}

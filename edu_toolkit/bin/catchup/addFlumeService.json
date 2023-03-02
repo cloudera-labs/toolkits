@@ -1,0 +1,66 @@
+ { "items": [{
+      "name" : "flume",
+      "type" : "FLUME",
+      "config" : {
+        "items" : [ {
+          "name" : "hdfs_service",
+          "value" : "hdfs"
+        } ]
+      },
+      "roles" : [ {
+        "name" : "flume-AGENT-4cb419c64a872e50f7afa57cd6ab6863",
+        "type" : "AGENT",
+        "hostRef" : {
+          "hostId" : "9bcb38ca-9a2a-4f3d-a4bc-d445b123b338"
+        },
+        "config" : {
+          "items" : [ {
+            "name" : "agent_config_file",
+            "value" : "collector1.sources = src1\r\ncollector1.channels = ch1\r\ncollector1.sinks = sink1\r\n\r\ncollector1.sources.src1.type = avro\r\ncollector1.sources.src1.bind = horse\r\ncollector1.sources.src1.port = 6000\r\ncollector1.sources.src1.channels = ch1\r\n\r\ncollector1.channels.ch1.type = memory\r\ncollector1.channels.ch1.capacity = 500\r\n\r\ncollector1.sinks.sink1.type = hdfs\r\ncollector1.sinks.sink1.hdfs.path = hdfs://elephant/user/flume/collector1\r\ncollector1.sinks.sink1.hdfs.filePrefix = access_log\r\ncollector1.sinks.sink1.channel = ch1\r\ncollector1.sinks.sink1.hdfs.rollSize = 2048\r\ncollector1.sinks.sink1.hdfs.rollCount = 100\r\ncollector1.sinks.sink1.hdfs.rollInterval = 60\r\n"
+          }, {
+            "name" : "agent_name",
+            "value" : "collector1"
+          } ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "flume-AGENT-BASE"
+        }
+      }, {
+        "name" : "flume-AGENT-814026d35bd67b44573c805843e63664",
+        "type" : "AGENT",
+        "hostRef" : {
+          "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8"
+        },
+        "config" : {
+          "items" : [ {
+            "name" : "agent_config_file",
+            "value" : "tail1.sources = src1\r\ntail1.channels = ch1\r\ntail1.sinks = sink1\r\n\r\ntail1.sources.src1.type = exec\r\ntail1.sources.src1.command = tail -F /tmp/access_log\r\ntail1.sources.src1.channels = ch1\r\n\r\ntail1.channels.ch1.type = memory\r\ntail1.channels.ch1.capacity = 500\r\n\r\ntail1.sinks.sink1.type = avro\r\ntail1.sinks.sink1.hostname = horse\r\ntail1.sinks.sink1.port = 6000\r\ntail1.sinks.sink1.batch-size = 1\r\ntail1.sinks.sink1.channel = ch1\r\n"
+          }, {
+            "name" : "agent_name",
+            "value" : "tail1"
+          } ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "flume-AGENT-BASE"
+        }
+      } ],
+      "displayName" : "Flume",
+      "roleConfigGroups" : [ {
+        "name" : "flume-AGENT-BASE",
+        "displayName" : "Agent Default Group",
+        "roleType" : "AGENT",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "flume"
+        },
+        "config" : {
+          "items" : [ {
+            "name" : "agent_java_heapsize",
+            "value" : "52428800"
+          } ]
+        }
+      } ]
+	}]
+}
+

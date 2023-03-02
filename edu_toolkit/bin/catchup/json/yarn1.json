@@ -1,0 +1,16 @@
+{
+  "name" : "yarn-NODEMANAGER-1",
+  "displayName" : "yarn-NODEMANAGER-1",
+  "roleType" : "NODEMANAGER",
+  "base" : false,
+  "serviceRef" : {
+    "clusterName" : "Cluster1",
+    "serviceName" : "yarn"
+  },
+  "config" : {
+    "items" : [ {
+      "name" : "yarn_nodemanager_local_dirs",
+      "value" : "/yarn/nm"
+    } ]
+  }
+}

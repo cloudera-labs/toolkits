@@ -1,0 +1,65 @@
+# This README is for training purposes only and is to be used only
+# in support of approved training. The author assumes no liability
+# for use outside of a training environments. Unless required by
+# applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+# OR CONDITIONS OF ANY KIND, either express or implied.
+
+# Title: README.txt 
+# Author: WKD
+# Date: 200530
+#
+Note: This work was built on scripts provided by Cloudera PS. They have been modified for classroom purposes.
+
+Purpose: This goal is to install SSL across a HDP cluster. The first task is to generate the required signing certificates from a CA. The second tasks is to use this certificate to sign certs and keystores on all nodes. This must be done for the local host and for Ranger. The third task is to use a python script to load the JSON file into Ambari. The fourth task is to restart both Ambari and the HDP cluster.
+
+SETUP SSL FOR THE AMBARI SERVER
+Note: This installs a package called expect. This is an old way of interacting with a shell wizard. We need to hunt down the command line parameters and update this script.
+1. On the Ambari node change directory to the ambari-ssl
+
+	% cd ~/sbin/ssl/ambari-server
+
+2. Run the script to setup ambari with https and with a truststore.
+
+	% ./setup-ambari-ssl.sh
+
+3. Validate the use of https
+
+	https://admin01.cloudair.lan:8443
+
+SETUP TRUSTSTORE FOR THE AMBARI SERVER
+1. On the Ambari node change directory to the ambari-ssl
+
+	% cd ~/sbin/ssl/ambari-server
+
+2. Run the script to setup ambari with https and with a truststore.
+
+	% ./setup-ambari-truststore.sh
+
+3. Validate the use of the truststore
+
+	Ambari > Views > YARN Queue Manager
+	Ambari > Views > View Files
+
+MODIFY CLUSTER INIT FILE
+1. The cluster start up file currently access's http. You must modify to access https.
+
+2. Edit and change the AMBARI_URL variable.
+
+        % sudo vim /etc/init.d/hdp-cluster
+        # AMBARI_URL=https://admin01.cloudair.lan:8443
+        
+3. Validate
+	
+	% sudo /etc/init.d/hdp-cluster check
+	% sudo /etc/init.d/hdp-cluster status
+	% tail -f /var/log/ambari-server/ambari-docker.log
+
+4. Restart cluster. This will take about 10 minutes.
+	
+	% sudo /etc/init.d/hdp-cluster stop
+
+5. Verify the cluster has fully stopped, indicated by all services stopping. Ensure you are viewing Ambari via a HTTPS connection connecting to port 8443. Once the cluster has stopped, restart it.
+
+	% sudo /etc/init.d/hdp-cluster start
+

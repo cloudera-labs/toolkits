@@ -1,0 +1,62 @@
+{ "items": [{
+      "name" : "oozie",
+      "type" : "OOZIE",
+      "config" : {
+        "items" : [ {
+          "name" : "mapreduce_yarn_service",
+          "value" : "yarn"
+        }, {
+          "name" : "zookeeper_service",
+          "value" : "zookeeper"
+        } ]
+      },
+      "roles" : [ {
+        "name" : "oozie-OOZIE_SERVER-c838e0b3b26cd439ffd2442fc1047eb1",
+        "type" : "OOZIE_SERVER",
+        "hostRef" : {
+          "hostId" : "61f8e12f-e474-4d64-9065-85881ddee4c5"
+        },
+        "config" : {
+          "items" : [ ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "oozie-OOZIE_SERVER-BASE"
+        }
+      } ],
+      "displayName" : "Oozie",
+      "roleConfigGroups" : [ {
+        "name" : "oozie-OOZIE_SERVER-BASE",
+        "displayName" : "Oozie Server Default Group",
+        "roleType" : "OOZIE_SERVER",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "oozie"
+        },
+        "config" : {
+          "items" : [ 
+          	{
+            "name" : "oozie_database_host",
+            "value" : "lion"
+          	}, 
+          	{
+            "name" : "oozie_database_password",
+            "value" : "password"
+          	}, 
+          	{
+            "name" : "oozie_database_type",
+            "value" : "mysql"
+          	}, 
+          	{
+            "name" : "oozie_database_user",
+            "value" : "oozieuser"
+          	}, 
+          	{
+            "name" : "oozie_java_heapsize",
+            "value" : "52428800"
+          	} 
+          ]
+        }
+      } ]
+    }
+]}

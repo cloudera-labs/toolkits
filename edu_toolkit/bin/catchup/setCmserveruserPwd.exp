@@ -1,0 +1,6 @@
+#!/usr/bin/expect
+spawn ./setCmserveruserPwd.sh
+expect "mysql>" {send "use mysql;\r"}
+expect "mysql>" {send "update user set password=PASSWORD(\"password\") where User='cmserveruser';\r"}
+expect "mysql>" {send "flush privileges;\r"}
+expect "mysql>" {send "quit\r"}

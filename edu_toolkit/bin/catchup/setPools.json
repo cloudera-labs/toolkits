@@ -1,0 +1,11 @@
+{
+	  "items" : [ 
+	  {
+		"name" : "yarn_nodemanager_resource_cpu_vcores",
+		"value" : "2"
+	  }, {
+		"name" : "yarn_nodemanager_resource_memory_mb",
+		"value" : "3072"
+	  } ]
+}
+

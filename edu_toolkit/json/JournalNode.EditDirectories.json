@@ -1,0 +1,8 @@
+{
+  "items": [
+    {
+      "name": "journalnode_edits_directory_free_space_absolute_thresholds",
+      "value": "{\"critical\":\"536870912\",\"warning\":\"1073741824\"}"
+    }
+  ]
+}

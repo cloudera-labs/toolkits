@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: cloudera_manager/api_client
+#  - role: cloudera_manager/common
+#  - role: cloudera_manager/api_hosts

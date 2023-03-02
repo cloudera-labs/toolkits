@@ -1,0 +1,44 @@
+---
+- name: Create the  Org
+  shell: |
+    keytrustee-orgtool add -n example -c root@localhost && sleep 20 
+    keytrustee-orgtool set-auth --name example --secret "oXf6wmcoy3U/Zk4yAykcUw=="
+  delegate_to: kts-1
+
+- name: Run the rsync command to copy the .trustee directory to kms-2
+  shell: |
+    ssh training@kms-1 -o StrictHostKeyChecking=no sudo rsync -zav /var/lib/kms-keytrustee/keytrustee/.keytrustee kms-2.example.com:/var/lib/kms-keytrustee/keytrustee/ 
+#  delegate_to: cmhost
+
+- name: Restart Ranger kms-kts service
+  uri:
+    url: "{% if security | default(false) %}https{% else %}http{% endif%}://cmhost:{% if security | default(false) %}7183{% else %}7180{% endif%}/api/v44/clusters/Cluster1/services/ranger_kms_kts/commands/restart"
+    method: POST
+    force_basic_auth: yes
+    user: admin
+    password: admin
+    return_content: yes
+    status_code: 200
+    validate_certs: no
+  register: _command3_result
+
+- name: Previous command result
+  uri:
+    url: "{% if security | default(false) %}https{% else %}http{% endif%}://cmhost:{% if security | default(false) %}7183{% else %}7180{% endif %}/api/v44/commands/{{ _command3_result.json.id }}"
+    method: GET
+    body_format: json
+    force_basic_auth: yes
+    user: admin
+    password: admin
+    return_content: yes
+    status_code: 200
+    validate_certs: no
+  register: _command4_result
+  until: not _command4_result.json.active
+  retries: 30
+  delay: 20
+
+- name: debug previous command result
+  debug:
+    msg: "{{ _command4_result.json.resultMessage }}"
+  when: _command4_result.json.success

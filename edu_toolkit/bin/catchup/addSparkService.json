@@ -1,0 +1,71 @@
+{ "items": [{
+      "name" : "spark_on_yarn",
+      "type" : "SPARK_ON_YARN",
+      "config" : {
+			"items" : [ 
+				{ "name" : "yarn_service",
+				  "value" : "yarn"
+				} ]
+      },
+      "roles" : [ 
+		 {
+				"name" : "spar40365358-SPARK_YARN_HISTORY_SERVERm",
+				"type" : "SPARK_YARN_HISTORY_SERVER",
+				"hostRef" : {
+				  "hostId" : "61f8e12f-e474-4d64-9065-85881ddee4c5"
+				},
+				"config" : {
+				  "items" : [ ]
+				},
+				"roleConfigGroupRef" : {
+				  "roleConfigGroupName" : "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE"
+				}
+		  }, 
+		  {
+				"name" : "spark_on_yarn-GATEWAYm",
+				"type" : "GATEWAY",
+				"hostRef" : {
+				  "hostId" : "61f8e12f-e474-4d64-9065-85881ddee4c5"
+				},
+				"config" : {
+				  "items" : [ ]
+				},
+				"roleConfigGroupRef" : {
+				  "roleConfigGroupName" : "spark_on_yarn-GATEWAY-BASE"
+				}
+		  } 
+      ],
+      "displayName" : "Spark",
+      "roleConfigGroups" : [ 
+		  {
+				"name" : "spark_on_yarn-GATEWAY-BASE",
+				"displayName" : "Gateway Default Group",
+				"roleType" : "GATEWAY",
+				"base" : true,
+				"serviceRef" : {
+				  "clusterName" : "cluster",
+				  "serviceName" : "spark_on_yarn"
+				},
+				"config" : {
+				  "items" : [ ]
+				}
+		  }, 
+		  {
+				"name" : "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE",
+				"displayName" : "History Server Default Group",
+				"roleType" : "SPARK_YARN_HISTORY_SERVER",
+				"base" : true,
+				"serviceRef" : {
+				  "clusterName" : "cluster",
+				  "serviceName" : "spark_on_yarn"
+				},
+				"config" : {
+				  "items" : [ {
+					"name" : "history_server_max_heapsize",
+					"value" : "67108864"
+				   } ]
+				 }
+		  } 
+      ]
+}]
+}

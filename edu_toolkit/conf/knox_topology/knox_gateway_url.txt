@@ -1,0 +1,4 @@
+# URL to reach Knox Gateway Single Sign-On
+
+# Create a bookmark for the Knox Gateway. Insert this URL
+https://edge.example.com:8443/gateway/knoxsso/knoxauth/login.html?originalUrl=https://edge.example.com:8443/gateway/homepage/home/

@@ -1,0 +1,22 @@
+---
+
+- name: Set Cloudera Manager agent 'server_host' in config.ini
+  lineinfile:
+    dest: "{{ cloudera_manager_agent_config_file }}"
+    regexp: "^server_host"
+    line: "server_host=cmhost.example.com"
+  notify:
+    - restart cloudera-scm-agent
+
+- name: Restart Cloudera Manager agent if required
+  meta: flush_handlers
+
+- name: Ensure Cloudera Manager agent is started
+  service:
+    name: cloudera-scm-agent
+    state: started
+
+- name: Pause to allow agents to start heartbeating
+  pause:
+    seconds: 30
+  when: cloudera_manager_agent_wait_for_heartbeat

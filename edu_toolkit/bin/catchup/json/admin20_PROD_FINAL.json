@@ -1,0 +1,399 @@
+{
+  "cdhVersion" : "7.1.3",
+  "displayName" : "Cluster1",
+  "cmVersion" : "7.1.3",
+  "repositories" : [ "http://cmhost:8060/cloudera-parcels/7.1.3/", "http://cmhost:8060/cloudera-parcels/CFM/" ],
+  "products" : [ {
+    "version" : "7.1.3-1.cdh7.1.3.p0.4992530",
+    "product" : "CDH"
+  }, {
+    "version" : "2.0.1.0-71",
+    "product" : "CFM"
+  } ],
+  "services" : [ {
+    "refName" : "hive",
+    "serviceType" : "HIVE",
+    "serviceConfigs" : [ {
+      "name" : "hive_metastore_database_user",
+      "variable" : "hive-hive_metastore_database_user"
+    }, {
+      "name" : "hive_metastore_database_password",
+      "variable" : "hive-hive_metastore_database_password"
+    }, {
+      "name" : "hive_metastore_database_host",
+      "variable" : "hive-hive_metastore_database_host"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hive-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hive-HIVEMETASTORE-BASE",
+      "roleType" : "HIVEMETASTORE",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "spark_on_yarn",
+    "serviceType" : "SPARK_ON_YARN",
+    "roleConfigGroups" : [ {
+      "refName" : "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE",
+      "roleType" : "SPARK_YARN_HISTORY_SERVER",
+      "base" : true
+    }, {
+      "refName" : "spark_on_yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "zookeeper",
+    "serviceType" : "ZOOKEEPER",
+    "roleConfigGroups" : [ {
+      "refName" : "zookeeper-SERVER-BASE",
+      "roleType" : "SERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hive_on_tez",
+    "serviceType" : "HIVE_ON_TEZ",
+    "roleConfigGroups" : [ {
+      "refName" : "hive_on_tez-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hive_on_tez-HIVESERVER2-BASE",
+      "roleType" : "HIVESERVER2",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "oozie",
+    "serviceType" : "OOZIE",
+    "roleConfigGroups" : [ {
+      "refName" : "oozie-OOZIE_SERVER-BASE",
+      "roleType" : "OOZIE_SERVER",
+      "configs" : [ {
+        "name" : "oozie_database_user",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_user"
+      }, {
+        "name" : "oozie_database_host",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_host"
+      }, {
+        "name" : "oozie_database_type",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_type"
+      }, {
+        "name" : "oozie_database_password",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_password"
+      } ],
+      "base" : true
+    } ]
+  }, {
+    "refName" : "tez",
+    "serviceType" : "TEZ",
+    "roleConfigGroups" : [ {
+      "refName" : "tez-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hdfs",
+    "serviceType" : "HDFS",
+    "serviceConfigs" : [ {
+      "name" : "hdfs_service_config_safety_valve",
+      "value" : "<property><name>dfs.datanode.scan.period.hours</name><value>240</value></property>"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hdfs-FAILOVERCONTROLLER-BASE",
+      "roleType" : "FAILOVERCONTROLLER",
+      "base" : true
+    }, {
+      "refName" : "hdfs-NAMENODE-1",
+      "roleType" : "NAMENODE",
+      "configs" : [ {
+        "name" : "dfs_federation_namenode_nameservice",
+        "value" : "my-name-service"
+      }, {
+        "name" : "dfs_namenode_quorum_journal_name",
+        "value" : "my-name-service"
+      }, {
+        "name" : "autofailover_enabled",
+        "value" : "true"
+      } ],
+      "base" : false
+    }, {
+      "refName" : "hdfs-DATANODE-BASE",
+      "roleType" : "DATANODE",
+      "base" : true
+    }, {
+      "refName" : "hdfs-BALANCER-BASE",
+      "roleType" : "BALANCER",
+      "base" : true
+    }, {
+      "refName" : "hdfs-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hdfs-JOURNALNODE-BASE",
+      "roleType" : "JOURNALNODE",
+      "configs" : [ {
+        "name" : "dfs_journalnode_edits_dir",
+        "variable" : "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir"
+      } ],
+      "base" : true
+    }, {
+      "refName" : "hdfs-HTTPFS-BASE",
+      "roleType" : "HTTPFS",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "yarn",
+    "serviceType" : "YARN",
+    "serviceConfigs" : [ {
+      "name" : "queuemanager_service",
+      "ref" : "queuemanager"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "yarn-RESOURCEMANAGER-BASE",
+      "roleType" : "RESOURCEMANAGER",
+      "base" : true
+    }, {
+      "refName" : "yarn-NODEMANAGER-BASE",
+      "roleType" : "NODEMANAGER",
+      "base" : true
+    }, {
+      "refName" : "yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "yarn-JOBHISTORY-BASE",
+      "roleType" : "JOBHISTORY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "nifi",
+    "serviceType" : "NIFI",
+    "serviceConfigs" : [ {
+      "name" : "zookeeper_service",
+      "ref" : "zookeeper"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "nifi-NIFI_NODE-BASE",
+      "roleType" : "NIFI_NODE",
+      "configs" : [ {
+        "name" : "staging/state-management.xml_role_safety_valve",
+        "value" : "<property><name>xml.state-management.cluster-provider.zk-provider.enabled</name><value>true</value></property><property><name>xml.state-management.local-provider.local-provider.enabled</name><value>true</value></property>"
+      } ],
+      "base" : true
+    } ]
+  }, {
+    "refName" : "sqoop_client",
+    "serviceType" : "SQOOP_CLIENT",
+    "roleConfigGroups" : [ {
+      "refName" : "sqoop_client-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "kafka",
+    "serviceType" : "KAFKA",
+    "serviceConfigs" : [ {
+      "name" : "hdfs_service",
+      "ref" : "hdfs"
+    }, {
+      "name" : "zookeeper_service",
+      "ref" : "zookeeper"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "kafka-KAFKA_BROKER-1",
+      "roleType" : "KAFKA_BROKER",
+      "configs" : [ {
+        "name" : "broker_max_heap_size",
+        "value" : "512"
+      } ],
+      "base" : false
+    }, {
+      "refName" : "kafka-KAFKA_BROKER-BASE",
+      "roleType" : "KAFKA_BROKER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "impala",
+    "serviceType" : "IMPALA",
+    "serviceConfigs" : [ {
+      "name" : "hdfs_service",
+      "ref" : "hdfs"
+    }, {
+      "name" : "hive_service",
+      "ref" : "hive"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "impala-IMPALAD-BASE",
+      "roleType" : "IMPALAD",
+      "configs" : [ {
+        "name" : "impalad_memory_limit",
+        "value" : "853540864"
+      } ],
+      "base" : true
+    }, {
+      "refName" : "impala-STATESTORE-BASE",
+      "roleType" : "STATESTORE",
+      "base" : true
+    }, {
+      "refName" : "impala-CATALOGSERVER-BASE",
+      "roleType" : "CATALOGSERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "queuemanager",
+    "serviceType" : "QUEUEMANAGER",
+    "serviceConfigs" : [ {
+      "name" : "zookeeper_service",
+      "ref" : "zookeeper"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "queuemanager-QUEUEMANAGER_STORE-BASE",
+      "roleType" : "QUEUEMANAGER_STORE",
+      "base" : true
+    }, {
+      "refName" : "queuemanager-QUEUEMANAGER_WEBAPP-BASE",
+      "roleType" : "QUEUEMANAGER_WEBAPP",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hue",
+    "serviceType" : "HUE",
+    "serviceConfigs" : [ {
+      "name" : "database_type",
+      "variable" : "hue-database_type"
+    }, {
+      "name" : "hms_service",
+      "ref" : "hive"
+    }, {
+      "name" : "hive_service",
+      "ref" : "hive_on_tez"
+    }, {
+      "name" : "database_password",
+      "variable" : "hue-database_password"
+    }, {
+      "name" : "database_host",
+      "variable" : "hue-database_host"
+    }, {
+      "name" : "database_user",
+      "variable" : "hue-database_user"
+    }, {
+      "name" : "oozie_service",
+      "ref" : "oozie"
+    }, {
+      "name" : "hdfs_service",
+      "ref" : "hdfs"
+    }, {
+      "name" : "zookeeper_service",
+      "ref" : "zookeeper"
+    }, {
+      "name" : "impala_service",
+      "ref" : "impala"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hue-HUE_SERVER-BASE",
+      "roleType" : "HUE_SERVER",
+      "base" : true
+    }, {
+      "refName" : "hue-HUE_LOAD_BALANCER-BASE",
+      "roleType" : "HUE_LOAD_BALANCER",
+      "base" : true
+    } ]
+  } ],
+  "hostTemplates" : [ {
+    "refName" : "HostTemplate-0-from-cmhost.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-GATEWAY-BASE", "hive-GATEWAY-BASE", "hive_on_tez-GATEWAY-BASE", "hue-HUE_LOAD_BALANCER-BASE", "hue-HUE_SERVER-BASE", "spark_on_yarn-GATEWAY-BASE", "sqoop_client-GATEWAY-BASE", "tez-GATEWAY-BASE", "yarn-GATEWAY-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-1-from-master-1.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-BALANCER-BASE", "hdfs-FAILOVERCONTROLLER-BASE", "hdfs-HTTPFS-BASE", "hdfs-JOURNALNODE-BASE", "hdfs-NAMENODE-1", "hive_on_tez-GATEWAY-BASE", "hive-GATEWAY-BASE", "kafka-KAFKA_BROKER-BASE", "queuemanager-QUEUEMANAGER_STORE-BASE", "queuemanager-QUEUEMANAGER_WEBAPP-BASE", "spark_on_yarn-GATEWAY-BASE", "tez-GATEWAY-BASE", "yarn-JOBHISTORY-BASE", "yarn-RESOURCEMANAGER-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-2-from-master-2.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-FAILOVERCONTROLLER-BASE", "hdfs-NAMENODE-1", "hive-GATEWAY-BASE", "hive-HIVEMETASTORE-BASE", "hive_on_tez-GATEWAY-BASE", "hive_on_tez-HIVESERVER2-BASE", "impala-CATALOGSERVER-BASE", "impala-STATESTORE-BASE", "kafka-KAFKA_BROKER-BASE", "nifi-NIFI_NODE-BASE", "oozie-OOZIE_SERVER-BASE", "spark_on_yarn-GATEWAY-BASE", "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE", "tez-GATEWAY-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-3-from-worker-1.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "impala-IMPALAD-BASE", "kafka-KAFKA_BROKER-1", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-4-from-worker-3.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "hdfs-JOURNALNODE-BASE", "impala-IMPALAD-BASE", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-5-from-worker-2.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "hdfs-JOURNALNODE-BASE", "impala-IMPALAD-BASE", "yarn-NODEMANAGER-BASE" ]
+  } ],
+  "instantiator" : {
+    "clusterName" : "Cluster1",
+    "hosts" : [ {
+      "hostName" : "cmhost.example.com",
+        "hostTemplateRefName" : "HostTemplate-0-from-cmhost.example.com"
+      }, {
+        "hostName" : "master-1.example.com",
+        "hostTemplateRefName" : "HostTemplate-1-from-master-1.example.com"
+      }, {
+        "hostName" : "master-2.example.com",
+        "hostTemplateRefName" : "HostTemplate-2-from-master-2.example.com"
+      }, {
+        "hostName" : "worker-1.example.com",
+        "hostTemplateRefName" : "HostTemplate-3-from-worker-1.example.com"
+      }, {
+        "hostName" : "worker-2.example.com",
+        "hostTemplateRefName" : "HostTemplate-5-from-worker-2.example.com"
+      }, {
+        "hostName" : "worker-3.example.com",
+        "hostTemplateRefName" : "HostTemplate-4-from-worker-3.example.com"
+    } ],
+    "variables" : [ {
+      "name" : "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir",
+      "value" : "/dfs/jn"
+    }, {
+      "name" : "hive-hive_metastore_database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "hive-hive_metastore_database_password",
+      "value" : "password"
+    }, {
+      "name" : "hive-hive_metastore_database_user",
+      "value" : "hiveuser"
+    }, {
+      "name" : "hue-database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "hue-database_password",
+      "value" : "password"
+    }, {
+      "name" : "hue-database_type",
+      "value" : "mysql"
+    }, {
+      "name" : "hue-database_user",
+      "value" : "hueuser"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_password",
+      "value" : "password"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_type",
+      "value" : "mysql"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_user",
+      "value" : "oozieuser"
+    } ],
+    "roleConfigGroups" : [ {
+      "rcgRefName" : "hdfs-NAMENODE-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-NODEMANAGER-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "kafka-KAFKA_BROKER-1",
+      "name" : ""
+    } ],
+    "lenient" : false
+  }
+}

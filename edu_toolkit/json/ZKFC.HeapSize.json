@@ -1,0 +1,8 @@
+{
+  "items": [ 
+    { 
+      "name": "failover_controller_java_heapsize", 
+      "value": "67108864" 
+    } 
+  ]
+} 

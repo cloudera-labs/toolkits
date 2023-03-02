@@ -1,0 +1,69 @@
+---
+- name: Initialize active Key Trustee Server
+  hosts: kts-1
+  become: yes
+  gather_facts: no
+  tasks:
+    - shell: ktadmin init --confdir {{ keytrustee_server_conf_dir }}
+
+- name: Create temp directory for keys
+  hosts: localhost
+  connection: local
+  become: yes
+  gather_facts: no
+  tasks:
+    - file:
+        path: "{{ local_temp_dir }}/kts"
+        owner: root
+        group: root
+        state: directory
+        mode: 0777
+
+- name: Fetch GPG keys and configs from active Key Trustee Server
+  hosts: kts-1
+  become: yes
+  gather_facts: no
+  tasks:
+    - fetch:
+        src: "{{ keytrustee_server_conf_dir }}/{{ item }}"
+        dest: "{{ local_temp_dir }}/kts"
+        fail_on_missing: no
+      with_items: "{{ keytrustee_server_key_files }}"
+
+- name: Copy to passive Key Trustee Server
+  hosts: kts-2
+  become: yes
+  gather_facts: no
+  tasks:
+    - copy:
+        src: "{{ local_temp_dir }}/kts/kts-1{{ keytrustee_server_conf_dir }}/"
+        dest: "{{ keytrustee_server_conf_dir }}"
+        owner: keytrustee
+        group: keytrustee
+        mode: 0600
+
+- name: Delete temp directory
+  hosts: localhost
+  connection: local
+  become: yes
+  gather_facts: no
+  tasks:
+    - file:
+        path: "{{ local_temp_dir }}/kts"
+        state: absent
+
+- name: Initialize passive Key Trustee Server
+  hosts: kts-2
+  become: yes
+  gather_facts: no
+  tasks:
+    - shell: ktadmin init --confdir {{ keytrustee_server_conf_dir }}
+
+- name: Configure Key Trustee Server HA
+  hosts: localhost
+  connection: local
+  become: yes
+  gather_facts: no
+  roles:
+    - deployment/services/kts_high_availability
+

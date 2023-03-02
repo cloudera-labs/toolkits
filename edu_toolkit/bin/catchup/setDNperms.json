@@ -1,0 +1,7 @@
+{ "items" : [ 
+	  {
+		"name" : "dfs_datanode_data_dir_perm",
+		"value" : "755"
+	  }
+]}
+
