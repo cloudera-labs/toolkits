@@ -1,0 +1,38 @@
+---
+- name: Configure Ranger
+  block:
+    - name: Restore ranger DB
+      block:
+        - name: Drop Ranger DB
+          mysql_db:
+            name:
+              - ranger 
+            state: absent
+
+        - name: Create a new Ranger DB
+          mysql_db:
+            name: 
+              - ranger
+            state: present
+
+        - name: Restore Ranger DB
+          mysql_db:
+            state: import
+            name: ranger
+            target: "{{ role_path }}/files/ranger_backup.sql"
+
+        - name: Configure KMS URL in Ranger
+          shell: |
+            mysql -u root -pBadPass@1 -e "UPDATE ranger.x_service_config_map SET config_value = 'kms://https@kms-1.example.com:9494/kms' WHERE config_key = 'provider';"
+          when: |
+            security | default(false) and 
+            sdx == yes | default('no') and
+            encryption == yes | default('no')
+
+        - name: Restart Ranger Service
+          include_role:
+            name: operations/restart_service
+          vars:
+            cluster_restart_timeout: 3600
+            service_to_restart:
+              - ranger

@@ -1,0 +1,18 @@
+#!/usr/bin/expect
+spawn /home/training/training_materials/admin/scripts/catchup/dropDBsAndUsers.sh
+sleep 2
+expect "*>" { send "DROP DATABASE IF EXISTS cmserver;\r"}
+expect "*>" { send "DROP USER cmserveruser;\r"}
+expect "*>" { send "DROP DATABASE IF EXISTS rman;\r"}
+expect "*>" { send "DROP USER rmanuser;\r"}
+expect "*>" { send "DROP DATABASE IF EXISTS amon;\r"}
+expect "*>" { send "DROP USER amonuser;\r"}
+expect "*>" { send "DROP DATABASE IF EXISTS metastore;\r"}
+expect "*>" { send "DROP USER hiveuser;\r"}
+expect "*>" { send "DROP DATABASE IF EXISTS oozie;\r"}
+expect "*>" { send "DROP USER oozieuser;\r"}
+expect "*>" { send "DROP DATABASE IF EXISTS hue;\r"}
+expect "*>" { send "DROP USER hueuser;\r"}
+expect "*>" { send "CREATE DATABASE test CHARACTER SET utf8;\r"}
+expect "*>" { send "exit;\r"}
+sleep 4

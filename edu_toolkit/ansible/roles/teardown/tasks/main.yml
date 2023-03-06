@@ -1,0 +1,40 @@
+
+#- set_fact:
+#    _tde_clusters: "{{ definition.clusters | json_query(query) | default([]) }}"
+#  vars:
+#    query: "[?security.hdfs_encryption].name"
+
+- name: Teardown Cloudera agent
+  include_tasks: teardown_cloudera_agent.yml
+  when:
+    - "'cluster' in group_names or 'cloudera_manager' in group_names"
+
+- name: Teardown Cloudera server
+  include_tasks: teardown_cloudera_server.yml
+  when:
+    - "'cloudera_manager' in group_names"
+
+- name: Teardown Cloudera daemons
+  package:
+    name: cloudera-manager-daemons
+    state: absent
+  when:
+    - "'cluster' in group_names or 'cloudera_manager' in group_names"
+
+- name: Delete configured databases
+  include_tasks: teardown_database.yml
+  when:
+    - "'cloudera_manager' in group_names"
+
+- name: Delete files and directories 
+  include_tasks: teardown_directories.yml
+  when:
+    - "'cluster' in group_names"
+
+- name: Set YARN Queue Manager prerequisites
+  file:
+    path: /var/lib/hadoop-yarn
+    state: directory
+    mode: '0755'
+  when:
+    - "'yarn_q_manager' in group_names"

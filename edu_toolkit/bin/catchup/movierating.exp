@@ -1,0 +1,11 @@
+#!/usr/bin/expect
+spawn ./movierating.sh
+sleep 2
+expect "*>" { send "DROP TABLE IF EXISTS movierating;\r"}
+expect "*>" { send "CREATE EXTERNAL TABLE movierating\r"}
+expect "*>" { send "(userid INT, movieid STRING, rating TINYINT)\r"}
+expect "*>" { send "ROW FORMAT DELIMITED FIELDS TERMINATED BY '\\t'\r"}
+expect "*>" { send "LOCATION '/user/training/movierating';\r"}
+expect "*>" { send "SHOW TABLES;\r"}
+expect "*>" { send "SELECT COUNT(*) FROM movierating;\r"}
+expect "*>" { send "!quit\r"}

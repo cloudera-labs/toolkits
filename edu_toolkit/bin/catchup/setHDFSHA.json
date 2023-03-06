@@ -1,0 +1,17 @@
+{
+	"activeNnName": "hdfs-NAMENODEe",
+    "standbyNnName": "hdfs-NAMENODEt",
+    "standbyNnHostId": "e8f321c6-efee-44ef-98c2-0d30398e3122",
+    "nameservice": "mycluster",
+    "activeFcName": "hdfs-FAILOVERCONTROLLERe",
+    "standbyFcName": "hdfs-FAILOVERCONTROLLERt",
+    "zkServiceName": "zookeeper",
+    "jns": [ 
+        { "jnName": "hdfs-JOURNALNODEh", "jnHostId": "45f62175-8f66-4dd2-956c-a70df5076c4a", "jnEditsDir": "/dfs/jn"},
+        { "jnName": "hdfs-JOURNALNODEe", "jnHostId": "8b437d46-1806-4fc8-b837-ab8140b9390a", "jnEditsDir": "/dfs/jn"},
+        { "jnName": "hdfs-JOURNALNODEt", "jnHostId": "e8f321c6-efee-44ef-98c2-0d30398e3122", "jnEditsDir": "/dfs/jn"}
+	],
+    "forceInitZNode": "true",
+    "clearExistingStandbyNameDirs": "true",
+    "clearExistingJnEditsDir": "true" 
+}

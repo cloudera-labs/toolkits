@@ -1,0 +1,14 @@
+# Various configurations used to manual configure CDP clusters
+
+#HDFS Service Advanced Configuration Snippet
+#for ranger-hdfs-security.xml
+Name:    ranger.plugin.hdfs.chained.services
+Value:	 cm_hive
+
+Name: 	ranger.plugin.hdfs.chained.services.cm_hive.impl
+Value:	org.apache.ranger.chainedpugin.hdfs.hive.RangerHdfsHiveChainedPlugin
+
+
+# Hive Metastore Access Control and Ranger RMS Proxy User Hosts
+Name: 	rangerrms_proxy_user_hosts_list
+Value:	*

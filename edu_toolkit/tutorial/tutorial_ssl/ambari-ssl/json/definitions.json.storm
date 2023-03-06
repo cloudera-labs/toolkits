@@ -1,0 +1,23 @@
+{
+  "STORM": {
+    "storm-site": {
+      "ui.https.keystore.path": "KEYSTORELOC",
+      "ui.https.key.password": "KEYPASS",
+      "ui.https.keystore.password": "KEYPASS",
+      "ui.https.keystore.type": "jks",
+      "ui.https.port": "8740"
+    },
+    "ranger-storm-security": {
+      "ranger.plugin.storm.policy.rest.url": "RANGERURL"
+    },
+    "ranger-storm-policymgr-ssl": {
+      "xasecure.policymgr.clientssl.keystore": "KEYSTORERANGER",
+      "xasecure.policymgr.clientssl.keystore.password": "KEYPASS",
+      "xasecure.policymgr.clientssl.truststore": "TRUSTSTORELOC",
+      "xasecure.policymgr.clientssl.truststore.password": "TRUSTSTOREPASS"
+    },
+    "ranger-storm-plugin-properties": {
+      "common.name.for.certificate": "RANGERCOMMONNAME"
+    }
+  }
+}

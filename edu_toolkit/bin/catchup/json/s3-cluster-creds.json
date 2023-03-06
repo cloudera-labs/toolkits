@@ -1,0 +1,4 @@
+{
+  "items" : [ {
+    "name" : "core_site_safety_valve",
+    "value" : "<property><name>fs.s3a.access.key</name><value>replace-value-1</value></property><property><name>fs.s3a.secret.key</name><value>replace-value-2</value></property><property><name>fs.s3a.session.token</name><value>replace-value-3</value></property><property><name>fs.s3a.aws.credentials.provider</name><value>org.apache.hadoop.fs.s3a.TemporaryAWSCredentialsProvider</value></property>"}]}

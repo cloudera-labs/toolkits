@@ -1,0 +1,12 @@
+{
+  "items": [ 
+    { 
+      "name": "mapreduce_map_java_opts_max_heap", 
+      "value": "1048576000" 
+    }, 
+    { 
+      "name": "mapreduce_map_memory_mb", 
+      "value": "1200" 
+    } 
+  ]
+} 

@@ -1,0 +1,14 @@
+{ "items": [{
+     "name" : "spark_on_yarn-GATEWAY-814026d35bd67b44573c805843e63664",
+     "type" : "GATEWAY",
+     "hostRef" : {
+          "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8"
+        },
+        "config" : {
+          "items" : [ ]
+        },
+        "roleConfigGroupRef" : {
+          "roleConfigGroupName" : "spark_on_yarn-GATEWAY-BASE"
+        }
+      }
+]}

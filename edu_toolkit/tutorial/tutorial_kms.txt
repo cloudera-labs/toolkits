@@ -1,0 +1,46 @@
+# KTS
+# Sync keys between KTS hosts to allow for active/passive
+
+ssh kts-1.example.com
+sudo su -l
+ktadmin init
+ls /var/lib/keytrustee/.keytrustee/.ssl
+
+rsync -zav --exclude .ssl /var/lib/keytrustee/.keytrustee kts-2.example.com:/var/lib/keytrustee/
+
+exit
+exit
+
+ssh kts-2.example.com
+sudo ktadmin init
+sudo ls -l /var/lib/keytrustee/.keytrustee/.ssl
+exit
+
+# Verify the keys match
+curl -k https://kts-1.example.com:11371/?a=fingerprint
+curl -k https://kts-2.example.com:11371/?a=fingerprint
+
+
+# KMS
+# Sync between KMS and KTS by copying the secret key to KMS
+ssh kts-1.example.com
+sudo keytrustee-orgtool add -n example -c root@localhost
+sudo keytrustee-orgtool list
+exit
+
+# KMS 
+# Sync between the KMS hosts 
+
+ssh kms-1.example.com
+sudo su -l
+ls -a /var/lib/kms-keytrustee/keytrustee/.keytrustee
+
+rsync -zav /var/lib/kms-keytrustee/keytrustee/.keytrustee kms-2.example.com:/var/lib/kms-keytrustee/keytrustee/
+
+exit
+
+# Verify the keys are synced
+ssh kms-2.example.com
+sudo ls -l /var/lib/kms-keytrustee/keytrustee/.keytrustee
+exit
+exit

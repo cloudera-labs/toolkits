@@ -1,0 +1,33 @@
+
+cd $JAVA_HOME/jre/lib/security
+
+sudo cp cacerts jssecacerts
+
+sudo keytool -storepasswd -keystore jssecacerts -storepass changeit -new BadPass@1
+
+sudo keytool -importkeystore -srckeystore jssecacerts -srcstorepass BadPass@1 -deststoretype PKCS12 -destkeystore jssecacerts.p12 -deststorepass BadPass@1
+
+sudo openssl pkcs12 -in jssecacerts.p12 -passin pass:BadPass@1 -out jssecacerts.pem
+
+cd
+
+# Copy and paste this file into the Auto-TLS Wizard for CM
+/usr/java/default/jre/lib/security/jssecacerts.pem
+
+sudo systemctl restart cloudera-scm-server
+
+sudo tail -f /var/log/cloudera-scm-server/cloudera-scm-server.log
+
+# Watch for the jetty server to start up and serve up the CM web pages.
+
+
+cd /var/lib/cloudera-scm-agent/agent-certs
+
+cat cm-auto-host_key.pem
+
+cat cm-auto-host_cert_chain.pem
+
+cat cm-auto-global_cacerts.pem
+
+cd
+

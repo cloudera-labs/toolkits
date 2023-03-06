@@ -1,0 +1,5 @@
+#!/usr/bin/expect
+spawn /home/training/training_materials/admin/scripts/catchup/setMysqlPwd.sh
+sleep 2
+expect "Enter password:" { send "\r"}
+sleep 4

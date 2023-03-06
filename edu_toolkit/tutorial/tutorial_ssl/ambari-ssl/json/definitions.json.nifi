@@ -1,0 +1,78 @@
+{
+    "NIFI": {
+        "nifi-ambari-ssl-config": {
+            "nifi.node.ssl.isenabled": "true",
+            "nifi.security.keyPasswd": "KEYSTOREPASS",
+            "nifi.security.keystore": "KEYSTORELOC",
+            "nifi.security.keystorePasswd": "KEYSTOREPASS",
+            "nifi.security.keystoreType": "JKS",
+            "nifi.security.truststore": "TRUSTSTORELOC",
+            "nifi.security.truststorePasswd": "TRUSTSTOREPASS",
+            "nifi.security.truststoreType": "JKS"
+        },
+        "nifi-properties": {
+            "nifi.security.identity.mapping.pattern.dn": "^CN=(.*?),OU=(.*?),DC=(.*?),DC=(.*?)$",
+            "nifi.security.identity.mapping.transform.dn": "NONE",
+            "nifi.security.identity.mapping.value.dn": "$1",
+            "nifi.security.identity.mapping.pattern.kerb": "^(.*?)/(.*?)@(.*?)$",
+            "nifi.security.identity.mapping.transform.kerb": "NONE",
+            "nifi.security.identity.mapping.value.kerb": "$1"
+        },
+        "ranger-nifi-plugin-properties": {
+            "nifi.authentication": "SSL",
+            "nifi.ssl.keystore": "KEYSTORELOC",
+            "nifi.ssl.keystorePassword": "KEYSTOREPASS",
+            "nifi.ssl.keystoreType": "JKS",
+            "nifi.ssl.truststore": "TRUSTSTORELOC",
+            "nifi.ssl.truststorePassword": "TRUSTSTOREPASS",
+            "nifi.ssl.truststoreType": "JKS"
+        },
+        "ranger-nifi-policymgr-ssl": {
+            "xasecure.policymgr.clientssl.keystore": "RANGERKEYSTORE",
+            "xasecure.policymgr.clientssl.keystore.password": "KEYSTOREPASS",
+            "xasecure.policymgr.clientssl.truststore": "TRUSTSTORELOC",
+            "xasecure.policymgr.clientssl.truststore.password": "TRUSTSTOREPASS"
+        }
+    },
+    "NIFI_REGISTRY": {
+        "nifi-registry-ambari-ssl-config": {
+            "nifi.registry.initial.admin.identity": "admin",
+            "nifi.registry.security.keyPasswd": "KEYSTOREPASS",
+            "nifi.registry.security.keystore": "KEYSTORELOC",
+            "nifi.registry.security.keystorePasswd": "KEYSTOREPASS",
+            "nifi.registry.security.keystoreType": "JKS",
+            "nifi.registry.security.needClientAuth": "false",
+            "nifi.registry.security.truststore": "TRUSTSTORELOC",
+            "nifi.registry.security.truststorePasswd": "TRUSTSTOREPASS",
+            "nifi.registry.security.truststoreType": "JKS",
+            "nifi.registry.ssl.isenabled": "true",
+            "nifi.toolkit.tls.regenerate": "false"
+        },
+        "nifi-registry-properties": {
+            "nifi.registry.security.identity.mapping.pattern.dn": "^CN=(.*?),OU=(.*?),DC=(.*?),DC=(.*?)$",
+            "nifi.registry.security.identity.mapping.transform.dn": "NONE",
+            "nifi.registry.security.identity.mapping.value.dn": "$1",
+            "nifi.registry.security.identity.mapping.pattern.kerb": "^(.*?)/(.*?)@(.*?)$",
+            "nifi.registry.security.identity.mapping.transform.kerb": "NONE",
+            "nifi.registry.security.identity.mapping.value.kerb": "$1"
+        },
+        "ranger-nifi-registry-plugin-properties": {
+            "nifi.registry.authentication": "SSL",
+            "nifi.registry.ssl.keystore": "KEYSTORELOC",
+            "nifi.registry.ssl.keystorePassword": "KEYSTOREPASS",
+            "nifi.registry.ssl.keystoreType": "JKS",
+            "nifi.registry.ssl.truststore": "TRUSTSTORELOC",
+            "nifi.registry.ssl.truststorePassword": "TRUSTSTOREPASS",
+            "nifi.registry.ssl.truststoreType": "JKS",
+            "owner.for.certificate": "CN=flow01.cloudair.lan,OU=EDU,O=Cloudair,L=PaloAlto,ST=CA,C=US",
+            "ranger-nifi-registry-plugin-enabled": "yes"
+        },
+        "ranger-nifi-registry-policymgr-ssl": {
+            "owner.for.certificate": "CN=flow01.cloudair.lan,OU=EDU,O=Cloudair,L=PaloAlto,ST=CA,C=US",
+            "xasecure.policymgr.clientssl.keystore": "RANGERKEYSTORE",
+            "xasecure.policymgr.clientssl.keystore.password": "KEYSTOREPASS",
+            "xasecure.policymgr.clientssl.truststore": "TRUSTSTORELOC",
+            "xasecure.policymgr.clientssl.truststore.password": "TRUSTSTOREPASS"
+        }
+   }
+}

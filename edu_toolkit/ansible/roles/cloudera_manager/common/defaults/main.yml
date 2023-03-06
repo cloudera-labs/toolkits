@@ -1,0 +1,14 @@
+---
+cloudera_manager_agent_config_file: /etc/cloudera-scm-agent/config.ini
+cloudera_manager_protocol: http
+cloudera_manager_host: cmhost
+cloudera_manager_port: 7180
+cloudera_manager_database_embedded: False
+cloudera_manager_database_host: localhost
+cloudera_manager_database_type: mariadb
+cloudera_manager_database_name: scm
+cloudera_manager_database_user: scm
+cloudera_manager_database_password: BadPass@1
+master_password: BadPass@1
+cloudera_manager_agent_lib_directory: /var/lib/cloudera-scm-agent
+cloudera_manager_cmf_java_opts_default: "-Xmx4G -XX:MaxPermSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"

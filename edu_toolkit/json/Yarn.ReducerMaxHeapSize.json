@@ -1,0 +1,8 @@
+{
+  "items": [ 
+    { 
+      "name": "mapreduce_reduce_java_opts_max_heap", 
+      "value": "450000000" 
+    } 
+  ]
+} 

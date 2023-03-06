@@ -1,0 +1,12 @@
+{
+  "items": [ 
+    { 
+      "name": "yarn_scheduler_maximum_allocation_mb", 
+      "value": "1536" 
+    }, 
+    { 
+      "name": "yarn_nodemanager_resource_memory_mb ", 
+      "value": "1536" 
+    } 
+  ]
+} 

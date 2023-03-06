@@ -1,0 +1,15 @@
+#Config File for Ambari and HDP ssl
+[Configs]
+OrgUnit=EDU
+Organization=Cloudair
+City=PaloAlto
+State=CA
+CountryCode=US
+Domain=cloudair.lan
+RangerHostname=client03.cloudair.lan
+RangerIP=172.18.0.23
+PkiLocation=/etc/security/pki
+KeystoreLocation=/etc/security/keystores
+KeystorePassword=BadPass%1
+TruststoreLocation=/etc/security/truststores
+TruststorePassword=BadPass%1

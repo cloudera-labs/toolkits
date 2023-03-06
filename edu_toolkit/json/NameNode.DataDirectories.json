@@ -1,0 +1,9 @@
+{
+  "items": [
+    {
+      "name": "namenode_data_directories_free_space_absolute_thresholds",
+      "value": "{\"critical\":\"536870912\",\"warning\":\"1073741824\"}"
+    }
+  ]
+}
+

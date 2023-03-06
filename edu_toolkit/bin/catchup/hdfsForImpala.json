@@ -1,0 +1,4 @@
+{ "items" : [ {
+      "name" : "dfs_block_local_path_access_user",
+      "value" : "impala"
+} ] }

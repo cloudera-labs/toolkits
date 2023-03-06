@@ -1,0 +1,6 @@
+---
+__cloudera_manager_major_version: "{{ cloudera_manager_version.split('.')[0] }}"
+__cloudera_manager_repo_url_trial: http://cmhost:8060/cm7.6.1/
+__cloudera_manager_repo_key_filename: RPM-GPG-KEY-cloudera
+__cloudera_manager_repo_key_trial: "http://cmhost:8060/cm7.6.1/RPM-GPG-KEY-cloudera"
+

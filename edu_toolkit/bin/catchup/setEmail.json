@@ -1,0 +1,19 @@
+{
+	"items" : [ 
+		{
+          "name" : "alert_mailserver_password",
+          "value" : "training"
+        }, 
+        {
+          "name" : "alert_mailserver_recipients",
+          "value" : "training@localhost"
+        }, 
+        {
+          "name" : "alert_mailserver_username",
+          "value" : "training"
+        }, 
+        {
+          "name" : "mail_format",
+          "value" : "text"
+        } ]
+}

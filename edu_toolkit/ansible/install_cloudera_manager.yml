@@ -1,0 +1,23 @@
+---
+
+- name: Install Cloudera Manager
+  hosts: cloudera_manager
+  become: yes
+  tasks:
+    - name: 
+      shell: |
+        yum-complete-transaction --cleanup-on
+
+- name: Install Cloudera Manager daemons
+  hosts: cloudera_manager
+  become: yes
+  any_errors_fatal: true
+  roles:
+    - cloudera_manager/daemons
+
+- name: Install Cloudera Manager server
+  hosts: cloudera_manager
+  become: yes
+  roles:
+    - cloudera_manager/server
+

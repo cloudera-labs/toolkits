@@ -1,0 +1,14 @@
+cmhost.example.com
+edge.example.com
+master-1.example.com
+master-2.example.com
+master-3.example.com
+worker-1.example.com
+worker-2.example.com
+worker-3.example.com
+worker-4.example.com
+ecs-1.example.com
+ecs-2.example.com
+ecs-3.example.com
+ecs-4.example.com
+ecs-5.example.com

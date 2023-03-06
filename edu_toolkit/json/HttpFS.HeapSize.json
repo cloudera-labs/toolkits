@@ -1,0 +1,8 @@
+{
+  "items": [ 
+    { 
+      "name": "httpfs_java_heapsize", 
+      "value": "67108864" 
+    } 
+  ]
+} 

@@ -1,0 +1,5 @@
+---
+
+- set_fact:
+    cloudera_manager_url: "{{ cloudera_manager_protocol }}://{{ cloudera_manager_host }}:{{ cloudera_manager_port }}"
+  when: cloudera_manager_url is not defined

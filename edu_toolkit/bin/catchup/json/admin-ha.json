@@ -1,0 +1,366 @@
+{
+  "cdhVersion" : "5.14.4",
+  "displayName" : "Cluster 1",
+  "cmVersion" : "5.15.2",
+  "repositories" : [ "https://archive.cloudera.com/cdh5/parcels/{latest_supported}/", "https://archive.cloudera.com/cdh4/parcels/latest/", "https://archive.cloudera.com/impala/parcels/latest/", "https://archive.cloudera.com/search/parcels/latest/", "https://archive.cloudera.com/accumulo/parcels/1.4/", "https://archive.cloudera.com/accumulo-c5/parcels/latest/", "https://archive.cloudera.com/kafka/parcels/latest/", "https://archive.cloudera.com/navigator-keytrustee5/parcels/latest/", "https://archive.cloudera.com/spark/parcels/latest/", "https://archive.cloudera.com/sqoop-connectors/parcels/latest/" ],
+  "products" : [ {
+    "version" : "5.14.4-1.cdh5.14.4.p0.3",
+    "product" : "CDH"
+  }, {
+    "version" : "2.3.0.cloudera4-1.cdh5.13.3.p0.611179",
+    "product" : "SPARK2"
+  }, {
+    "version" : "4.3.1",
+    "product" : "Anaconda"
+  } ],
+  "services" : [ {
+    "refName" : "hive",
+    "serviceType" : "HIVE",
+    "serviceConfigs" : [ {
+      "name" : "hive_metastore_database_user",
+      "variable" : "hive-hive_metastore_database_user"
+    }, {
+      "name" : "hive_metastore_database_password",
+      "variable" : "hive-hive_metastore_database_password"
+    }, {
+      "name" : "hive_metastore_database_host",
+      "variable" : "hive-hive_metastore_database_host"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hive-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hive-HIVESERVER2-BASE",
+      "roleType" : "HIVESERVER2",
+      "base" : true
+    }, {
+      "refName" : "hive-HIVEMETASTORE-BASE",
+      "roleType" : "HIVEMETASTORE",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "sqoop_client",
+    "serviceType" : "SQOOP_CLIENT",
+    "roleConfigGroups" : [ {
+      "refName" : "sqoop_client-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "spark_on_yarn",
+    "serviceType" : "SPARK_ON_YARN",
+    "serviceConfigs" : [ {
+      "name" : "yarn_service",
+      "ref" : "yarn"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE",
+      "roleType" : "SPARK_YARN_HISTORY_SERVER",
+      "base" : true
+    }, {
+      "refName" : "spark_on_yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "zookeeper",
+    "serviceType" : "ZOOKEEPER",
+    "roleConfigGroups" : [ {
+      "refName" : "zookeeper-SERVER-BASE",
+      "roleType" : "SERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "oozie",
+    "serviceType" : "OOZIE",
+    "roleConfigGroups" : [ {
+      "refName" : "oozie-OOZIE_SERVER-BASE",
+      "roleType" : "OOZIE_SERVER",
+      "configs" : [ {
+        "name" : "oozie_database_user",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_user"
+      }, {
+        "name" : "oozie_database_host",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_host"
+      }, {
+        "name" : "oozie_database_type",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_type"
+      }, {
+        "name" : "oozie_database_password",
+        "variable" : "oozie-OOZIE_SERVER-BASE-oozie_database_password"
+      } ],
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hue",
+    "serviceType" : "HUE",
+    "serviceConfigs" : [ {
+      "name" : "database_type",
+      "variable" : "hue-database_type"
+    }, {
+      "name" : "database_password",
+      "variable" : "hue-database_password"
+    }, {
+      "name" : "database_host",
+      "variable" : "hue-database_host"
+    }, {
+      "name" : "database_user",
+      "variable" : "hue-database_user"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "hue-HUE_SERVER-BASE",
+      "roleType" : "HUE_SERVER",
+      "base" : true
+    }, {
+      "refName" : "hue-HUE_LOAD_BALANCER-BASE",
+      "roleType" : "HUE_LOAD_BALANCER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "hdfs",
+    "serviceType" : "HDFS",
+    "roleConfigGroups" : [ {
+      "refName" : "hdfs-FAILOVERCONTROLLER-BASE",
+      "roleType" : "FAILOVERCONTROLLER",
+      "base" : true
+    }, {
+      "refName" : "hdfs-NAMENODE-1",
+      "roleType" : "NAMENODE",
+      "configs" : [ {
+        "name" : "dfs_federation_namenode_nameservice",
+        "value" : "my-name-service"
+      }, {
+        "name" : "dfs_namenode_quorum_journal_name",
+        "value" : "my-name-service"
+      }, {
+        "name" : "autofailover_enabled",
+        "value" : "true"
+      } ],
+      "base" : false
+    }, {
+      "refName" : "hdfs-DATANODE-BASE",
+      "roleType" : "DATANODE",
+      "base" : true
+    }, {
+      "refName" : "hdfs-BALANCER-BASE",
+      "roleType" : "BALANCER",
+      "base" : true
+    }, {
+      "refName" : "hdfs-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "hdfs-JOURNALNODE-BASE",
+      "roleType" : "JOURNALNODE",
+      "configs" : [ {
+        "name" : "dfs_journalnode_edits_dir",
+        "variable" : "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir"
+      } ],
+      "base" : true
+    }, {
+      "refName" : "hdfs-HTTPFS-BASE",
+      "roleType" : "HTTPFS",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "impala",
+    "serviceType" : "IMPALA",
+    "roleConfigGroups" : [ {
+      "refName" : "impala-IMPALAD-BASE",
+      "roleType" : "IMPALAD",
+      "base" : true
+    }, {
+      "refName" : "impala-STATESTORE-BASE",
+      "roleType" : "STATESTORE",
+      "base" : true
+    }, {
+      "refName" : "impala-CATALOGSERVER-BASE",
+      "roleType" : "CATALOGSERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "yarn",
+    "serviceType" : "YARN",
+    "roleConfigGroups" : [ {
+      "refName" : "yarn-RESOURCEMANAGER-BASE",
+      "roleType" : "RESOURCEMANAGER",
+      "base" : true
+    }, {
+      "refName" : "yarn-NODEMANAGER-BASE",
+      "roleType" : "NODEMANAGER",
+      "base" : true
+    }, {
+      "refName" : "yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "yarn-JOBHISTORY-BASE",
+      "roleType" : "JOBHISTORY",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "spark2_on_yarn",
+    "serviceType" : "SPARK2_ON_YARN",
+    "roleConfigGroups" : [ {
+      "refName" : "spark2_on_yarn-GATEWAY-BASE",
+      "roleType" : "GATEWAY",
+      "base" : true
+    }, {
+      "refName" : "spark2_on_yarn-SPARK2_YARN_HISTORY_SERVER-BASE",
+      "roleType" : "SPARK2_YARN_HISTORY_SERVER",
+      "base" : true
+    } ]
+  }, {
+    "refName" : "flume",
+    "serviceType" : "FLUME",
+    "serviceConfigs" : [ {
+      "name" : "hdfs_service",
+      "ref" : "hdfs"
+    } ],
+    "roleConfigGroups" : [ {
+      "refName" : "flume-AGENT-1",
+      "roleType" : "AGENT",
+      "configs" : [ {
+        "name" : "agent_name",
+        "value" : "tail1"
+      }, {
+        "name" : "agent_config_file",
+        "value" : "tail1.sources = src1\ntail1.channels = ch1\ntail1.sinks = sink1\n\ntail1.sources.src1.type = exec\ntail1.sources.src1.command = tail -F /tmp/access_log\ntail1.sources.src1.channels = ch1\n\ntail1.channels.ch1.type = memory\ntail1.channels.ch1.capacity = 500\n\ntail1.sinks.sink1.type = avro\ntail1.sinks.sink1.hostname = worker-2\ntail1.sinks.sink1.port = 6000\ntail1.sinks.sink1.batch-size = 1\ntail1.sinks.sink1.channel = ch1"
+      } ],
+      "base" : false
+    }, {
+      "refName" : "flume-AGENT-2",
+      "roleType" : "AGENT",
+      "configs" : [ {
+        "name" : "agent_config_file",
+        "value" : "collector1.sources = src1\ncollector1.channels = ch1\ncollector1.sinks = sink1\n\ncollector1.sources.src1.type = avro\ncollector1.sources.src1.bind = worker-2\ncollector1.sources.src1.port = 6000\ncollector1.sources.src1.channels = ch1\n\ncollector1.channels.ch1.type = memory\ncollector1.channels.ch1.capacity = 500\n\ncollector1.sinks.sink1.type = hdfs\ncollector1.sinks.sink1.hdfs.path = hdfs://master-1/user/flume/collector1\ncollector1.sinks.sink1.hdfs.filePrefix = access_log\ncollector1.sinks.sink1.channel = ch1\n\n# Optional\n# collector1.sinks.sink1.hdfs.rollSize = 2048\n# collector1.sinks.sink1.hdfs.rollCount = 100\n# collector1.sinks.sink1.hdfs.rollInterval = 60\n"
+      }, {
+        "name" : "agent_name",
+        "value" : "collector1"
+      } ],
+      "base" : false
+    } ]
+  } ],
+  "hostTemplates" : [ {
+    "refName" : "HostTemplate-0-from-worker-1.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "impala-IMPALAD-BASE", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-1-from-master-2.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-FAILOVERCONTROLLER-BASE", "hdfs-NAMENODE-1", "hive-HIVEMETASTORE-BASE", "hive-HIVESERVER2-BASE", "impala-CATALOGSERVER-BASE", "impala-STATESTORE-BASE", "oozie-OOZIE_SERVER-BASE", "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-2-from-worker-3.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-DATANODE-BASE", "hdfs-JOURNALNODE-BASE", "impala-IMPALAD-BASE", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-3-from-worker-2.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "flume-AGENT-2", "hdfs-DATANODE-BASE", "hdfs-JOURNALNODE-BASE", "impala-IMPALAD-BASE", "yarn-NODEMANAGER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-4-from-cmhost.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "flume-AGENT-1", "hdfs-GATEWAY-BASE", "hive-GATEWAY-BASE", "hue-HUE_LOAD_BALANCER-BASE", "hue-HUE_SERVER-BASE", "spark2_on_yarn-GATEWAY-BASE", "sqoop_client-GATEWAY-BASE", "yarn-GATEWAY-BASE", "zookeeper-SERVER-BASE" ]
+  }, {
+    "refName" : "HostTemplate-5-from-master-1.example.com",
+    "cardinality" : 1,
+    "roleConfigGroupsRefNames" : [ "hdfs-BALANCER-BASE", "hdfs-FAILOVERCONTROLLER-BASE", "hdfs-HTTPFS-BASE", "hdfs-JOURNALNODE-BASE", "hdfs-NAMENODE-1", "spark2_on_yarn-SPARK2_YARN_HISTORY_SERVER-BASE", "spark_on_yarn-GATEWAY-BASE", "yarn-JOBHISTORY-BASE", "yarn-RESOURCEMANAGER-BASE", "zookeeper-SERVER-BASE" ]
+  } ],
+  "instantiator" : {
+    "clusterName" : "Cluster1",
+    "hosts" : [ {
+      "hostName" : "cmhost.example.com",
+      "hostTemplateRefName" : "HostTemplate-4-from-cmhost.example.com"
+    }, {
+      "hostName" : "master-1.example.com",
+      "hostTemplateRefName" : "HostTemplate-5-from-master-1.example.com"
+    }, {
+      "hostName" : "master-2.example.com",
+      "hostTemplateRefName" : "HostTemplate-1-from-master-2.example.com"
+    }, {
+      "hostName" : "worker-1.example.com",
+      "hostTemplateRefName" : "HostTemplate-0-from-worker-1.example.com"
+    }, {
+      "hostName" : "worker-2.example.com",
+      "hostTemplateRefName" : "HostTemplate-3-from-worker-2.example.com"
+    }, {
+      "hostName" : "worker-3.example.com",
+      "hostTemplateRefName" : "HostTemplate-2-from-worker-3.example.com"
+    } ],
+    "variables" : [ {
+      "name" : "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir",
+      "value" : "/dfs/jn"
+    }, {
+      "name" : "hive-hive_metastore_database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "hive-hive_metastore_database_password",
+      "value" : "password"
+    }, {
+      "name" : "hive-hive_metastore_database_user",
+      "value" : "hiveuser"
+    }, {
+      "name" : "hue-database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "hue-database_password",
+      "value" : "password"
+    }, {
+      "name" : "hue-database_type",
+      "value" : "mysql"
+    }, {
+      "name" : "hue-database_user",
+      "value" : "hueuser"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_host",
+      "value" : "cmhost.example.com"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_password",
+      "value" : "password"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_type",
+      "value" : "mysql"
+    }, {
+      "name" : "oozie-OOZIE_SERVER-BASE-oozie_database_user",
+      "value" : "oozieuser"
+    }, {
+      "name" : "yarn-NODEMANAGER-1-yarn_nodemanager_local_dirs",
+      "value" : "/yarn/nm"
+    }, {
+      "name" : "yarn-NODEMANAGER-2-yarn_nodemanager_local_dirs",
+      "value" : "/yarn/nm"
+    } ],
+    "roleConfigGroups" : [ {
+      "rcgRefName" : "hdfs-NAMENODE-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "hdfs-DATANODE-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "hdfs-DATANODE-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "impala-IMPALAD-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "impala-IMPALAD-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-GATEWAY-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-NODEMANAGER-2",
+      "name" : ""
+    }, {
+      "rcgRefName" : "yarn-NODEMANAGER-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "flume-AGENT-1",
+      "name" : ""
+    }, {
+      "rcgRefName" : "flume-AGENT-2",
+      "name" : ""
+    } ]
+  }
+}

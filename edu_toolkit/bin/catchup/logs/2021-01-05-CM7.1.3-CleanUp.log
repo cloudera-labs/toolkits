@@ -1,0 +1,15 @@
+rm: cannot remove ‘/var/run/cloudera-scm-agent/process’: Device or resource busy
+rm: cannot remove ‘/var/run/cloudera-scm-agent/process’: Device or resource busy
+rm: cannot remove ‘/var/run/cloudera-scm-agent/process’: Device or resource busy
+rm: cannot remove ‘/var/run/cloudera-scm-agent/process’: Device or resource busy
+Warning: Using a password on the command line interface can be insecure.
+expect: spawn id exp5 not open
+    while executing
+"expect "*>" { send "DROP USER cmserveruser;\r"}"
+    (file "/home/training/training_materials/admin/scripts/catchup/dropDBsAndUsers.exp" line 5)
+mysqladmin: connect to server at 'localhost' failed
+error: 'Access denied for user 'root'@'localhost' (using password: YES)'
+/opt/cloudera/parcels/CDH-7*/bin/hdfs has not been configured as an alternative for hdfs
+/opt/cloudera/parcels/CDH-7*/bin/yarn has not been configured as an alternative for yarn
+/opt/cloudera/parcels/CDH-7*/bin/beeline has not been configured as an alternative for beeline
+/opt/cloudera/parcels/CDH-7*/bin/mapred has not been configured as an alternative for mapred

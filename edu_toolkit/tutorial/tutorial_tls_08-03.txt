@@ -1,0 +1,23 @@
+# Tutorial TLS
+# 08-03 Creating a Global Truststore
+
+2. Open a Mate terminal
+
+3. Create the global keystore
+$ cd ~/tls/cm
+$ cp $JAVA_HOME/jre/lib/security/cacerts global.jks
+$ file global.jks
+$ keytool -storepasswd -keystore global.jks -storepass changeit -new BadPass@1
+
+4. Convert the Java keystore to PKCS12
+$ keytool -importkeystore -srckeystore global.jks -srcstorepass BadPass@1 -deststoretype PKCS12 -destkeystore global.p12 -deststorepass BadPass@1
+
+$ openssl pkcs12 -info -passin pass:BadPass@1 -in global.p12 > /tmp/global.p12.out
+$ less /tmp/global.p12.out
+
+5. Convert PKCS12 to PEM
+$ openssl pkcs12 -in global.p12 -passin pass:BadPass@1  -out global.pem
+$ keytool -printcert -v -file global.pem | less
+
+6. Transfer the file.
+$ cp global.jks global.pem ~/tls/hosts/

@@ -1,0 +1,70 @@
+---
+
+- name: Check current external Mappings
+  cm_api:
+    endpoint: /externalUserMappings?view=FULL
+  register: _mapping_summary
+
+- name: Verify mapping list
+  set_fact:
+    _mappings_list: "{{ _mapping_summary.json | json_query(query)  }}"
+  vars:
+    query: "items[*]"
+
+- name: Configure External PAM LDAP Authentication
+  block:
+    - name: Pick configs template
+      set_fact:
+        pam_configs_template_json: "{{ lookup('template', 'external_pam_ldap_authentication.j2', convert_data=False) }}"
+
+    - name: Apply External PAM LDAP Authentication
+      cm_api:
+        endpoint: /cm/config?message=External%20PAM%20authentication
+        method: PUT
+        body: "{{ pam_configs_template_json|to_json }}"
+      when: _mappings_list == []
+
+
+
+- name: Configure CM Knox configuratios
+  block:
+    - name: Pick CM Knox configs template
+      set_fact:
+        cm_knox_configs_template_json: "{{ lookup('template', 'cm_knox_configs.j2', convert_data=False) }}"
+
+    - name: Apply CM KNOX Configs
+      cm_api:
+        endpoint: /cm/config?message=CM%20KNOX%20config
+        method: PUT
+        body: "{{ cm_knox_configs_template_json|to_json }}"
+  when: "knox == 'yes' | default('no')" 
+
+- name: Restart Cloudera Manager Server
+  block:
+    - name: restart cloudera-scm-server
+      service:
+        name: cloudera-scm-server
+        state: restarted
+
+
+    - name: wait cloudera-scm-server
+      wait_for:
+        host: localhost
+        port: 7180
+        delay: 5
+        state: started
+        timeout: 300
+  when: _mappings_list == []
+
+- name: Manage External Users and Groups Mappings
+  block:
+    - name: set_fact
+      set_fact:
+        user_mappings_json: "{{ lookup('template', 'external_user_mappings.j2', convert_data=False) }}"
+
+    - name: Configure External User Mappings
+      cm_api:
+        endpoint: /externalUserMappings?message=External%20Users%20and%20Groups%20Mappings
+        method: POST
+        body: "{{ user_mappings_json|to_json }}"
+  when: _mappings_list == []

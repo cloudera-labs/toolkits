@@ -1,0 +1,8 @@
+---
+
+- name: Create KMS services
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - role: deployment/services/kms

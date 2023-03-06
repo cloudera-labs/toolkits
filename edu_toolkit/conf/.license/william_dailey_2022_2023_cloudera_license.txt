@@ -1,0 +1,29 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+{
+  "deactivationDate" : "2023-06-14",
+  "features" : [ ],
+  "name" : "William_Dailey_2022_2023",
+  "uuid" : "4e996052-9385-45f0-a7e9-032b0732e13e",
+  "version" : 1,
+  "startDate" : "2022-06-15",
+  "expirationDate" : "2023-06-14"
+}
+-----BEGIN PGP SIGNATURE-----
+Version: BCPG v1.46
+
+iQIcBAEBCAAGBQJiqY2wAAoJECXwRXLmH8tl0QAQAJRMfMlTP0l45ugeqVKxtdgI
+6zpZyfdxUa8ctcWBSWc/XrrDqwkBI88OW8Wn1u0tmKaXClE1leL79QSR1+FYowdP
+IShfW3Tig8RjBHRtY92szTEEh+3CKR7VSJtzB6o8LEFRPhXCetx0K1Y/lIAYg4/c
+itqHLsOYVUP86uQ1o6/4kFvQsOx1InMd890oBuah5YM5AWaSLCgEyxOCfDp3DB1Y
+MSfeVsbC0pw/ncbL3ket5u09UXIsAGzF/6wU2UQ9U3JzQyv+WRkBPEKcXhezkYOx
+CDwIQf9H2VCUzSefcV6o6bv1gGz1V8uDwOicsZemPsdkWnqItmz7Qu5VuogU+1pF
+keoQHosKw1Y+OOK8g1bVxhZ+YkyLJRaDukKg15x8jH5y2mHxkUP7k+RVDX8jwq6T
+T2ynnfxwmuQ9ml8NL3nOJXO1aSxekUsQ+S1C/GpsuOWTNbgwk/dkfrS+Q8qO5Mdh
+JxFIX/Rbp7z8vf1vErAqLO6cWL/e3dtpclcEJYdHL/sF8kcM81emYa1c5ok3QyK+
+3IYbWVPeq34w0p8vblsnOiH9FfP0vj0rQj/7ood3afgYh7wgjGt5z4zIop4mxsf+
+QJ9Kw/kOzYuyeh3mptkin0+gkNT8zrkx/4Krs6qE6mYrSkS9qgMM/2LqZ/K7OU/V
+kZvwmPVLgY0Gy2m4JSfU
+=AKiH
+-----END PGP SIGNATURE-----

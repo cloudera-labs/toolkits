@@ -1,0 +1,3 @@
+---
+- name: Delete files and directories 
+  script: cleanup.sh-bkp

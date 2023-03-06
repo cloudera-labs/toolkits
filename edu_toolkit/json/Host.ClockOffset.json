@@ -1,0 +1,6 @@
+{
+  "items" : [ {
+    "name" : "host_clock_offset_thresholds",
+    "value" : "{\"warning\":\"-2.0\",\"critical\":\"-2.0\"}"
+  } ]
+}

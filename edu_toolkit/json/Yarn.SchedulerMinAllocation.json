@@ -1,0 +1,8 @@
+{
+  "items": [ 
+    { 
+      "name": "yarn_scheduler_minimum_allocation_mb", 
+      "value": "512" 
+    } 
+  ]
+} 

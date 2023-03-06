@@ -1,0 +1,71 @@
+{ "items": [ 
+     { "name" : "impala", "type" : "IMPALA", "config" : {
+        "items" : [ { "name" : "hdfs_service", "value" : "hdfs" }, 
+        { "name" : "hive_service", "value" : "hive"  }, 
+        { "name" : "llama_am_ha_zk_auth_secret_key", "value" : "a3gq0UsEbA4OcWqPalCuf6iotSPnpZ" }, 
+        { "name" : "rm_dirty", "value" : "true" } ]  },
+      "roles" : [ {
+        "name" : "impala-CATALOGSERVER-4cb419c64a872e50f7afa57cd6ab6863",
+        "type" : "CATALOGSERVER",
+        "hostRef" : { "hostId" : "9bcb38ca-9a2a-4f3d-a4bc-d445b123b338" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "impala-CATALOGSERVER-BASE" } }, {
+        "name" : "impala-IMPALAD-4cb419c64a872e50f7afa57cd6ab6863",
+        "type" : "IMPALAD",
+        "hostRef" : { "hostId" : "9bcb38ca-9a2a-4f3d-a4bc-d445b123b338" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : {  "roleConfigGroupName" : "impala-IMPALAD-BASE" } }, {
+        "name" : "impala-IMPALAD-814026d35bd67b44573c805843e63664",
+        "type" : "IMPALAD",
+        "hostRef" : { "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8" },
+        "config" : {  "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "impala-IMPALAD-BASE" }
+      }, {
+        "name" : "impala-IMPALAD-c838e0b3b26cd439ffd2442fc1047eb1",
+        "type" : "IMPALAD",
+        "hostRef" : { "hostId" : "61f8e12f-e474-4d64-9065-85881ddee4c5" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "impala-IMPALAD-BASE" } }, {
+        "name" : "impala-IMPALAD-efab8ae640b9117c1ecf297b1ed25560",
+        "type" : "IMPALAD",
+        "hostRef" : { "hostId" : "d352ffb7-03f3-4b81-8163-af06a0378634" }, "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "impala-IMPALAD-BASE" }  }, {
+        "name" : "impala-STATESTORE-4cb419c64a872e50f7afa57cd6ab6863",
+        "type" : "STATESTORE",
+        "hostRef" : { "hostId" : "9bcb38ca-9a2a-4f3d-a4bc-d445b123b338" },
+        "config" : { "items" : [ ] },
+        "roleConfigGroupRef" : { "roleConfigGroupName" : "impala-STATESTORE-BASE" }  } ],
+      "displayName" : "Impala",
+      "roleConfigGroups" : [ {
+        "name" : "impala-CATALOGSERVER-BASE",
+        "displayName" : "Impala Catalog Server Default Group",
+        "roleType" : "CATALOGSERVER",
+        "base" : true,
+        "serviceRef" : { "clusterName" : "cluster", "serviceName" : "impala" },
+        "config" : {  "items" : [ ]  } }, {
+        "name" : "impala-IMPALAD-BASE",
+        "displayName" : "Impala Daemon Default Group",
+        "roleType" : "IMPALAD",
+        "base" : true,
+        "serviceRef" : { "clusterName" : "cluster", "serviceName" : "impala"  },
+        "config" : { "items" : [ { "name" : "impalad_memory_limit",  "value" : "268435456" }, 
+        { "name" : "scratch_dirs", "value" : "/impala/impalad" } ] }
+      }, { "name" : "impala-LLAMA-BASE",
+        "displayName" : "Impala Llama ApplicationMaster Default Group",
+        "roleType" : "LLAMA", "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "impala"  },
+        "config" : {
+          "items" : [ ]  } }, {
+        "name" : "impala-STATESTORE-BASE",
+        "displayName" : "Impala StateStore Default Group",
+        "roleType" : "STATESTORE",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "impala"
+        }, "config" : { "items" : [ ] } } ]
+	}]
+} 
+]}

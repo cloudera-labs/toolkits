@@ -1,0 +1,2930 @@
+{
+	"cdhVersion": "7.1.7",
+	"displayName": "Cluster1",
+	"cmVersion": "7.6.1",
+	"repositories": [
+		""
+	],
+	"products": [
+{% if ENABLE_ENCRYPTION == 'yes' %}
+        {
+            "version": "7.1.7.1000-1.keytrustee7.1.7.1000.p0.24102687",
+            "product": "KEYTRUSTEE_SERVER"
+        },
+{% endif %}
+		{
+			"version": "7.1.7-1.cdh7.1.7.p1000.24102687",
+			"product": "CDH"
+		}
+	],
+	"services": [{
+			"refName": "hive",
+			"serviceType": "HIVE",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "ssl_client_truststore_location",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "hiveserver2_truststore_file",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "hiveserver2_keystore_password",
+					"variable": "hive-hiveserver2_keystore_password"
+				},
+				{
+					"name": "hiveserver2_enable_ssl",
+					"value": "true"
+				},
+				{
+					"name": "hiveserver2_keystore_path",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_client_truststore_password",
+					"variable": "hive-ssl_client_truststore_password"
+				},
+				{
+					"name": "hiveserver2_truststore_password",
+					"variable": "hive-hiveserver2_truststore_password"
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+				{
+					"name": "atlas_service",
+					"ref": "atlas"
+				},
+{% endif %}
+				{
+					"name": "hive_metastore_database_user",
+					"variable": "hive-hive_metastore_database_user"
+				},
+				{
+					"name": "hive_metastore_database_password",
+					"variable": "hive-hive_metastore_database_password"
+				},
+				{
+					"name": "hive_metastore_database_host",
+					"variable": "hive-hive_metastore_database_host"
+				},
+				{
+					"name": "mapreduce_yarn_service",
+					"ref": "yarn"
+				},
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "hive-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"base": true
+				},
+				{
+					"refName": "hive-HIVEMETASTORE-BASE",
+					"roleType": "HIVEMETASTORE",
+					"configs": [{
+							"name": "hive_metastore_server_max_message_size",
+							"value": "129918566"
+						},
+						{
+							"name": "hive_metastore_java_heapsize",
+							"value": "1299185664"
+						}
+					],
+					"base": true
+				}
+			]
+		},
+		{
+			"refName": "zookeeper",
+			"serviceType": "ZOOKEEPER",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "enableSecurity",
+					"value": "true"
+				},
+				{
+					"name": "zookeeper_tls_truststore_password",
+					"variable": "zookeeper-zookeeper_tls_truststore_password"
+				},
+				{
+					"name": "zookeeper_tls_truststore",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "zookeeper_tls_keystore_password",
+					"variable": "zookeeper-zookeeper_tls_keystore_password"
+				},
+				{
+					"name": "zookeeper_tls_keystore",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "quorum_auth_enable_sasl",
+					"value": "true"
+				},
+				{
+					"name": "zookeeper_tls_enabled",
+					"value": "true"
+				}
+{% endif %}
+			],
+			"roleConfigGroups": [{
+				"refName": "zookeeper-SERVER-1",
+				"roleType": "SERVER",
+				"configs": [
+{% if ENABLE_TLS == 'yes' %}
+					{
+						"name": "jmx_tls_truststore_password",
+						"variable": "zookeeper-SERVER-1-jmx_tls_truststore_password"
+					},
+					{
+						"name": "jmx_tls_client_auth_enabled",
+						"value": "true"
+					},
+					{
+						"name": "jmx_tls_enabled",
+						"value": "true"
+					},
+					{
+						"name": "jmx_tls_keystore",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "jmx_tls_truststore",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "jmx_tls_keystore_password",
+						"variable": "zookeeper-SERVER-1-jmx_tls_keystore_password"
+					},
+{% endif %}
+					{
+						"name": "maxSessionTimeout",
+						"value": "60000"
+					},
+					{
+						"name": "zookeeper_server_java_heapsize",
+						"value": "1073741824"
+					}
+				],
+				"base": false
+			}]
+		},
+		{
+			"refName": "hive_on_tez",
+			"serviceType": "HIVE_ON_TEZ",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "hiveserver2_enable_ssl",
+					"value": "true"
+				},
+				{
+					"name": "hiveserver2_truststore_password",
+					"variable": "hive_on_tez-hiveserver2_truststore_password"
+				},
+				{
+					"name": "hiveserver2_truststore_file",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "hiveserver2_keystore_password",
+					"variable": "hive_on_tez-hiveserver2_keystore_password"
+				},
+				{
+					"name": "hiveserver2_keystore_path",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+				{
+					"name": "atlas_service",
+					"ref": "atlas"
+				},
+{% endif %}
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				},
+				{
+					"name": "tez_service",
+					"ref": "tez"
+				},
+				{
+					"name": "mapreduce_yarn_service",
+					"ref": "yarn"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "hms_connector",
+					"ref": "hive"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "hive_on_tez-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"base": true
+				},
+				{
+					"refName": "hive_on_tez-HIVESERVER2-1",
+					"roleType": "HIVESERVER2",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "hive_on_tez-HIVESERVER2-1-ssl_server_keystore_password"
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true"
+						},
+{% endif %}
+						{
+							"name": "hiveserver2_java_heapsize",
+							"value": "1299185664"
+						}
+					],
+					"base": false
+				}
+			]
+		},
+		{
+			"refName": "oozie",
+			"serviceType": "OOZIE",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "oozie_use_ssl",
+					"value": "true"
+				},
+{% endif %}
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "hive_service",
+					"ref": "hive"
+				},
+				{
+					"name": "spark_on_yarn_service",
+					"ref": "spark_on_yarn"
+				},
+				{
+					"name": "mapreduce_yarn_service",
+					"ref": "yarn"
+				}
+			],
+			"roleConfigGroups": [{
+				"refName": "oozie-OOZIE_SERVER-1",
+				"roleType": "OOZIE_SERVER",
+				"configs": [
+{% if ENABLE_TLS == 'yes' %}
+					{
+						"name": "oozie_https_keystore_file",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "oozie_zookeeper_https_truststore_file",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "oozie_zookeeper_https_keystore_password",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_zookeeper_https_keystore_password"
+					},
+					{
+						"name": "oozie_https_truststore_file",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "oozie_https_truststore_password",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_https_truststore_password"
+					},
+					{
+						"name": "oozie_zookeeper_https_keystore_file",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "oozie_zookeeper_https_truststore_password",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_zookeeper_https_truststore_password"
+					},
+					{
+						"name": "oozie_https_keystore_password",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_https_keystore_password"
+					},
+{% endif %}
+					{
+						"name": "oozie_database_type",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_database_type"
+					},
+					{
+						"name": "oozie_database_password",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_database_password"
+					},
+					{
+						"name": "oozie_java_heapsize",
+						"value": "1073741824"
+					},
+					{
+						"name": "oozie_database_user",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_database_user"
+					},
+					{
+						"name": "oozie_database_host",
+						"variable": "oozie-OOZIE_SERVER-1-oozie_database_host"
+					}
+				],
+				"base": false
+			}]
+		},
+		{
+			"refName": "tez",
+			"serviceType": "TEZ",
+			"serviceConfigs": [{
+				"name": "yarn_service",
+				"ref": "yarn"
+			}],
+			"roleConfigGroups": [{
+				"refName": "tez-GATEWAY-BASE",
+				"roleType": "GATEWAY",
+				"base": true
+			}]
+		},
+		{
+			"refName": "zeppelin",
+			"serviceType": "ZEPPELIN",
+			"serviceConfigs": [
+{% if ENABLE_KERBEROS == 'yes' %}
+				{
+					"name": "zeppelin.authentication.method.kerberos",
+					"value": "true"
+				},
+{% endif %}
+{% if ENABLE_KNOX == 'yes' %}
+                {
+                    "name": "knox_service",
+                    "ref": "knox"
+                },
+{% endif %}
+				{
+					"name": "yarn_service",
+					"ref": "yarn"
+				},
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "spark_on_yarn_service",
+					"ref": "spark_on_yarn"
+				}
+			],
+			"roleConfigGroups": [{
+				"refName": "zeppelin-ZEPPELIN_SERVER-BASE",
+				"roleType": "ZEPPELIN_SERVER",
+				"configs": [
+{% if ENABLE_TLS == 'yes' %}
+					{
+						"name": "ssl_client_truststore_location",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "ssl_server_keystore_location",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+					},
+					{
+						"name": "ssl_client_truststore_password",
+						"variable": "zeppelin-ZEPPELIN_SERVER-BASE-ssl_client_truststore_password"
+					},
+					{
+						"name": "ssl_enabled",
+						"value": "true"
+					},
+					{
+						"name": "ssl_server_keystore_password",
+						"variable": "zeppelin-ZEPPELIN_SERVER-BASE-ssl_server_keystore_password"
+					}
+{% endif %}
+				],
+				"base": true
+			}]
+		},
+		{
+			"refName": "impala",
+			"serviceType": "IMPALA",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "ssl_client_ca_certificate",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "impala_truststore_file",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_private_key",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_server_certificate",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "impala_truststore_password",
+					"variable": "impala-impala_truststore_password"
+				},
+				{
+					"name": "client_services_ssl_enabled",
+					"value": "true"
+				},
+				{
+					"name": "ssl_private_key_password",
+					"variable": "impala-ssl_private_key_password"
+				},
+				{
+					"name": "hadoop_secure_web_ui",
+					"value": "true"
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+
+				{
+					"name": "atlas_service",
+					"ref": "atlas"
+				},
+{% endif %}
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				},
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "hive_service",
+					"ref": "hive"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "impala-CATALOGSERVER-1",
+					"roleType": "CATALOGSERVER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "webserver_private_key_password_cmd",
+							"variable": "impala-CATALOGSERVER-1-webserver_private_key_password_cmd"
+						},
+						{
+							"name": "webserver_private_key_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "webserver_certificate_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+{% endif %}
+						{
+							"name": "catalogd_embedded_jvm_heapsize",
+							"value": "1299185664"
+						},
+					],
+					"base": false
+				},
+				{
+					"refName": "impala-IMPALAD-1",
+					"roleType": "IMPALAD",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "webserver_private_key_password_cmd",
+							"variable": "impala-IMPALAD-1-webserver_private_key_password_cmd"
+						},
+						{
+							"name": "webserver_private_key_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "webserver_certificate_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+{% endif %}
+						{
+							"name": "impalad_embedded_jvm_heapsize",
+							"value": "473956352"
+						},
+						{
+							"name": "impalad_memory_limit",
+							"value": "853540864"
+						},
+						{
+							"name": "scratch_dirs",
+							"variable": "impala-IMPALAD-1-scratch_dirs"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "impala-STATESTORE-1",
+					"roleType": "STATESTORE",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "webserver_private_key_password_cmd",
+							"variable": "impala-STATESTORE-1-webserver_private_key_password_cmd"
+						},
+						{
+							"name": "webserver_private_key_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "webserver_certificate_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						}
+{% endif %}
+					],
+					"base": false
+				}
+			]
+		},
+		{
+			"refName": "spark_on_yarn",
+			"serviceType": "SPARK_ON_YARN",
+			"serviceConfigs": [
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "atlas_service",
+					"ref": "atlas"
+				},
+{% endif %}
+				{
+					"name": "yarn_service",
+					"ref": "yarn"
+				},
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-1",
+					"roleType": "SPARK_YARN_HISTORY_SERVER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true"
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-1-ssl_server_keystore_password"
+						},
+{% endif %}
+						{
+							"name": "history_server_max_heapsize",
+							"value": "536870912"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "spark_on_yarn-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"base": true
+				}
+			]
+		},
+		{
+			"refName": "kafka",
+			"serviceType": "KAFKA",
+			"serviceConfigs": [
+{% if ENABLE_KERBEROS == 'yes' %}
+				{
+					"name": "kerberos.auth.enable",
+					"value": "true"
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+{% endif %}
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "kafka-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"base": true
+				},
+				{
+					"refName": "kafka-KAFKA_BROKER-2",
+					"roleType": "KAFKA_BROKER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "kafka-KAFKA_BROKER-2-ssl_client_truststore_password"
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "kafka-KAFKA_BROKER-2-ssl_server_keystore_password"
+						},
+						{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true"
+						},
+						{
+							"name": "ssl_server_keystore_keypassword",
+							"variable": "kafka-KAFKA_BROKER-2-ssl_server_keystore_keypassword"
+						},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+						{
+							"name": "atlas.audit.enabled",
+							"value": "true"
+						},
+{% endif %}
+						{
+							"name": "broker_max_heap_size",
+							"value": "512"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "kafka-KAFKA_BROKER-3",
+					"roleType": "KAFKA_BROKER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "kafka-KAFKA_BROKER-3-ssl_client_truststore_password"
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "kafka-KAFKA_BROKER-3-ssl_server_keystore_password"
+						},
+						{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true"
+						},
+						{
+							"name": "ssl_server_keystore_keypassword",
+							"variable": "kafka-KAFKA_BROKER-3-ssl_server_keystore_keypassword"
+						},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+						{
+							"name": "atlas.audit.enabled",
+							"value": "true"
+						},
+{% endif %}
+						{
+							"name": "broker_max_heap_size",
+							"value": "512"
+						}
+					],
+					"base": false
+				}
+			]
+		},
+		{
+			"refName": "solr",
+			"serviceType": "SOLR",
+			"serviceConfigs": [
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "enable_ranger_authorization",
+					"value": "true"
+				},
+				{
+					"name": "ranger_audit_hdfs_dir",
+					"value": "${ranger_base_audit_url}/solr-infra",
+					"autoConfig": true
+				},
+				{
+					"name": "zookeeper_znode",
+					"value": "/solr-infra",
+					"autoConfig": true
+				},
+				{
+					"name": "ranger_audit_solr_spool_dir",
+					"variable": "solr-ranger_audit_solr_spool_dir",
+					"autoConfig": true
+				},
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+				{
+					"name": "hdfs_data_dir",
+					"value": "/solr-infra",
+					"autoConfig": true
+				},
+				{
+					"name": "ranger_audit_hdfs_spool_dir",
+					"variable": "solr-ranger_audit_hdfs_spool_dir",
+					"autoConfig": true
+				},
+				{
+					"name": "ranger_policy_cache_dir",
+					"variable": "solr-ranger_policy_cache_dir",
+					"autoConfig": true
+				},
+{% endif %}
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "solr_https_truststore_password",
+					"variable": "solr-solr_https_truststore_password"
+				},
+				{
+					"name": "solr_https_keystore_password",
+					"variable": "solr-solr_https_keystore_password"
+				},
+				{
+					"name": "solr_https_keystore_file",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "solr_use_ssl",
+					"value": "true"
+				},
+				{
+					"name": "solr_https_truststore_file",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+{% endif %}
+{% if ENABLE_KERBEROS == 'yes' %}
+				{
+					"name": "solr_security_authentication",
+					"value": "kerberos"
+				},
+{% endif %}
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				}
+			],
+			"roleConfigGroups": [{
+				"refName": "solr-SOLR_SERVER-BASE",
+				"roleType": "SOLR_SERVER",
+				"configs": [
+{% if ENABLE_TLS == 'yes' %}
+					{
+						"name": "solr_http_port",
+						"value": "8993",
+						"autoConfig": true
+					},
+					{
+						"name": "solr_log_dir",
+						"value": "/var/log/solr-infra",
+						"autoConfig": true
+					},
+					{
+						"name": "solr_https_port",
+						"value": "8995",
+						"autoConfig": true
+					},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+					{
+						"name": "solr_data_dir",
+						"variable": "solr-SOLR_SERVER-BASE-solr_data_dir",
+						"autoConfig": true
+					},
+{% endif %}
+					{
+						"name": "solr_java_direct_memory_size",
+						"value": "1689255936"
+					},
+					{
+						"name": "solr_java_heapsize",
+						"value": "1299185664"
+					}
+				],
+				"base": true
+			}]
+		},
+		{
+			"refName": "hdfs",
+			"serviceType": "HDFS",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "hdfs_hadoop_ssl_enabled",
+					"value": "true"
+				},
+				{
+					"name": "hadoop_group_mapping_ldap_keystore_passwd",
+					"variable": "hdfs-hadoop_group_mapping_ldap_keystore_passwd"
+				},
+				{
+					"name": "hadoop_group_mapping_ldap_use_ssl",
+					"value": "true"
+				},
+				{
+					"name": "ssl_server_keystore_location",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_client_truststore_location",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_client_truststore_password",
+					"variable": "hdfs-ssl_client_truststore_password"
+				},
+				{
+					"name": "hadoop_group_mapping_ldap_keystore",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "hadoop_secure_web_ui",
+					"value": "true"
+				},
+				{
+					"name": "dfs_encrypt_data_transfer_algorithm",
+					"value": "AES/CTR/NoPadding"
+				},
+				{
+					"name": "ssl_server_keystore_password",
+					"variable": "hdfs-ssl_server_keystore_password"
+				},
+				{
+					"name": "ssl_server_keystore_keypassword",
+					"variable": "hdfs-ssl_server_keystore_keypassword"
+				},
+				{
+					"name": "dfs_data_transfer_protection",
+					"value": "privacy"
+				},
+				{
+					"name": "hadoop_rpc_protection",
+					"value": "privacy"
+				},
+				{
+					"name": "dfs_encrypt_data_transfer",
+					"value": "true"
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_security_safety_valve",
+					"value": "<property><name>ranger.plugin.hdfs.chained.services</name><value>cm_hive</value></property><property><name>ranger.plugin.hdfs.chained.services.cm_hive.impl</name><value>org.apache.ranger.chainedplugin.hdfs.hive.RangerHdfsHiveChainedPlugin</value></property>"
+				},
+				{
+					"name": "enable_ranger_authorization",
+					"value": "true"
+				},
+				{
+					"name": "hadoop_security_authorization",
+					"value": "true"
+				},
+{% endif %}
+{% if ENABLE_KERBEROS == 'yes' %}
+				{
+					"name": "hadoop_security_authentication",
+					"value": "kerberos"
+				},
+{% endif %}
+{% if ENABLE_ENCRYPTION == 'yes' %}
+                {
+                    "name": "kms_service",
+                    "ref": "ranger_kms_kts",
+                    "autoConfig": true
+                },
+{% endif %}
+				{
+					"name": "dfs_datanode_read_shortcircuit",
+					"value": "true"
+				},
+				{
+					"name": "core_site_safety_valve",
+					"value": "<property><name>hadoop.proxyuser.zeppelin.groups</name><value>*</value></property><property><name>hadoop.proxyuser.zeppelin.hosts</name><value>*</value></property>"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "hdfs_service_config_safety_valve",
+					"value": "<property><name>dfs.datanode.scan.period.hours</name><value>240</value></property>"
+				},
+				{
+					"name": "dfs_datanode_hdfs_blocks_metadata_enabled",
+					"value": "true"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "hdfs-FAILOVERCONTROLLER-BASE",
+					"roleType": "FAILOVERCONTROLLER",
+					"configs": [{
+						"name": "failover_controller_java_heapsize",
+						"value": "268435456"
+					}],
+					"base": true
+				},
+				{
+					"refName": "hdfs-NAMENODE-2",
+					"roleType": "NAMENODE",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "namenode_truststore_password",
+							"variable": "hdfs-NAMENODE-2-namenode_truststore_password"
+						},
+						{
+							"name": "namenode_truststore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+{% endif %}
+						{
+							"name": "dfs_federation_namenode_nameservice",
+							"value": "my-name-service"
+						},
+						{
+							"name": "dfs_namenode_quorum_journal_name",
+							"value": "my-name-service"
+						},
+						{
+							"name": "role_config_suppression_namenode_java_heapsize_minimum_validator",
+							"value": "true"
+						},
+						{
+							"name": "dfs_namenode_servicerpc_address",
+							"value": "8022"
+						},
+						{
+							"name": "dfs_namenode_service_handler_count",
+							"value": "30"
+						},
+						{
+							"name": "dfs_namenode_handler_count",
+							"value": "30"
+						},
+						{
+							"name": "autofailover_enabled",
+							"value": "true"
+						},
+						{
+							"name": "namenode_java_heapsize",
+							"value": "1299185664"
+						},
+						{
+							"name": "dfs_name_dir_list",
+							"variable": "hdfs-NAMENODE-2-dfs_name_dir_list"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "hdfs-DATANODE-BASE",
+					"roleType": "DATANODE",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "dfs_datanode_https_port",
+							"value": "9865"
+						},
+{% endif %}
+						{
+							"name": "dfs_datanode_max_locked_memory",
+							"value": "616562688"
+						},
+						{
+							"name": "dfs_datanode_data_dir_perm",
+							"value": "700"
+						},
+						{
+							"name": "dfs_datanode_failed_volumes_tolerated",
+							"value": "0"
+						},
+						{
+							"name": "dfs_datanode_port",
+							"value": "9866"
+						},
+						{
+							"name": "datanode_java_heapsize",
+							"value": "473956352"
+						},
+						{
+							"name": "dfs_datanode_du_reserved",
+							"value": "7837054976"
+						},
+						{
+							"name": "dfs_data_dir_list",
+							"value": "/dfs/dn"
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "hdfs-BALANCER-BASE",
+					"roleType": "BALANCER",
+					"configs": [{
+						"name": "balancer_java_heapsize",
+						"value": "1073741824"
+					}],
+					"base": true
+				},
+				{
+					"refName": "hdfs-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"configs": [{
+						"name": "dfs_client_use_trash",
+						"value": "true"
+					}],
+					"base": true
+				},
+				{
+					"refName": "hdfs-JOURNALNODE-BASE",
+					"roleType": "JOURNALNODE",
+					"configs": [{
+							"name": "dfs_journalnode_edits_dir",
+							"variable": "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir"
+						},
+						{
+							"name": "journalNode_java_heapsize",
+							"value": "536870912"
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "hdfs-HTTPFS-1",
+					"roleType": "HTTPFS",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "httpfs_https_keystore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "httpfs_https_truststore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "httpfs_use_ssl",
+							"value": "true"
+						},
+						{
+							"name": "httpfs_https_truststore_password",
+							"variable": "hdfs-HTTPFS-1-httpfs_https_truststore_password"
+						},
+						{
+							"name": "httpfs_https_keystore_password",
+							"variable": "hdfs-HTTPFS-1-httpfs_https_keystore_password"
+						},
+{% endif %}
+						{
+							"name": "httpfs_java_heapsize",
+							"value": "268435456"
+						}
+					],
+					"base": false
+				}
+			]
+		},
+		{
+			"refName": "hue",
+			"serviceType": "HUE",
+			"serviceConfigs": [
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "atlas_service",
+					"ref": "atlas"
+				},
+{% endif %}
+{% if ENABLE_KNOX == 'yes' %}
+                {
+                    "name": "knox_proxyhosts",
+                    "value": "edge.example.com",
+                    "autoConfig": true
+                },
+                {
+                    "name": "auth_backend",
+                    "value": "desktop.auth.backend.KnoxSpnegoDjangoBackend"
+                },
+{% endif %}
+				{
+					"name": "database_type",
+					"variable": "hue-database_type"
+				},
+				{
+					"name": "database_password",
+					"variable": "hue-database_password"
+				},
+				{
+					"name": "database_host",
+					"variable": "hue-database_host"
+				},
+				{
+					"name": "database_user",
+					"variable": "hue-database_user"
+				},
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "hms_service",
+					"ref": "hive"
+				},
+				{
+					"name": "hive_service",
+					"ref": "hive_on_tez"
+				},
+				{
+					"name": "solr_service",
+					"ref": "solr"
+				},
+				{
+					"name": "oozie_service",
+					"ref": "oozie"
+				},
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "impala_service",
+					"ref": "impala"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "hue-HUE_SERVER-1",
+					"roleType": "HUE_SERVER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "ssl_certificate",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_private_key_password",
+							"variable": "hue-HUE_SERVER-1-ssl_private_key_password"
+						},
+						{
+							"name": "ssl_cacerts",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_enable",
+							"value": "true"
+						},
+						{
+							"name": "ssl_private_key",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						}
+{% endif %}
+					],
+					"base": false
+				},
+				{
+					"refName": "hue-HUE_LOAD_BALANCER-1",
+					"roleType": "HUE_LOAD_BALANCER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "ssl_certificate",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "passphrasefile_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "ssl_certificate_key",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						}
+{% endif %}
+					],
+					"base": false
+				}
+{% if ENABLE_KERBEROS == 'yes' %}				
+				,{
+					"refName": "hue-KT_RENEWER-BASE",
+					"roleType": "KT_RENEWER",
+					"base": true
+				}
+{% endif %}
+			]
+		},
+		{
+			"refName": "yarn",
+			"serviceType": "YARN",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "ssl_server_keystore_password",
+					"variable": "yarn-ssl_server_keystore_password"
+				},
+				{
+					"name": "ssl_server_keystore_location",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_client_truststore_location",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "hadoop_secure_web_ui",
+					"value": "true"
+				},
+				{
+					"name": "ssl_client_truststore_password",
+					"variable": "yarn-ssl_client_truststore_password"
+				},
+				{
+					"name": "ssl_server_keystore_keypassword",
+					"variable": "yarn-ssl_server_keystore_keypassword"
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+{% endif %}
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "yarn-NODEMANAGER-BASE",
+					"roleType": "NODEMANAGER",
+					"configs": [{
+							"name": "yarn_nodemanager_resource_memory_mb",
+							"value": "8192"
+						},
+						{
+							"name": "yarn_nodemanager_heartbeat_interval_ms",
+							"value": "100"
+						},
+						{
+							"name": "yarn_nodemanager_local_dirs",
+							"variable": "yarn-NODEMANAGER-BASE-yarn_nodemanager_local_dirs"
+						},
+						{
+							"name": "yarn_nodemanager_resource_cpu_vcores",
+							"value": "2"
+						},
+						{
+							"name": "yarn_nodemanager_log_dirs",
+							"variable": "yarn-NODEMANAGER-BASE-yarn_nodemanager_log_dirs"
+						},
+						{
+							"name": "node_manager_java_heapsize",
+							"value": "473956352"
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "yarn-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"configs": [{
+							"name": "mapreduce_reduce_memory_mb",
+							"value": "4096"
+						},
+						{
+							"name": "mapreduce_map_memory_mb",
+							"value": "2048"
+						},
+						{
+							"name": "mapred_submit_replication",
+							"value": "3"
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "yarn-JOBHISTORY-BASE",
+					"roleType": "JOBHISTORY",
+					"configs": [{
+						"name": "mr2_jobhistory_java_heapsize",
+						"value": "1073741824"
+					}],
+					"base": true
+				},
+				{
+					"refName": "yarn-RESOURCEMANAGER-BASE",
+					"roleType": "RESOURCEMANAGER",
+					"configs": [{
+							"name": "yarn_scheduler_maximum_allocation_vcores",
+							"value": "2"
+						},
+						{
+							"name": "yarn_scheduler_minimum_allocation_mb",
+							"value": "4096"
+						},
+						{
+							"name": "yarn_scheduler_maximum_allocation_mb",
+							"value": "4096"
+						},
+						{
+							"name": "resource_manager_java_heapsize",
+							"value": "1073741824"
+						}
+					],
+					"base": true
+				}
+			]
+		},
+		{
+			"refName": "ks_indexer",
+			"serviceType": "KS_INDEXER",
+			"serviceConfigs": [
+{% if ENABLE_KERBEROS == 'yes' %}
+				{
+					"name": "hbase_indexer_security_authentication",
+					"value": "kerberos"
+				},
+{% endif %}
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				},
+				{
+					"name": "solr_service",
+					"ref": "solr"
+				}
+			],
+			"roleConfigGroups": [{
+				"refName": "ks_indexer-HBASE_INDEXER-BASE",
+				"roleType": "HBASE_INDEXER",
+				"configs": [{
+					"name": "hbase_indexer_java_heapsize",
+					"value": "473956352"
+				}],
+				"base": true
+			}]
+		},
+		{
+			"refName": "hbase",
+			"serviceType": "HBASE",
+			"serviceConfigs": [
+{% if ENABLE_TLS == 'yes' %}
+				{
+					"name": "ssl_server_keystore_keypassword",
+					"variable": "hbase-ssl_server_keystore_keypassword"
+				},
+				{
+					"name": "ssl_server_keystore_location",
+					"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+				},
+				{
+					"name": "ssl_server_keystore_password",
+					"variable": "hbase-ssl_server_keystore_password"
+				},
+				{
+					"name": "hbase_thriftserver_security_authentication",
+					"value": "auth-conf"
+				},
+				{
+					"name": "hbase_hadoop_ssl_enabled",
+					"value": "true"
+				},
+{% endif %}
+{% if ENABLE_KERBEROS == 'yes' %}
+				{
+					"name": "hbase_security_authorization",
+					"value": "true"
+				},
+				{
+					"name": "hbase_security_authentication",
+					"value": "kerberos"
+				},
+{% endif %}
+{% if ENABLE_SDX == 'yes' %}
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+				{
+					"name": "atlas_service",
+					"ref": "atlas"
+				},
+{% endif %}
+				{
+					"name": "hbase_thriftserver_support_proxyuser",
+					"value": "true"
+				},
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "hbase_enable_indexing",
+					"value": "true"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "hbase_enable_replication",
+					"value": "true"
+				},
+				{
+					"name": "hbase_thriftserver_http",
+					"value": "true"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "hbase-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"base": true
+				},
+				{
+					"refName": "hbase-MASTER-1",
+					"roleType": "MASTER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "master_truststore_password",
+							"variable": "hbase-MASTER-1-master_truststore_password"
+						},
+						{
+							"name": "master_truststore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+{% endif %}
+						{
+							"name": "hbase_master_java_heapsize",
+							"value": "1073741824"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "hbase-HBASERESTSERVER-1",
+					"roleType": "HBASERESTSERVER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "hbase_restserver_keystore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "hbase_restserver_keystore_keypassword",
+							"variable": "hbase-HBASERESTSERVER-1-hbase_restserver_keystore_keypassword"
+						},
+						{
+							"name": "hbase_restserver_ssl_enable",
+							"value": "true"
+						},
+						{
+							"name": "hbase_restserver_keystore_password",
+							"variable": "hbase-HBASERESTSERVER-1-hbase_restserver_keystore_password"
+						},
+{% endif %}
+						{
+							"name": "hbase_restserver_java_heapsize",
+							"value": "1073741824"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "hbase-HBASETHRIFTSERVER-1",
+					"roleType": "HBASETHRIFTSERVER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "hbase_thriftserver_http_keystore_password",
+							"variable": "hbase-HBASETHRIFTSERVER-1-hbase_thriftserver_http_keystore_password"
+						},
+						{
+							"name": "hbase_thriftserver_http_keystore_keypassword",
+							"variable": "hbase-HBASETHRIFTSERVER-1-hbase_thriftserver_http_keystore_keypassword"
+						},
+						{
+							"name": "hbase_thriftserver_http_keystore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+						{
+							"name": "hbase_thriftserver_http_use_ssl",
+							"value": "true"
+						},
+{% endif %}
+						{
+							"name": "hbase_thriftserver_java_heapsize",
+							"value": "1073741824"
+						}
+					],
+					"base": false
+				},
+				{
+					"refName": "hbase-REGIONSERVER-1",
+					"roleType": "REGIONSERVER",
+					"configs": [
+{% if ENABLE_TLS == 'yes' %}
+						{
+							"name": "regionserver_truststore_password",
+							"variable": "hbase-REGIONSERVER-1-regionserver_truststore_password"
+						},
+						{
+							"name": "regionserver_truststore_file",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+						},
+{% endif %}
+						{
+							"name": "hbase_regionserver_java_heapsize",
+							"value": "473956352"
+						},
+						{
+							"name": "hbase_bucketcache_size",
+							"value": "588"
+						}
+					],
+					"base": false
+				}
+			]
+		}
+{% if ENABLE_SDX == 'yes' %}
+		,{
+			"refName": "ranger",
+			"serviceType": "RANGER",
+			"serviceConfigs": [{
+					"name": "ranger_database_port",
+					"variable": "ranger-ranger_database_port"
+				},
+				{
+					"name": "ranger_database_password",
+					"variable": "ranger-ranger_database_password"
+				},
+				{
+					"name": "rangeradmin_user_password",
+					"variable": "ranger-rangeradmin_user_password"
+				},
+				{
+					"name": "solr_service",
+					"ref": "solr"
+				},
+				{
+					"name": "ranger_database_host",
+					"variable": "ranger-ranger_database_host"
+				},
+				{
+					"name": "rangerusersync_user_password",
+					"variable": "ranger-rangerusersync_user_password"
+				},
+				{
+					"name": "keyadmin_user_password",
+					"variable": "ranger-keyadmin_user_password"
+				},
+				{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "ranger_database_type",
+					"variable": "ranger-ranger_database_type"
+				},
+				{
+					"name": "rangertagsync_user_password",
+					"variable": "ranger-rangertagsync_user_password"
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "ranger-RANGER_USERSYNC-BASE",
+					"roleType": "RANGER_USERSYNC",
+					"configs": [{
+							"name": "ranger.usersync.unix.minUserId",
+							"value": "999"
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "ranger-RANGER_USERSYNC-BASE-ssl_client_truststore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "ranger-RANGER_ADMIN-BASE",
+					"roleType": "RANGER_ADMIN",
+					"configs": [{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "ranger-RANGER_ADMIN-BASE-ssl_client_truststore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "ranger-RANGER_ADMIN-BASE-ssl_server_keystore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true",
+							"autoConfig": true
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "ranger-RANGER_TAGSYNC-BASE",
+					"roleType": "RANGER_TAGSYNC",
+					"configs": [{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "ranger-RANGER_TAGSYNC-BASE-ssl_client_truststore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "ranger-RANGER_TAGSYNC-BASE-ssl_server_keystore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true",
+							"autoConfig": true
+						}
+					],
+					"base": true
+				}
+			]
+		},
+		{
+			"refName": "ranger_rms",
+			"serviceType": "RANGER_RMS",
+			"serviceConfigs": [{
+					"name": "ranger_rms_database_host",
+					"value": "cmhost.example.com"
+				},
+				{
+					"name": "ranger_rms_database_password",
+					"variable": "ranger_rms-ranger_rms_database_password"
+				},
+				{
+					"name": "zookeeper_service",
+					"ref": "zookeeper"
+				},
+				{
+					"name": "ranger_rms_database_user",
+					"value": "rangeradmin"
+				},
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+				{
+					"name": "ranger_rms_database_name",
+					"value": "ranger"
+				},
+				{
+					"name": "ranger_rms_database_type",
+					"value": "mysql"
+				}
+			],
+			"roleConfigGroups": [{
+				"refName": "ranger_rms-RANGER_RMS_SERVER-BASE",
+				"roleType": "RANGER_RMS_SERVER",
+				"configs": [{
+						"name": "ssl_server_keystore_location",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+						"autoConfig": true
+					},
+					{
+						"name": "ranger_rms_hms_map_managed_tables",
+						"value": "true"
+					},
+					{
+						"name": "ssl_client_truststore_password",
+						"variable": "ranger_rms-RANGER_RMS_SERVER-BASE-ssl_client_truststore_password",
+						"autoConfig": true
+					},
+					{
+						"name": "ssl_server_keystore_password",
+						"variable": "ranger_rms-RANGER_RMS_SERVER-BASE-ssl_server_keystore_password",
+						"autoConfig": true
+					},
+					{
+						"name": "ssl_client_truststore_location",
+						"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+						"autoConfig": true
+					},
+					{
+						"name": "ssl_enabled",
+						"value": "true",
+						"autoConfig": true
+					}
+				],
+				"base": true
+			}]
+		},
+		{
+			"refName": "atlas",
+			"serviceType": "ATLAS",
+			"serviceConfigs": [{
+					"name": "hdfs_service",
+					"ref": "hdfs"
+				},
+				{
+					"name": "solr_service",
+					"ref": "solr"
+				},
+				{
+					"name": "ranger_service",
+					"ref": "ranger"
+				},
+				{
+					"name": "kafka_service",
+					"ref": "kafka"
+				},
+				{
+					"name": "hbase_service",
+					"ref": "hbase"
+				},
+				{
+					"name": "kerberos.auth.enable",
+					"value": "true",
+					"autoConfig": true
+				}
+			],
+			"roleConfigGroups": [{
+					"refName": "atlas-ATLAS_SERVER-BASE",
+					"roleType": "ATLAS_SERVER",
+					"configs": [{
+							"name": "ssl_server_keystore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "atlas-ATLAS_SERVER-BASE-ssl_client_truststore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_server_keystore_password",
+							"variable": "atlas-ATLAS_SERVER-BASE-ssl_server_keystore_password",
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_enabled",
+							"value": "true",
+							"autoConfig": true
+						},
+						{
+							"name": "atlas_admin_password",
+							"variable": "atlas-ATLAS_SERVER-BASE-atlas_admin_password"
+						},
+						{
+							"name": "ssl_server_keystore_keypassword",
+							"variable": "atlas-ATLAS_SERVER-BASE-ssl_server_keystore_keypassword",
+							"autoConfig": true
+						}
+					],
+					"base": true
+				},
+				{
+					"refName": "atlas-GATEWAY-BASE",
+					"roleType": "GATEWAY",
+					"configs": [{
+							"name": "ssl_client_truststore_location",
+							"value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+							"autoConfig": true
+						},
+						{
+							"name": "ssl_client_truststore_password",
+							"variable": "atlas-GATEWAY-BASE-ssl_client_truststore_password",
+							"autoConfig": true
+						}
+					],
+					"base": true
+				}
+			]
+		}
+{% endif %}
+{% if ENABLE_ENCRYPTION == 'yes' %}
+        ,{
+            "refName": "Key_Trustee_Server",
+            "serviceType": "KEYTRUSTEE_SERVER",
+            "roleConfigGroups": [
+                {
+                    "refName": "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE",
+                    "roleType": "KEYTRUSTEE_ACTIVE_SERVER",
+                    "configs": [
+                        {
+                            "name": "ssl_server_ca_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+                        },
+                        {
+                            "name": "ssl_server_privatekey_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+                        },
+                        {
+                            "name": "ssl_server_privatekey_password",
+                            "variable": "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE-ssl_server_privatekey_password"
+                        },
+                        {
+                            "name": "ssl_server_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+                        }
+                    ],
+                    "base": true
+                },
+                {
+                    "refName": "keytrustee_server-DB_ACTIVE-BASE",
+                    "roleType": "DB_ACTIVE",
+                    "base": true
+                },
+                {
+                    "refName": "keytrustee_server-DB_PASSIVE-BASE",
+                    "roleType": "DB_PASSIVE",
+                    "base": true
+                },
+                {
+                    "refName": "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE",
+                    "roleType": "KEYTRUSTEE_PASSIVE_SERVER",
+                    "configs": [
+                        {
+                            "name": "ssl_server_ca_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+                        },
+                        {
+                            "name": "ssl_server_privatekey_password",
+                            "variable": "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE-ssl_server_privatekey_password"
+                        },
+                        {
+                            "name": "ssl_server_privatekey_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+                        },
+                        {
+                            "name": "ssl_server_certificate_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %}
+                        }
+                    ],
+                    "base": true
+                }
+            ]
+        },
+        {
+            "refName": "ranger_kms_kts",
+            "serviceType": "RANGER_KMS_KTS",
+            "serviceConfigs": [
+                {
+                    "name": "zookeeper_service",
+                    "ref": "zookeeper"
+                }
+            ],
+            "roleConfigGroups": [
+                {
+                    "refName": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE",
+                    "roleType": "RANGER_KMS_SERVER_KTS",
+                    "configs": [
+                        {
+                            "name": "cloudera_trustee_keyprovider_hostname-ACTIVE",
+                            "value": "kts-1.example.com"
+                        },
+                        {
+                            "name": "cloudera_trustee_keyprovider_auth",
+                            "variable": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE-cloudera_trustee_keyprovider_auth"
+                        },
+                        {
+                            "name": "ssl_client_truststore_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_keystore_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_client_truststore_password",
+                            "variable": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE-ssl_client_truststore_password",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_enabled",
+                            "value": "true",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_keystore_password",
+                            "variable": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE-ssl_server_keystore_password",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "cloudera_trustee_keyprovider_hostname-PASSIVE",
+                            "value": "kts-2.example.com"
+                        },
+                        {
+                            "name": "cloudera_trustee_keyprovider_org",
+                            "value": "example"
+                        }
+                    ],
+                    "base": true
+                }
+            ]
+        }
+{% endif %}
+{% if ENABLE_KNOX == 'yes' %}
+        ,{
+            "refName": "knox",
+            "serviceType": "KNOX",
+            "serviceConfigs": [
+                {
+                    "name": "kerberos.auth.enabled",
+                    "value": "true",
+                    "autoConfig": true
+                },
+                {
+                    "name": "hdfs_service",
+                    "ref": "hdfs"
+                },
+                {
+                    "name": "ranger_service",
+                    "ref": "ranger"
+                }
+            ],
+            "roleConfigGroups": [
+                {
+                    "refName": "knox-KNOX_GATEWAY-BASE",
+                    "roleType": "KNOX_GATEWAY",
+                    "configs": [
+                        {
+                            "name": "ssl_client_truststore_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_server_keystore_location",
+                            "value": {% raw %}"{{CM_AUTO_TLS}}"{% endraw %},
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_client_truststore_password",
+                            "variable": "knox-KNOX_GATEWAY-BASE-ssl_client_truststore_password",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "ssl_enabled",
+                            "value": "true",
+                            "autoConfig": true
+                        },
+                        {
+                            "name": "gateway_master_secret",
+                            "variable": "knox-KNOX_GATEWAY-BASE-gateway_master_secret"
+                        },
+                        {
+                            "name": "ssl_server_keystore_password",
+                            "variable": "knox-KNOX_GATEWAY-BASE-ssl_server_keystore_password",
+                            "autoConfig": true
+                        }
+                    ],
+                    "base": true
+                },
+                {
+                    "refName": "knox-GATEWAY-BASE",
+                    "roleType": "GATEWAY",
+                    "base": true
+                }
+            ]
+        }
+{% endif %}
+	],
+	"hostTemplates": [{
+			"refName": "HostTemplate-0-from-worker-[2-3].example.com",
+			"cardinality": 2,
+			"roleConfigGroupsRefNames": [
+				"hbase-REGIONSERVER-1",
+				"hdfs-DATANODE-BASE",
+				"impala-IMPALAD-1",
+				"kafka-KAFKA_BROKER-2",
+				"ks_indexer-HBASE_INDEXER-BASE",
+				"yarn-NODEMANAGER-BASE"
+			]
+		},
+		{
+			"refName": "HostTemplate-1-from-cmhost.example.com",
+			"cardinality": 1,
+			"roleConfigGroupsRefNames": [
+				"hdfs-GATEWAY-BASE",
+				"hive-GATEWAY-BASE",
+				"hive_on_tez-GATEWAY-BASE",
+				"yarn-GATEWAY-BASE"
+			]
+		},
+		{
+			"refName": "HostTemplate-2-from-worker-1.example.com",
+			"cardinality": 1,
+			"roleConfigGroupsRefNames": [
+				"hbase-REGIONSERVER-1",
+				"hdfs-DATANODE-BASE",
+				"impala-IMPALAD-1",
+				"kafka-KAFKA_BROKER-3",
+				"ks_indexer-HBASE_INDEXER-BASE",
+				"yarn-NODEMANAGER-BASE"
+			]
+		},
+		{
+			"refName": "HostTemplate-3-from-master-1.example.com",
+			"cardinality": 1,
+			"roleConfigGroupsRefNames": [
+				"hbase-MASTER-1",
+				"hdfs-BALANCER-BASE",
+				"hdfs-FAILOVERCONTROLLER-BASE",
+				"hdfs-HTTPFS-1",
+				"hdfs-JOURNALNODE-BASE",
+				"hdfs-NAMENODE-2",
+				"hive-GATEWAY-BASE",
+				"hive_on_tez-GATEWAY-BASE",
+				"oozie-OOZIE_SERVER-1",
+				"spark_on_yarn-GATEWAY-BASE",
+				"tez-GATEWAY-BASE",
+				"yarn-JOBHISTORY-BASE",
+				"yarn-RESOURCEMANAGER-BASE",
+				"zookeeper-SERVER-1"
+			]
+		},
+		{
+			"refName": "HostTemplate-4-from-master-2.example.com",
+			"cardinality": 1,
+			"roleConfigGroupsRefNames": [
+				"hdfs-FAILOVERCONTROLLER-BASE",
+				"hdfs-JOURNALNODE-BASE",
+				"hdfs-NAMENODE-2",
+				"hive-GATEWAY-BASE",
+				"hive-HIVEMETASTORE-BASE",
+				"hive_on_tez-GATEWAY-BASE",
+				"hive_on_tez-HIVESERVER2-1",
+				"impala-CATALOGSERVER-1",
+				"impala-STATESTORE-1",
+				"solr-SOLR_SERVER-BASE",
+				"spark_on_yarn-GATEWAY-BASE",
+				"spark_on_yarn-SPARK_YARN_HISTORY_SERVER-1",
+				"tez-GATEWAY-BASE",
+				"zookeeper-SERVER-1"
+			]
+		},
+		{
+			"refName": "HostTemplate-5-from-master-3.example.com",
+			"cardinality": 1,
+			"roleConfigGroupsRefNames": [
+{% if ENABLE_SDX == 'yes' %}
+				"atlas-ATLAS_SERVER-BASE",
+				"ranger-RANGER_ADMIN-BASE",
+				"ranger-RANGER_TAGSYNC-BASE",
+				"ranger-RANGER_USERSYNC-BASE",
+				"atlas-GATEWAY-BASE",
+				"ranger_rms-RANGER_RMS_SERVER-BASE",
+{% endif %}
+{% if ENABLE_KERBEROS == 'yes' %}
+				"hue-KT_RENEWER-BASE",
+{% endif %}
+				"hdfs-JOURNALNODE-BASE",
+				"hive-GATEWAY-BASE",
+				"hive_on_tez-GATEWAY-BASE",
+				"hue-HUE_LOAD_BALANCER-1",
+				"hue-HUE_SERVER-1",
+				"tez-GATEWAY-BASE",
+				"zookeeper-SERVER-1"
+			]
+		},
+		{
+			"refName": "HostTemplate-6-from-edge.example.com",
+			"cardinality": 1,
+			"roleConfigGroupsRefNames": [
+{% if ENABLE_SDX == 'yes' %}
+				"atlas-GATEWAY-BASE",
+{% endif %}
+{% if ENABLE_KNOX == 'yes' %}
+                "knox-GATEWAY-BASE",
+                "knox-KNOX_GATEWAY-BASE",
+{% endif %}
+				"hbase-GATEWAY-BASE",
+				"hbase-HBASERESTSERVER-1",
+				"hbase-HBASETHRIFTSERVER-1",
+				"hdfs-GATEWAY-BASE",
+				"hive-GATEWAY-BASE",
+				"hive_on_tez-GATEWAY-BASE",
+				"kafka-GATEWAY-BASE",
+				"spark_on_yarn-GATEWAY-BASE",
+				"tez-GATEWAY-BASE",
+				"yarn-GATEWAY-BASE",
+				"zeppelin-ZEPPELIN_SERVER-BASE"
+			]
+		}
+{% if ENABLE_ENCRYPTION == 'yes' %}
+        ,{
+            "refName": "HostTemplate-7-from-kms-[1-2].example.com",
+            "cardinality": 2,
+            "roleConfigGroupsRefNames": [
+                "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE"
+            ]
+        },
+        {
+            "refName": "HostTemplate-8-from-kts-1.example.com",
+            "cardinality": 1,
+            "roleConfigGroupsRefNames": [
+                "keytrustee_server-DB_ACTIVE-BASE",
+                "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE"
+            ]
+        },
+        {
+            "refName": "HostTemplate-9-from-kts-2.example.com",
+            "cardinality": 1,
+            "roleConfigGroupsRefNames": [
+                "keytrustee_server-DB_PASSIVE-BASE",
+                "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE"
+            ]
+        }
+{% endif %}
+	],
+	"instantiator": {
+        "clusterName":"Cluster1",
+        "hosts":[
+            {
+                "hostName":"cmhost.example.com",
+                "hostTemplateRefName":"HostTemplate-1-from-cmhost.example.com"
+            },
+            {
+                "hostName":"master-1.example.com",
+                "hostTemplateRefName":"HostTemplate-3-from-master-1.example.com"
+            },
+            {
+                "hostName":"master-2.example.com",
+                "hostTemplateRefName":"HostTemplate-4-from-master-2.example.com"
+            },
+            {
+                "hostName":"master-3.example.com",
+                "hostTemplateRefName":"HostTemplate-5-from-master-3.example.com"
+            },
+            {
+                "hostName":"worker-1.example.com",
+                "hostTemplateRefName":"HostTemplate-2-from-worker-1.example.com"
+            },
+            {
+                "hostName":"worker-2.example.com",
+                "hostTemplateRefName":"HostTemplate-0-from-worker-[2-3].example.com"
+            },
+            {
+                "hostName":"worker-3.example.com",
+                "hostTemplateRefName":"HostTemplate-0-from-worker-[2-3].example.com"
+            },
+            {
+                "hostName":"edge.example.com",
+                "hostTemplateRefName":"HostTemplate-6-from-edge.example.com"
+            }
+{% if ENABLE_ENCRYPTION == 'yes' %}
+            ,{
+                "hostName":"kts-1.example.com",
+                "hostTemplateRefName":"HostTemplate-8-from-kts-1.example.com"
+            },
+            {
+                "hostName":"kts-2.example.com",
+                "hostTemplateRefName":"HostTemplate-9-from-kts-2.example.com"
+            },
+            {
+                "hostName":"kms-1.example.com",
+                "hostTemplateRefName":"HostTemplate-7-from-kms-[1-2].example.com"
+            },
+            {
+                "hostName":"kms-2.example.com",
+                "hostTemplateRefName":"HostTemplate-7-from-kms-[1-2].example.com"
+            }
+{% endif %}
+        ],
+		"variables": [
+{% if ENABLE_TLS == 'yes' and ENABLE_SDX == 'yes' %}
+			{
+				"name": "atlas-ATLAS_SERVER-BASE-atlas_admin_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "atlas-ATLAS_SERVER-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "atlas-ATLAS_SERVER-BASE-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "atlas-ATLAS_SERVER-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "atlas-GATEWAY-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "ranger-RANGER_ADMIN-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "ranger-RANGER_ADMIN-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "ranger-RANGER_TAGSYNC-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "ranger-RANGER_TAGSYNC-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "ranger-RANGER_USERSYNC-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "ranger-keyadmin_user_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "ranger-ranger_database_host",
+				"value": "cmhost.example.com"
+			},
+			{
+				"name": "ranger-ranger_database_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "ranger-ranger_database_port",
+				"value": "3306"
+			},
+			{
+				"name": "ranger-ranger_database_type",
+				"value": "mysql"
+			},
+			{
+				"name": "ranger-rangeradmin_user_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "ranger-rangertagsync_user_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "ranger-rangerusersync_user_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "ranger_rms-RANGER_RMS_SERVER-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "ranger_rms-RANGER_RMS_SERVER-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "ranger_rms-ranger_rms_database_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "solr-GATEWAY-BASE-client_config_root_dir",
+				"value": "/etc/solr-infra"
+			},
+			{
+				"name": "solr-SOLR_SERVER-BASE-solr_data_dir",
+				"value": "/var/lib/solr-infra"
+			},
+			{
+				"name": "solr-ranger_audit_hdfs_spool_dir",
+				"value": "/var/log/solr-infra/audit/hdfs/spool"
+			},
+			{
+				"name": "solr-ranger_audit_solr_spool_dir",
+				"value": "/var/log/solr-infra/audit/solr/spool"
+			},
+			{
+				"name": "solr-ranger_policy_cache_dir",
+				"value": "/var/lib/ranger/solr-infra/policy-cache"
+			},
+{% endif %}
+{% if ENABLE_TLS == 'yes' %}
+			{
+				"name": "hbase-HBASERESTSERVER-1-hbase_restserver_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASERESTSERVER-1-hbase_restserver_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASERESTSERVER-BASE-hbase_restserver_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASERESTSERVER-BASE-hbase_restserver_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASETHRIFTSERVER-1-hbase_thriftserver_http_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASETHRIFTSERVER-1-hbase_thriftserver_http_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASETHRIFTSERVER-BASE-hbase_thriftserver_http_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-HBASETHRIFTSERVER-BASE-hbase_thriftserver_http_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-MASTER-1-master_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hbase-MASTER-BASE-master_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hbase-REGIONSERVER-1-regionserver_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hbase-REGIONSERVER-BASE-regionserver_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hbase-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hbase-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hdfs-HTTPFS-1-httpfs_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hdfs-HTTPFS-1-httpfs_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hdfs-HTTPFS-BASE-httpfs_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hdfs-HTTPFS-BASE-httpfs_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hdfs-NAMENODE-2-namenode_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hdfs-NAMENODE-BASE-namenode_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hdfs-hadoop_group_mapping_ldap_keystore_passwd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hdfs-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hdfs-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hdfs-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hive-hiveserver2_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hive-hiveserver2_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hive-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hive_on_tez-HIVESERVER2-1-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hive_on_tez-HIVESERVER2-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hive_on_tez-hiveserver2_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hive_on_tez-hiveserver2_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "hue-HUE_SERVER-1-ssl_private_key_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "hue-HUE_SERVER-BASE-ssl_private_key_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-CATALOGSERVER-1-webserver_private_key_password_cmd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-CATALOGSERVER-BASE-webserver_private_key_password_cmd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-IMPALAD-1-webserver_private_key_password_cmd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-IMPALAD-BASE-webserver_private_key_password_cmd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-STATESTORE-1-webserver_private_key_password_cmd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-STATESTORE-BASE-webserver_private_key_password_cmd",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "impala-impala_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "impala-ssl_private_key_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-2-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-2-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-2-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-3-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-3-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-3-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-BASE-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_BROKER-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_CONNECT-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_CONNECT-BASE-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_CONNECT-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_MIRROR_MAKER-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_MIRROR_MAKER-BASE-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "kafka-KAFKA_MIRROR_MAKER-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_zookeeper_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_zookeeper_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_zookeeper_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_zookeeper_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "solr-solr_https_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "solr-solr_https_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-1-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "yarn-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "yarn-ssl_server_keystore_keypassword",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "yarn-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "zeppelin-ZEPPELIN_SERVER-BASE-ssl_client_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "zeppelin-ZEPPELIN_SERVER-BASE-ssl_server_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "zookeeper-SERVER-1-jmx_tls_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "zookeeper-SERVER-1-jmx_tls_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "zookeeper-SERVER-BASE-jmx_tls_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "zookeeper-SERVER-BASE-jmx_tls_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+			{
+				"name": "zookeeper-zookeeper_tls_keystore_password",
+				"value": "{{ keystore_password }}"
+			},
+			{
+				"name": "zookeeper-zookeeper_tls_truststore_password",
+				"value": "{{ truststore_password }}"
+			},
+{% endif %}
+{% if ENABLE_KNOX == 'yes' %}
+            {
+                "name": "knox-IDBROKER-BASE-ssl_client_truststore_password",
+                "value": "{{ truststore_password }}"
+            },
+            {
+                "name": "knox-IDBROKER-BASE-ssl_server_keystore_password",
+                "value": "{{ keystore_password }}"
+            },
+            {
+                "name": "knox-KNOX_GATEWAY-BASE-gateway_master_secret",
+                "value": "BadPass@1"
+            },
+            {
+                "name": "knox-KNOX_GATEWAY-BASE-ssl_client_truststore_password",
+                "value": "{{ truststore_password }}"
+            },
+            {
+                "name": "knox-KNOX_GATEWAY-BASE-ssl_server_keystore_password",
+                "value": "{{ keystore_password }}"
+            },
+{% endif %}
+{% if ENABLE_ENCRYPTION == 'yes' %}
+            {
+                "name": "keytrustee_server-KEYTRUSTEE_ACTIVE_SERVER-BASE-ssl_server_privatekey_password",
+                "value": "{{ keystore_password }}"
+            },
+            {
+                "name": "keytrustee_server-KEYTRUSTEE_PASSIVE_SERVER-BASE-ssl_server_privatekey_password",
+                "value": "{{ keystore_password }}"
+            },
+            {
+                "name": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE-cloudera_trustee_keyprovider_auth",
+                "value": "oXf6wmcoy3U/Zk4yAykcUw=="
+            },
+            {
+                "name": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE-ssl_client_truststore_password",
+                "value": "{{ truststore_password }}"
+            },
+            {
+                "name": "ranger_kms_kts-RANGER_KMS_SERVER_KTS-BASE-ssl_server_keystore_password",
+                "value": "{{ keystore_password }}"
+            },
+{% endif %}
+			{
+				"name": "hdfs-JOURNALNODE-BASE-dfs_journalnode_edits_dir",
+				"value": "/dfs/jn"
+			},
+			{
+				"name": "hdfs-NAMENODE-2-dfs_name_dir_list",
+				"value": "/dfs/nn"
+			},
+			{
+				"name": "hdfs-NAMENODE-BASE-dfs_name_dir_list",
+				"value": "/dfs/nn"
+			},
+			{
+				"name": "hive-hive_metastore_database_host",
+				"value": "cmhost.example.com"
+			},
+			{
+				"name": "hive-hive_metastore_database_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "hive-hive_metastore_database_user",
+				"value": "hive"
+			},
+			{
+				"name": "hue-database_host",
+				"value": "cmhost.example.com"
+			},
+			{
+				"name": "hue-database_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "hue-database_type",
+				"value": "mysql"
+			},
+			{
+				"name": "hue-database_user",
+				"value": "hue"
+			},
+			{
+				"name": "impala-IMPALAD-1-scratch_dirs",
+				"value": "/impala/impalad"
+			},
+			{
+				"name": "impala-IMPALAD-BASE-scratch_dirs",
+				"value": "/impala/impalad"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_database_host",
+				"value": "cmhost.example.com"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_database_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_database_type",
+				"value": "mysql"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-1-oozie_database_user",
+				"value": "oozie"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_database_host",
+				"value": "cmhost.example.com"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_database_password",
+				"value": "BadPass@1"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_database_type",
+				"value": "mysql"
+			},
+			{
+				"name": "oozie-OOZIE_SERVER-BASE-oozie_database_user",
+				"value": "oozie"
+			},
+			{
+				"name": "yarn-NODEMANAGER-BASE-yarn_nodemanager_log_dirs",
+				"value": "/yarn/container-logs"
+			},
+			{
+				"name": "yarn-NODEMANAGER-BASE-yarn_nodemanager_local_dirs",
+				"value": "/yarn/nm"
+			},
+
+		],
+		"roleConfigGroups": [{
+				"rcgRefName": "zookeeper-SERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hive_on_tez-HIVESERVER2-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "oozie-OOZIE_SERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "impala-CATALOGSERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "impala-IMPALAD-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "impala-STATESTORE-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "spark_on_yarn-SPARK_YARN_HISTORY_SERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "kafka-KAFKA_BROKER-2",
+				"name": ""
+			},
+			{
+				"rcgRefName": "kafka-KAFKA_BROKER-3",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hdfs-NAMENODE-2",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hdfs-HTTPFS-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hue-HUE_SERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hue-HUE_LOAD_BALANCER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hbase-MASTER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hbase-HBASERESTSERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hbase-HBASETHRIFTSERVER-1",
+				"name": ""
+			},
+			{
+				"rcgRefName": "hbase-REGIONSERVER-1",
+				"name": ""
+			}
+		],
+		"lenient": false
+	}
+}

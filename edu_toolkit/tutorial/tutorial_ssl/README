@@ -1,0 +1,65 @@
+# This README is for training purposes only and is to be used only
+# in support of approved training. The author assumes no liability
+# for use outside of a training environments. Unless required by
+# applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+# OR CONDITIONS OF ANY KIND, either express or implied.
+
+# Title: README.txt 
+# Author: WKD
+# Date: 200530
+
+Note: This work was built on scripts provided by Cloudera PS. They have been modified for classroom purposes.
+
+Purpose: This goal is to install SSL across a HDP cluster. 
+Task 1. Install wireless encryption for RPC and Data Transfer Protocol. Use the instructions in this README.
+Task 2. Generate and submit a request for the required certificates from a CA. Use the instructions in the hdp-ssl/README and the hdp-ssl/auth/README.
+Task 3. Use the CA certificate to generate the certs and keystores on all nodes. This must be done for the local host and for Ranger plugins. Use the instructions in the hdp-ssl/README. 
+Task 4. Use a python script to load the JSON file containing all of the required properties and values into the Ambari CMDB. Use the instructions in the ambari-ssl/README. 
+Task 5. Install ssl and truststore for the Ambari Server. Use the instructions in the ambari-server/README.
+Task 6. Restart both Ambari and the HDP cluster.
+Task 7. Time to troubleshoot
+
+OVERVIEW OF WIRE ENCRYPTION FOR HDP
+
+CLIENT TRAFFIC Clients typically communicate directly with the Hadoop cluster. Data can be protected using RPC encryption or Data Transfer Protocol.
+
+RPC ENCRYPTION Clients interacting directly with the Hadoop cluster through RPC. A client uses RPC to connect to the NameNode (NN) to initiate file read and write operations. RPC connections in Hadoop use Javas Simple Authentication & Security Layer (SASL), which supports encryption.
+
+DATA TRANSFER PROTOCOL The NN gives the client the address of the first DataNode (DN) to read or write the block. The actual data transfer between the client and a DN uses Data Transfer Protocol.
+
+USER TRAFFIC Users typically communicate with the Hadoop cluster using a Browser or a command line tools, data can be protected as https or jdbc encryption.
+
+HTTPS ENCRYPTION Users typically interact with Hadoop using a browser or component CLI, while applications use REST APIs or Thrift. Encryption over the HTTP protocol is implemented with the support for SSL across a Hadoop cluster and for the individual components such as Ambari.
+
+JDBC ENCRYPTION HiveServer2 implements encryption with Java SASL protocolbs quality of protection (QOP) setting. With this the data moving between a HiveServer2 over JDBC and a JDBC client can be encrypted.
+
+JOB TRAFFIC Additionally, within-cluster communication between processes can be protected using HTTPS encryption during MapReduce shuffle.
+
+SHUFFLE ENCRYPTION When data moves between the Mappers and the Reducers over the HTTP protocol, this step is called shuffle. Reducer initiates the connection to the Mapper to ask for data; it acts as an SSL client.
+
+
+CLIENT RPC ENCRYPTION HDFS, YARN, and Ranger use SASL QOP to secure RPC traffic. The parmeter hadoop.rpc.protection is set to privacy, this will encrypt RPC traffic.
+
+	Ambari > HDFS > Configs > Advance > 
+
+	hadoop.rpc.protection=privacy
+
+CLIENT HDFS ENCRYPTION The parameters dfs.encrypt.data.transfer and dfs.encrypt.transfer.algorith must be set. (3DES is more secure, while RC4 is faster)
+
+	Ambari > HDFS > Configs > Advance >
+
+	dfs.encrypt.data.transfer=true
+	dfs.encrypt.data.transfer.algorithm=3des
+
+RANGER HDFS ENCRYPTION  When you install Ranger KMS it will set the parameters to encypt HDFS traffic. The parameters dfs.encrypt.data.transfer.cipher.suites and dfs.encryption.key.provider.uri are automatically set. 
+
+NEXT TASKS
+1. Complete the install of ssl by following the README files in sub directories. 
+2. The installation must be completed in the following order:
+
+	hdp-ssl
+	ambari-ssl
+	ambari-server
+
+3. When this is all completed you will need to restart the ambari-server, all o f the ambari-agents, and the cluster. i.e. shutdown and restart everything.

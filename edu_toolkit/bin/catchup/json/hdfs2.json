@@ -1,0 +1,16 @@
+{
+  "name" : "hdfs-DATANODE-2",
+  "displayName" : "hdfs-DATANODE-2",
+  "roleType" : "DATANODE",
+  "base" : false,
+  "serviceRef" : {
+    "clusterName" : "Cluster1",
+    "serviceName" : "hdfs"
+  },
+  "config" : {
+    "items" : [ {
+      "name" : "dfs_data_dir_list",
+      "value" : "/dfs/dn"
+    } ]
+  }
+}

@@ -1,0 +1,8 @@
+---
+kms_conf_dir: /var/lib/kms-keytrustee/keytrustee/.keytrustee
+kms_key_files:
+  - keytrustee.conf
+  - pubring.gpg
+  - secring.gpg
+kms_user: kms
+kms_group: kms

@@ -1,0 +1,7 @@
+---
+- name: Deployment Teardown
+  hosts: cluster
+  gather_facts: no
+  become: yes
+  roles:
+    - teardown

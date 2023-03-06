@@ -1,0 +1,70 @@
+{ "items": [ 
+	  {
+	  "name" : "zookeeper",
+      "type" : "ZOOKEEPER",
+      "config" : { "items" : [ ]},
+      "roles" : [ 
+      	  {
+				"name" : "zookeeper-SERVER-4cb419c64a872e50f7afa57cd6ab6863",
+				"type" : "SERVER",
+				"hostRef" : {
+				  "hostId" : "9bcb38ca-9a2a-4f3d-a4bc-d445b123b338"
+				},
+				"config" : {
+				  "items" : [ {
+					"name" : "serverId",
+					"value" : "3"
+				  } ]
+				},
+				"roleConfigGroupRef" : {
+				  "roleConfigGroupName" : "zookeeper-SERVER-BASE"
+				}
+		  }, 
+          {
+				"name" : "zookeeper-SERVER-814026d35bd67b44573c805843e63664",
+				"type" : "SERVER",
+				"hostRef" : {
+				  "hostId" : "68185aa5-b9c6-49f6-8af0-a880ea253ec8"
+				},
+				"config" : {
+				  "items" : [ {
+					"name" : "serverId",
+					"value" : "1"
+				  } ]
+				},
+				"roleConfigGroupRef" : {
+				  "roleConfigGroupName" : "zookeeper-SERVER-BASE"
+				}
+      	  }, 
+      	  {
+				"name" : "zookeeper-SERVER-efab8ae640b9117c1ecf297b1ed25560",
+				"type" : "SERVER",
+				"hostRef" : {
+				  "hostId" : "d352ffb7-03f3-4b81-8163-af06a0378634"
+				},
+				"config" : {
+				  "items" : [ {
+					"name" : "serverId",
+					"value" : "2" } ]
+				},
+				"roleConfigGroupRef" : { "roleConfigGroupName" : "zookeeper-SERVER-BASE" }   
+        }
+	],
+    "displayName" : "ZooKeeper",
+      "roleConfigGroups" : [ {
+        "name" : "zookeeper-SERVER-BASE",
+        "displayName" : "Server Default Group",
+        "roleType" : "SERVER",
+        "base" : true,
+        "serviceRef" : {
+          "clusterName" : "cluster",
+          "serviceName" : "zookeeper"
+        },
+        "config" : {
+          "items" : [ {
+            "name" : "zookeeper_server_java_heapsize",
+            "value" : "52428800"
+          } ]
+        }
+      } ]
+}]}

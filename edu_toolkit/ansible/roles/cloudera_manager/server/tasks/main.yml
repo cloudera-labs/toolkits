@@ -1,0 +1,32 @@
+---
+
+#- name: Install Cloudera Manager Daemon
+#  package:
+#    name: /home/training/software/cm7.5.4/RPMS/x86_64/cloudera-manager-daemons-7.5.4*
+#    update_cache: yes
+#    state: present
+
+- name: Install Cloudera Manager Server
+  package:
+    name: cloudera-manager-server
+    update_cache: yes
+    state: present
+
+- name: Configure Cloudera Manager Databases and Users 
+  import_role:
+    name: cloudera_manager/database
+
+
+- name: Configure JVM RAM for Cloudera Manager
+  block:
+    - name: Set -Xmx12G and -XX:MaxPermSize=512m
+      shell: |
+        sudo sed -i 's/-Xmx4G -XX:MaxPermSize=256m/-Xmx12G -XX:MaxPermSize=512m/' /etc/default/cloudera-scm-server
+
+
+- name: Start Cloudera Manager Server
+  service:
+    name: cloudera-scm-server
+    state: restarted
+  notify:
+    - wait cloudera-scm-server

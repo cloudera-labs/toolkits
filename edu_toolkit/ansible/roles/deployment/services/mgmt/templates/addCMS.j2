@@ -1,0 +1,302 @@
+{
+  "clusters" : [ ],
+  "hosts" : [ {
+    "hostId" : "replace-host-id",
+    "ipAddress" : "replace-ip-addr",
+    "hostname" : "replace-hostname",
+    "rackId" : "/default",
+    "config" : {
+      "items" : [ ]
+    }
+  } ],
+  "users" : [ 
+  {
+    "roles" : [ "ROLE_USER" ],
+    "name" : "__cloudera_internal_user__mgmt-EVENTSERVER",
+    "pwHash" : "a96d1c62484364dc53fa73e5c30ce011e2f9e7623a5d81f8bcce725f150d83cd",
+    "pwSalt" : -8740327296900827163,
+    "pwLogin" : true
+  }, {
+    "roles" : [ "ROLE_USER" ],
+    "name" : "__cloudera_internal_user__mgmt-HOSTMONITOR",
+    "pwHash" : "43c38c3560a8c455b04a509c5c2ce240f6b77341e4950519a5b0b803efab0600",
+    "pwSalt" : -5405300932717433867,
+    "pwLogin" : true
+  }, {
+    "roles" : [ "ROLE_USER" ],
+    "name" : "__cloudera_internal_user__mgmt-REPORTSMANAGER",
+    "pwHash" : "abd27f3747fe7633d8d44b0799be41bd68ed6f904538603b5c50b6c5336b39de",
+    "pwSalt" : 4713447116339727413,
+    "pwLogin" : true
+  }, {
+    "roles" : [ "ROLE_USER" ],
+    "name" : "__cloudera_internal_user__mgmt-SERVICEMONITOR",
+    "pwHash" : "7d9906f49e1602c74ee29453749a6c22d189dd71845e0fc9fd01312255c8a7ed",
+    "pwSalt" : -5353545280559723167,
+    "pwLogin" : true
+  }, {
+    "roles" : [ "ROLE_ADMIN" ],
+    "name" : "admin",
+    "pwHash" : "3130d851cda9d1e3f961e06cf4083623fbeef0c83b611c79c42082785fca7313",
+    "pwSalt" : 7689974441053900508,
+    "pwLogin" : true
+  }, {
+    "roles" : [ "ROLE_ADMIN" ],
+    "name" : "training",
+    "pwHash" : "66480ae5fc44da482a6b124a71ba38f317cf54c0e36ede6dcbad17de0875bbbb",
+    "pwSalt" : -4144847858116667190,
+    "pwLogin" : true
+  } ],
+  "peers" : [ ],
+  "timestamp" : "2022-06-20T12:47:16.875Z",
+  "versionInfo" : {
+    "version" : "7.6.1",
+    "buildUser" : "jenkins",
+    "buildTimestamp" : "20210312-1506",
+    "gitHash" : "aa2740de2751a99075f3d170fd5e55fdfb4c6121",
+    "snapshot" : false
+  },
+  "managementService" : {
+    "roles" : [ 
+    {
+      "name" : "mgmt-ALERTPUBLISHER",
+      "type" : "ALERTPUBLISHER",
+      "hostRef" : {
+        "hostId" : "replace-host-id"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "role_jceks_password",
+          "value" : "3jghrm8ecmx7hg2y9c1p843gh",
+          "sensitive" : true
+        } ]
+      },
+      "roleConfigGroupRef" : {
+        "roleConfigGroupName" : "mgmt-ALERTPUBLISHER-BASE"
+      }
+    }, {
+      "name" : "mgmt-EVENTSERVER",
+      "type" : "EVENTSERVER",
+      "hostRef" : {
+        "hostId" : "replace-host-id"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "role_jceks_password",
+          "value" : "53o19dnf0hltiwwu3nu3qu32e",
+          "sensitive" : true
+        } ]
+      },
+      "roleConfigGroupRef" : {
+        "roleConfigGroupName" : "mgmt-EVENTSERVER-BASE"
+      }
+    }, {
+      "name" : "mgmt-HOSTMONITOR",
+      "type" : "HOSTMONITOR",
+      "hostRef" : {
+        "hostId" : "replace-host-id"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "role_jceks_password",
+          "value" : "ez35vs6ys6y5bgriztsj42wgi",
+          "sensitive" : true
+        } ]
+      },
+      "roleConfigGroupRef" : {
+        "roleConfigGroupName" : "mgmt-HOSTMONITOR-BASE"
+      }
+    }, {
+      "name" : "mgmt-REPORTSMANAGER",
+      "type" : "REPORTSMANAGER",
+      "hostRef" : {
+        "hostId" : "replace-host-id"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "role_jceks_password",
+          "value" : "cmspldkp2zxwy6zgnbjujfrth",
+          "sensitive" : true
+        } ]
+      },
+      "roleConfigGroupRef" : {
+        "roleConfigGroupName" : "mgmt-REPORTSMANAGER-BASE"
+      }
+    }, {
+      "name" : "mgmt-SERVICEMONITOR",
+      "type" : "SERVICEMONITOR",
+      "hostRef" : {
+        "hostId" : "replace-host-id"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "role_jceks_password",
+          "value" : "18oqeg1if11t4xlo10z9abpli",
+          "sensitive" : true
+        } ]
+      },
+      "roleConfigGroupRef" : {
+        "roleConfigGroupName" : "mgmt-SERVICEMONITOR-BASE"
+      }
+    } ],
+    "roleConfigGroups" : [ 
+    {
+      "name" : "mgmt-ALERTPUBLISHER-BASE",
+      "displayName" : "Alert Publisher Default Group",
+      "roleType" : "ALERTPUBLISHER",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ ]
+      }
+    }, {
+      "name" : "mgmt-EVENTSERVER-BASE",
+      "displayName" : "Event Server Default Group",
+      "roleType" : "EVENTSERVER",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "event_server_heapsize",
+          "value" : "812646400",
+          "sensitive" : false
+        } ]
+      }
+    }, {
+      "name" : "mgmt-HOSTMONITOR-BASE",
+      "displayName" : "Host Monitor Default Group",
+      "roleType" : "HOSTMONITOR",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "firehose_heapsize",
+          "value" : "812646400",
+          "sensitive" : false
+        } ]
+      }
+    }, {
+      "name" : "mgmt-NAVIGATOR-BASE",
+      "displayName" : "Navigator Audit Server Default Group",
+      "roleType" : "NAVIGATOR",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ ]
+      }
+    }, {
+      "name" : "mgmt-NAVIGATORMETASERVER-BASE",
+      "displayName" : "Navigator Metadata Server Default Group",
+      "roleType" : "NAVIGATORMETASERVER",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ ]
+      }
+    }, {
+      "name" : "mgmt-REPORTSMANAGER-BASE",
+      "displayName" : "Reports Manager Default Group",
+      "roleType" : "REPORTSMANAGER",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "headlamp_database_name",
+          "value" : "rman",
+          "sensitive" : false
+        }, {
+          "name" : "headlamp_database_password",
+          "value" : "BadPass@1",
+          "sensitive" : true
+        }, {
+          "name" : "headlamp_database_user",
+          "value" : "rman",
+          "sensitive" : false
+        }, {
+          "name" : "headlamp_heapsize",
+          "value" : "812646400",
+          "sensitive" : false
+        } ]
+      }
+    }, {
+      "name" : "mgmt-SERVICEMONITOR-BASE",
+      "displayName" : "Service Monitor Default Group",
+      "roleType" : "SERVICEMONITOR",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ {
+          "name" : "firehose_heapsize",
+          "value" : "812646400",
+          "sensitive" : false
+        } ]
+      }
+    }, {
+      "name" : "mgmt-TELEMETRYPUBLISHER-BASE",
+      "displayName" : "Telemetry Publisher Default Group",
+      "roleType" : "TELEMETRYPUBLISHER",
+      "base" : true,
+      "serviceRef" : {
+        "serviceName" : "mgmt"
+      },
+      "config" : {
+        "items" : [ ]
+      }
+    } ],
+    "name" : "mgmt",
+    "type" : "MGMT",
+    "config" : {
+      "items" : [ ]
+    },
+    "displayName" : "Cloudera Management Service"
+  },
+  "managerSettings" : {
+    "items" : [ {
+      "name" : "AUDIT_RECORDS_LIFE_TIME",
+      "value" : "720",
+      "sensitive" : false
+    }, {
+      "name" : "CDP_ENVIRONMENT",
+      "value" : "DATA_CENTER",
+      "sensitive" : false
+    }, {
+      "name" : "CLUSTER_STATS_START",
+      "value" : "10/21/2012 4:20",
+      "sensitive" : false
+    }, {
+      "name" : "PUBLIC_CLOUD_STATUS",
+      "value" : "ON_PUBLIC_CLOUD",
+      "sensitive" : false
+    }, {
+      "name" : "REMOTE_PARCEL_REPO_URLS",
+      "value" : "",
+      "sensitive" : false
+    } ]
+  },
+  "allHostsConfig" : {
+    "items" : [  { 
+        "name" : "java_home",
+        "value" : "/usr/java/jdk1.8.0_232-cloudera"
+    }, {
+        "name" : "host_clock_offset_thresholds",
+        "value" : "{\"warning\":3000,\"critical\":200000000}"
+    } ]
+  },
+  "hostTemplates" : {
+    "items" : [ ]
+  }
+}

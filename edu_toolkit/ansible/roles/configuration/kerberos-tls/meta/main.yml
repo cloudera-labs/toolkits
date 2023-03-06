@@ -1,0 +1,4 @@
+---
+dependencies:
+#  - role: cloudera_manager/common
+  - role: cloudera_manager/api_client
