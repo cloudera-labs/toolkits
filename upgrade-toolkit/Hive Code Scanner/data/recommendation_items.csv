@@ -81,3 +81,5 @@
 "hive.vectorized.use.row.serde.deserialize","property used to be FALSE, after upgrade this changes to TRUE","me","\w+\s+hive.vectorized.use.row.serde.deserialize(\s{0,1}|\s+)\=(\s{0,1}|\s+)false"
 "cast timestamp","By Default, casting a numeric type value into a timestamp produces a result that reflects the UTC instead of the time zone of the cluster.","se","CAST(\s+|\s{0})\(\d+\s+AS\s+TIMESTAMP"
 "cast zeros as null","By Default, casting of an invalid date returns a result. Please ensure cast is as desired.","se","CAST(\s+|\s{0})\((\s+|\s{0})('0000-00-00'|'000-00-00 00:00:00')"
+"greatest","If NULL is found while using greatest in CDP you could return the incorrect result, use NVL to set a default","me","\w+\s+greatest\("
+"least","If NULL is found while using least in CDP you could return the incorrect result, use NVL to set a default","me","\w+\s+least\("
