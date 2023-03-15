@@ -79,3 +79,5 @@ SET hive.vectorized.use.row.serde.deserialize = FALSE;
 CREATE TABLE mydb.employees (id INT, name STRING, salary FLOAT);
 ALTER TABLE mydb.employees ADD COLUMNS (email STRING);
 DROP TABLE mydb.employees;
+
+SELECT greatest(col1), least(col2) FROM mydb.employees;
