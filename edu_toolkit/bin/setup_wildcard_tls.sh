@@ -51,7 +51,7 @@ cm_file=/var/lib/cloudera-scm-agent/agent-cert/cm-auto-in_cluster_ca_cert.pem
 function usage() {
 # usage
 
-    	echo "Usage: $(basename ${0}) -d <app_domain> -f <file prefix> [ -s self sign | -c sign csr with default CA]" 1>&2
+    	echo "Usage: $(basename ${0}) -d <app_domain> -f <file prefix> -n <cluster_name> [ -s self sign | -c sign csr with default CA]" 1>&2
         exit
 }
 
@@ -60,7 +60,7 @@ function get_help() {
 
 cat << EOF
 SYNOPSIS
-        setup_wildcard_tls.sh -d <app_domain> -f <file prefix> [ -s self sign | -c sign csr with default CA]" 1>&2
+        setup_wildcard_tls.sh -d <app_domain> -f <file prefix> -n <cluster_name> [ -s self sign | -c sign csr with default CA]" 1>&2
 
 DESCRIPTION
 	This tool will generate a signed certs file and a private key file.
@@ -80,6 +80,8 @@ DESCRIPTION
 		-d <app_domain>
 	-f)
 		-f <file_prefix>
+	-n)
+		-n <cluster_name>
 	-s) 
 		Sign with self_sign
 
@@ -132,7 +134,7 @@ function run_cmd() {
 function move_certs() {
 	# Make a pki directory ecs
 
-	pki_ecs=/opt/cloudera/security/pki/ecs
+	pki_ecs=/opt/cloudera/security/pki/${cluster_name}
 
 	if [ ! -d ${pki_ecs} ]; then
 		sudo mkdir -p ${pki_ecs} 
@@ -230,7 +232,7 @@ function sign_csr() {
 function run_option() {
 	# Run getopts on the command line options
 
-	while getopts hd:f:cs option; do
+	while getopts hd:f:n:cs option; do
 		case ${option} in
 			h) # display Help
 				get_help
@@ -241,6 +243,9 @@ function run_option() {
 				;;
 			f) #file names from prefix
 				prefix="${OPTARG}"
+				;;
+			n) #cluster name
+				cluster_name=${OPTARG}"
 				;;
 			c) #-c flag sent
 				ca_sign=true
