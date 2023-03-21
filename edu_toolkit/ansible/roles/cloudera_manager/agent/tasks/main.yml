@@ -1,9 +1,0 @@
----
-
-- name: Install Cloudera Manager agent packages
-  yum:
-    name: cloudera-manager-agent
-    update_cache: yes
-    state: present
-  register: result
-  until: result is success

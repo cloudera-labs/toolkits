@@ -1,5 +1,0 @@
-ENABLE_KERBEROS: "{{ krb | default('no') }}"
-ENABLE_TLS: "{{ tls | default('no') }}"
-ENABLE_SDX: "{{ sdx | default('no') }}"
-ENABLE_ENCRYPTION: "{{ encryption | default('no') }}"
-ENABLE_KNOX: "{{ knox | default('no') }}"

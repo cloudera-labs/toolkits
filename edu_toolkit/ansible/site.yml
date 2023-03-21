@@ -1,9 +1,0 @@
----
-- import_playbook: teardown.yml
-- import_playbook: manage_ipa.yml
-- import_playbook: install_cloudera_manager.yml
-- import_playbook: install_cloudera_agent.yml
-- import_playbook: install_cluster.yml
-- import_playbook: setup_hdfs_encryption.yml
-  when: "encryption == 'yes' | default('no')"
-- import_playbook: configure_cluster.yml
