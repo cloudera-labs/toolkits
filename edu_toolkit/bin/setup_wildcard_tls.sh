@@ -51,7 +51,7 @@ cm_file=/var/lib/cloudera-scm-agent/agent-cert/cm-auto-in_cluster_ca_cert.pem
 function usage() {
 # usage
 
-    	echo "Usage: $(basename ${0}) -d <app_domain> -f <file prefix> -n <cluster_name> [ -s self sign | -c sign csr with default CA]" 1>&2
+    	echo "Usage: $(basename ${0}) -d <endpoint_host> -f <file prefix> -n <cluster_name> [ -s self sign | -c sign csr with default CA]" 1>&2
         exit
 }
 
@@ -77,7 +77,7 @@ DESCRIPTION
 	-c)
 		Sign the csr with the default CA
 	-d)
-		-d <app_domain>
+		-d <endpoint_host>
 	-f)
 		-f <file_prefix>
 	-n)
