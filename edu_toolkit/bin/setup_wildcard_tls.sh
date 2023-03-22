@@ -245,7 +245,7 @@ function run_option() {
 				prefix="${OPTARG}"
 				;;
 			n) #cluster name
-				cluster_name=${OPTARG}"
+				cluster_name="${OPTARG}"
 				;;
 			c) #-c flag sent
 				ca_sign=true
