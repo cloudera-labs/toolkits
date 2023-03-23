@@ -43,8 +43,7 @@
 num_arg=$#
 dir=${HOME}
 logfile=${dir}/log/$(basename $0).log
-#cm_file=/ca/intermediate/certs/intermediate.cert.pem
-cm_file=/var/lib/cloudera-scm-agent/agent-cert/cm-auto-in_cluster_ca_cert.pem
+ipa_file=/etc/ipa/ca.crt 
 
 
 # FUNCTIONS
@@ -223,7 +222,7 @@ function sign_csr() {
     log_info "Signed cert is: ${cert_file}"
 
     #Append the Intermediate CA Public Cert to the new cert
-   # run_cmd "sudo cat ${cm_file} | sudo tee -a ${cert_file} > /dev/null"
+   # run_cmd "sudo cat ${ipa_file} | sudo tee -a ${cert_file} > /dev/null"
 
     # Cleanup
     run_cmd "rm ${csr_file}"
