@@ -287,9 +287,9 @@ function run_wildcard() {
 	cert_file="${prefix}.crt"
   
 	#CA info hard coded for now, assumes CM CA with Auto-TLS
-	ca_path="/var/lib/cloudera-scm-agent/agent-cert"
-	ca_key=${ca_path}/cm-auto-host_key.pem
-	ca_crt=${ca_path}/cm-auto-in_cluster_ca_cert.pem
+	ca_path="/etc/ipa"
+	ca_key=${ca_path}/ca.key
+	ca_crt=${ca_path}/ca.crt
 	ca_conf="${ca_path}/openssl.cnf"
 
 	log_info "App Domain  = \"${domain_name}\""
