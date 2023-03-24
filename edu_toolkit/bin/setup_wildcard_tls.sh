@@ -201,22 +201,12 @@ function create_self_signed_cert() {
     log_info "Self Signed Certificate created: ${cert_file}"
 }
 
-function set_cacerts() {
-	# Set the variables for ssl by pulling from the ssl-client.xml file.
-
-    ssl_client=/etc/hadoop/conf/ssl-client.xml
-    truststore_location=$(xmllint --xpath "//configuration/property[name='ssl.client.truststore.location']/value/text()" ${ssl_client})
-	auto_tls_password=$(xmllint --xpath "//configuration/property[name='ssl.client.truststore.password']/value/text()" ${ssl_client})
-}
-
 function sign_csr() {
     # Sign the certificate using default CA, the def CA requires sudo for now
-
-	set_cacerts
 	
-	run_cmd "sudo openssl x509 -req -CAkey ${ca_key} -CA ${ca_crt} -in ${csr_file} -out ${cert_file} -days 365 -CAcreateserial -passin pass:${auto_tls_password}"
+	run_cmd "sudo openssl x509 -req -CAkey ${ca_key} -CA ${ca_crt} -in ${csr_file} -out ${cert_file} -days 365 -CAcreateserial"
 
-#    run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file} -passin pass:${auto_tls_password}"
+#    run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
 
     log_info "A CSR request was signed by default CA"
     log_info "Signed cert is: ${cert_file}"
@@ -289,7 +279,7 @@ function run_wildcard() {
 	ca_path="/opt/cloudera/security/pki/ca"
 	ca_key=${ca_path}/ca.key
 	ca_crt=${ca_path}/ca.crt
-	ca_conf="${ca_path}/openssl.cnf"
+	ca_conf="/etc/pki/tls/openssl.cnf"
 
 	log_info "App Domain  = \"${domain_name}\""
 	log_info "Config File = \"${conf_file}\""
