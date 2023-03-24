@@ -126,7 +126,7 @@ class HdfsFsImageExtractor:
         try:
             r = requests.get(
                 self.ambari_http_protocol + "://" + self.ambari_server_host + ":" + self.ambari_server_port + "/api/v1/clusters",
-                auth=HTTPBasicAuth(self.ambari_user, self.ambari_pass))
+                auth=HTTPBasicAuth(self.ambari_user, self.ambari_pass),verify=False)
 
         except requests.exceptions.RequestException as e:
             log.debug(

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="67a4d1c7-09fc-4ad2-bbe1-3c329ee80bdb" name="Default Changelist" comment="Hive Code Scanner" />
+    <list default="true" id="67a4d1c7-09fc-4ad2-bbe1-3c329ee80bdb" name="Default Changelist" comment="Hive Code Scanner">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/ambari_api_extarctor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/ambari_api_extarctor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/hdfs_fs_image_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/hdfs_fs_image_extractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/hdp_metrics_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/hdp_metrics_extractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/mr_workload_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/mr_workload_extractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/spark_workload_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/spark_workload_extractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/tez_workload_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/tez_workload_extractor.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -9,6 +17,13 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/CDH-Discovery-Tool/requirements.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-reports-builder/mac_report_builder.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/CDH-Discovery-Tool/mac-discovery-reports-builder/mac_report_builder.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/discovery_bundle_builder.sh" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/conf/log-config.yaml" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="2Lf3vSgqiUkWi7ELlt1ynoqgn90" />
   <component name="ProjectViewState">
@@ -73,7 +88,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Hive Code Scanner" />
