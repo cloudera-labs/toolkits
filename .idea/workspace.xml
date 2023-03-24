@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="67a4d1c7-09fc-4ad2-bbe1-3c329ee80bdb" name="Default Changelist" comment="Add verify=False for HTTPS request">
-      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/mr_workload_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/mr_workload_extractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/spark_workload_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/spark_workload_extractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/tez_workload_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/tez_workload_extractor.py" afterDir="false" />
+    <list default="true" id="cb0a075c-ecf9-4eeb-acf1-4d3d456bfaf6" name="Changes" comment=":construction: typo fixed">
+      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/ranger_policy_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/ranger_policy_extractor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
