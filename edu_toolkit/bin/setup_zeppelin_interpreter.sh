@@ -109,7 +109,7 @@ function setup_keytab() {
 # Create a static keytab for zeppelin
 
 	ssh -tt ${host} "sudo mkdir -p /etc/security/keytabs" >> ${logfile} 2>&1
-	ssh -tt ${host} "sudo rm /etc/security/keytabs/zeppelin.keytab" >> $${logfile} 2>&1
+	ssh -tt ${host} "sudo rm /etc/security/keytabs/zeppelin.keytab" >> ${logfile} 2>&1
 
 	export key_dir=$(ssh edge.example.com sudo ls -Art /var/run/cloudera-scm-agent/process/ | grep -i zeppelin | tail -n 1)
 	echo "The keytab is located in $key_dir" >> ${logfile} 2>&1
