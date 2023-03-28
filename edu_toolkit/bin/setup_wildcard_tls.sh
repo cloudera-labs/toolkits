@@ -49,7 +49,7 @@ ipa_crt=/etc/ipa/ca.crt
 function usage() {
 # usage
 
-    	echo "Usage: $(basename ${0}) -d <endpoint_host> -f <file prefix> -n <cluster_name> [ -s self sign | -c sign csr with default CA]" 1>&2
+    	echo "Usage: $(basename ${0}) -d <domain> -n <cluster_name> -p <certificate_prefix> [ -s self sign | -c sign csr with default CA]" 1>&2
         exit
 }
 
