@@ -1,9 +1,8 @@
 #!/bin/bash
 
-input="target-hosts-ecs.txt"
-
-sudo_user='centos'
-user_privkey='~/.ssh/lab.key'
+sudo_user='training'
+user_privkey='~/.ssh/admincourse.pem'
+input="list_ecs_hosts.txt"
 
 while read -r -u10 host;
 do echo '"'Trying..${host}'"';

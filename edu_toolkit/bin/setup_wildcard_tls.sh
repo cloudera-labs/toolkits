@@ -184,7 +184,7 @@ function sign_csr() {
     log_info "Signed cert is: ${cert_file}"
 
     #Append the Intermediate CA Public Cert to the new cert
-   # run_cmd "sudo cat ${ipa_crt} | sudo tee -a ${cert_file} > /dev/null"
+    run_cmd "sudo cat ${ipa_crt} | sudo tee -a ${cert_file} > /dev/null"
 
     # Cleanup
     run_cmd "rm ${csr_file}"
