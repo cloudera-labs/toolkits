@@ -49,7 +49,7 @@ ipa_crt=/etc/ipa/ca.crt
 function usage() {
 # usage
 
-    	echo "Usage: $(basename ${0}) -d <domain> -n <cluster_name> -p <certificate_prefix> [ -s self sign | -c sign csr with default CA]" 1>&2
+    	echo "Usage: $(basename ${0}) -d <app_domain> -n <cluster_name> -p <certificate_prefix> [ -s self sign | -c sign csr with default CA]" 1>&2
         exit
 }
 
@@ -58,7 +58,7 @@ function get_help() {
 
 cat << EOF
 SYNOPSIS
-        setup_wildcard_tls.sh -d <app_domain> -f <file prefix> -n <cluster_name> [ -s self sign | -c sign csr with default CA]" 1>&2
+        setup_wildcard_tls.sh -d <app_domain> -n <cluster_name> -p <certificate_prefix> [ -s self sign | -c sign csr with default CA]" 1>&2
 
 DESCRIPTION
 	This tool will generate a signed certs file and a private key file.
@@ -85,7 +85,7 @@ DESCRIPTION
 
 EXAMPLE
 	setup_wildcard_tls.sh -d apps.pvc-edu.example.com -n edu-dev -f edu-dev -s 
-	setup_wildcard_tls.sh -d apps.pvc-prd.example.com -n fin-prd -f fin-prd -c 
+	setup_wildcard_tls.sh -d apps.pvc-prd.example.com -n fin-prd -f prodrisk -c 
 
 EOF
         exit
