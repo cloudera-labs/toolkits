@@ -43,8 +43,7 @@
 num_arg=$#
 dir=${HOME}
 logfile=${dir}/log/$(basename $0).log
-ipa_file=/etc/ipa/ca.crt 
-
+ipa_crt=/etc/ipa/ca.crt 
 
 # FUNCTIONS
 function usage() {
@@ -73,19 +72,20 @@ DESCRIPTION
 
 	-h)
 		Help page
-	-c)
-		Sign the csr with the default CA
 	-d)
-		-d <endpoint_host>
-	-f)
-		-f <file_prefix>
+		-d <domain>
 	-n)
 		-n <cluster_name>
+	-p)
+		-p <certificate_prefix>
+	-c)
+		Sign the csr with the default CA
 	-s) 
 		Sign with self_sign
 
 EXAMPLE
-	setup_wildcard_tls.sh -d apps.ecs-1.example.com -f ecs -c 
+	setup_wildcard_tls.sh -d apps.pvc-edu.example.com -n edu-dev -f edu-dev -s 
+	setup_wildcard_tls.sh -d apps.pvc-prd.example.com -n fin-prd -f fin-prd -c 
 
 EOF
         exit
@@ -130,22 +130,6 @@ function run_cmd() {
     return $exit_code
 }
 
-function move_certs() {
-	# Make a pki directory ecs
-
-	pki_ecs=/opt/cloudera/security/pki/${cluster_name}
-
-	if [ ! -d ${pki_ecs} ]; then
-		sudo mkdir -p ${pki_ecs} 
-	fi
-
-	run_cmd "sudo chmod 440 ${key_file}"
-	run_cmd "sudo mv ${cert_file} ${pki_ecs}/"
-	run_cmd "sudo mv ${key_file} ${pki_ecs}/"
-	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pki_ecs}"
-}
-
-
 function create_cnf() {
 	# Create a minimal openssl format config file, to allow for SubjAltNames
 
@@ -189,6 +173,23 @@ function create_csr() {
     log_info "Certificate Signing Request created: ${csr_file}"
 }
 
+function sign_csr() {
+    # Sign the certificate using default CA, the def CA requires sudo for now
+	
+	run_cmd "sudo openssl x509 -req -CAkey ${ca_key} -CA ${ca_crt} -in ${csr_file} -out ${cert_file} -days 365 -CAcreateserial"
+
+#    run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
+
+    log_info "A CSR request was signed by default CA"
+    log_info "Signed cert is: ${cert_file}"
+
+    #Append the Intermediate CA Public Cert to the new cert
+   # run_cmd "sudo cat ${ipa_crt} | sudo tee -a ${cert_file} > /dev/null"
+
+    # Cleanup
+    run_cmd "rm ${csr_file}"
+}
+
 function create_self_signed_cert() {
     #Create a PrivateKey unencoded (no des) and a SelfSigned Cert
 
@@ -201,27 +202,25 @@ function create_self_signed_cert() {
     log_info "Self Signed Certificate created: ${cert_file}"
 }
 
-function sign_csr() {
-    # Sign the certificate using default CA, the def CA requires sudo for now
-	
-	run_cmd "sudo openssl x509 -req -CAkey ${ca_key} -CA ${ca_crt} -in ${csr_file} -out ${cert_file} -days 365 -CAcreateserial"
+function move_certs() {
+	# Make a pki directory ecs
 
-#    run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
+	pvc_pki=/opt/pvc/${cluster_name}/security/pki
 
-    log_info "A CSR request was signed by default CA"
-    log_info "Signed cert is: ${cert_file}"
+	if [ ! -d ${pvc_pki} ]; then
+		sudo mkdir -p ${pvc_pki} 
+	fi
 
-    #Append the Intermediate CA Public Cert to the new cert
-   # run_cmd "sudo cat ${ipa_file} | sudo tee -a ${cert_file} > /dev/null"
-
-    # Cleanup
-    run_cmd "rm ${csr_file}"
+	run_cmd "sudo chmod 440 ${key_file}"
+	run_cmd "sudo mv ${cert_file} ${pvc_pki}/"
+	run_cmd "sudo mv ${key_file} ${pvc_pki}/"
+	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pvc_pki}"
 }
 
 function run_option() {
 	# Run getopts on the command line options
 
-	while getopts hd:f:n:cs option; do
+	while getopts hd:n:p:cs option; do
 		case ${option} in
 			h) # display Help
 				get_help
@@ -230,11 +229,11 @@ function run_option() {
 			d) #app domain
 				domain_name="${OPTARG}"
 				;;
-			f) #file names from prefix
-				prefix="${OPTARG}"
-				;;
 			n) #cluster name
 				cluster_name="${OPTARG}"
+				;;
+			p) #file names from prefix
+				prefix="${OPTARG}"
 				;;
 			c) #-c flag sent
 				ca_sign=true
@@ -276,7 +275,7 @@ function run_wildcard() {
 	cert_file="${prefix}.crt"
   
 	#CA info hard coded for now, assumes CM CA with Auto-TLS
-	ca_path="/opt/cloudera/security/pki/ca"
+	ca_path="/etc/ipa"
 	ca_key=${ca_path}/ca.key
 	ca_crt=${ca_path}/ca.crt
 	ca_conf="/etc/pki/tls/openssl.cnf"
@@ -335,7 +334,7 @@ function run_wildcard() {
 	# Cleanup
 	run_cmd "rm ${conf_file}"
 	move_certs
-	log_info "Move ${key_file} and ${cert_file} to ${pki_ecs}"
+	log_info "Move ${key_file} and ${cert_file} to ${pvc_pki}"
 }
 
 function main() {
