@@ -34,7 +34,7 @@
 
 
 # DEBUG
-#set -x
+# set -x
 #set -eu
 #set -e # Any subsequent(*) commands which fail will cause the shell script to exit immediately
 #set >> /tmp/setvar.txt
@@ -134,10 +134,11 @@ function setup_ca() {
 	# Configuration setup for IPA as CA
 
 	if [ ! -f ${ca_path}/openssl.cnf ]; then
-		touch index.txt serial.txt
-		echo "1234" > ${ca_path}/serial.txt
-		sudo mv index.txt serial.txt ${ca_path}
-		sudo cp ${HOME}/conf/openssl.cnf ${ca_path}
+		run_cmd "touch index.txt serial.txt"
+		run_cmd "echo "1234" > serial.txt"
+		run_cmd "sudo mv index.txt serial.txt ${ca_path}"
+		run_cmd "sudo cp ${HOME}/conf/openssl.cnf ${ca_path}"
+		log_info "Setup CA environment with openssl.cnf"
 	fi
 }
 	 
@@ -222,7 +223,7 @@ function move_certs() {
 
 	run_cmd "sudo chmod 440 ${key_file}"
 	run_cmd "sudo mv ${key_file} ${pvc_pki}/"
-	run_cmd "sudo mv ${ca_path}/${cert_file} ${pvc_pki}/"
+	run_cmd "sudo mv ${cert_file} ${pvc_pki}/"
 	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pvc_pki}"
 }
 
@@ -317,7 +318,6 @@ function run_wildcard() {
 		create_csr
 		log_info "create_csr: DONE"
 	fi
-
 	if [ "${ca_sign}" =  true ]; then
 		if [ $(sudo ls ${ca_conf} | grep -ic '^.*$' ) -eq 0 ]; then
 			log_error "CA's config file does not exist: ${ca_conf}"
