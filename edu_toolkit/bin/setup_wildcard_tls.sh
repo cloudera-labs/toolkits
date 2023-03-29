@@ -136,6 +136,7 @@ function setup_ca() {
 	if [ ! -f ${ca_path}/openssl.cnf ]; then
 		run_cmd "touch index.txt serial.txt"
 		run_cmd "echo "1234" > serial.txt"
+		run_cmd "sudo chown root:root index.txt serial.txt" 
 		run_cmd "sudo mv index.txt serial.txt ${ca_path}"
 		run_cmd "sudo cp ${HOME}/conf/openssl.cnf ${ca_path}"
 		log_info "Setup CA environment with openssl.cnf"
