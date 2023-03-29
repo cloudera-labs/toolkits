@@ -130,6 +130,16 @@ function run_cmd() {
     return $exit_code
 }
 
+function setup_ca() {
+	# Configuration setup for IPA as CA
+
+	if { ! -f ${ca_path}/openssl.conf }; then
+		cp ${HOME}/conf/openssl.conf ${ca_path}
+		touch ${ca_path}/index.txt ${ca_path}/serial.txt
+		echo "1234" > ${ca_path}/serial.txt
+	fi
+}
+	 
 function create_cnf() {
 	# Create a minimal openssl format config file, to allow for SubjAltNames
 
@@ -167,7 +177,7 @@ function create_csr() {
     run_cmd "openssl req -new -sha256 -days 730  -newkey RSA:2048 -nodes -keyout ${key_file} -out ${csr_file} -extensions v3_req -config ${conf_file}"
 
     #convert key format to older PKCS#1 RSAPrivateKey, for compat with BouncyCastle libraries in Hadoop, not really required for ECS
-    run_cmd "openssl rsa -in ${key_file} -out ${key_file}"
+    #run_cmd "openssl rsa -in ${key_file} -out ${key_file}"
 
     log_info "Private key created: ${key_file}"
     log_info "Certificate Signing Request created: ${csr_file}"
@@ -176,13 +186,13 @@ function create_csr() {
 function sign_csr() {
     # Sign the certificate using default CA, the def CA requires sudo for now
 	
-    	run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
+    run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
 
     log_info "A CSR request was signed by default CA"
     log_info "Signed cert is: ${cert_file}"
 
     #Append the Intermediate CA Public Cert to the new cert
-    run_cmd "sudo cat ${ipa_crt} | sudo tee -a ${cert_file} > /dev/null"
+    #run_cmd "sudo cat ${ipa_crt} | sudo tee -a ${cert_file} > /dev/null"
 
     # Cleanup
     run_cmd "rm ${csr_file}"
@@ -210,8 +220,8 @@ function move_certs() {
 	fi
 
 	run_cmd "sudo chmod 440 ${key_file}"
-	run_cmd "sudo mv ${cert_file} ${pvc_pki}/"
 	run_cmd "sudo mv ${key_file} ${pvc_pki}/"
+	run_cmd "sudo mv ${ca_path}/${cert_file} ${pvc_pki}/"
 	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pvc_pki}"
 }
 
@@ -276,7 +286,9 @@ function run_wildcard() {
 	ca_path="/etc/ipa"
 	ca_key=${ca_path}/ca.key
 	ca_crt=${ca_path}/ca.crt
-	ca_conf="/etc/pki/tls/openssl.cnf"
+	ca_conf=${ca_path}/openssl.cnf"
+	
+	setup_ca
 
 	log_info "App Domain  = \"${domain_name}\""
 	log_info "Config File = \"${conf_file}\""
