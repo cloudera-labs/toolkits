@@ -93,7 +93,7 @@ function copy_dir() {
 	if [ -d ${content} ] ; then
 		sudo cp -R ${content}/* ${HOME}/
 		cd ${HOME}
-		sudo chown -R training:training ansible bin conf data ddl notebook tutorial
+		sudo chown -R training:training bin conf data ddl notebook tutorial
 	else
 		echo "Configure the content directory in the script"
 		echo "Current content directory is ${content}"

@@ -133,10 +133,11 @@ function run_cmd() {
 function setup_ca() {
 	# Configuration setup for IPA as CA
 
-	if { ! -f ${ca_path}/openssl.conf }; then
-		cp ${HOME}/conf/openssl.conf ${ca_path}
-		touch ${ca_path}/index.txt ${ca_path}/serial.txt
+	if [ ! -f ${ca_path}/openssl.cnf ]; then
+		touch index.txt serial.txt
 		echo "1234" > ${ca_path}/serial.txt
+		sudo mv index.txt serial.txt ${ca_path}
+		sudo cp ${HOME}/conf/openssl.cnf ${ca_path}
 	fi
 }
 	 
@@ -286,7 +287,7 @@ function run_wildcard() {
 	ca_path="/etc/ipa"
 	ca_key=${ca_path}/ca.key
 	ca_crt=${ca_path}/ca.crt
-	ca_conf=${ca_path}/openssl.cnf"
+	ca_conf=${ca_path}/openssl.cnf
 	
 	setup_ca
 
