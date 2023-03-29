@@ -176,9 +176,7 @@ function create_csr() {
 function sign_csr() {
     # Sign the certificate using default CA, the def CA requires sudo for now
 	
-	run_cmd "sudo openssl x509 -req -CAkey ${ca_key} -CA ${ca_crt} -in ${csr_file} -out ${cert_file} -days 365 -CAcreateserial"
-
-#    run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
+    	run_cmd "sudo openssl ca -batch -config ${ca_conf} -in ${csr_file} -out ${cert_file} -notext -extensions v3_req -extfile ${conf_file}"
 
     log_info "A CSR request was signed by default CA"
     log_info "Signed cert is: ${cert_file}"
