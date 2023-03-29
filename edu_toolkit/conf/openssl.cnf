@@ -57,10 +57,10 @@ keyUsage			= cRLSign
 ####################################################################
 [ signing_policy ]
 countryName		= optional
-stateOrProvicneName	= optional
+stateOrProvinceName	= optional
 localityName		= optional
-organizionName		= optional
-organizationUnitName 	= optional
+organizationName		= optional
+organizationalUnitName 	= optional
 commonName		= supplied
 emailAddress		= optional
 
