@@ -52,7 +52,7 @@ function get_help() {
 
 cat << EOF
 SYNOPSIS
-        setup_training.sh [OPTION]
+        setup_studentg.sh [OPTION]
 
 DESCRIPTION
         Setup the student for the user training
