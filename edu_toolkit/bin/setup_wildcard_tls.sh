@@ -84,8 +84,8 @@ DESCRIPTION
 		Sign with self_sign
 
 EXAMPLE
-	setup_wildcard_tls.sh -d apps.pvc-edu.example.com -n edu-dev -f edu-dev -s 
-	setup_wildcard_tls.sh -d apps.pvc-prd.example.com -n fin-prd -f prodrisk -c 
+	setup_wildcard_tls.sh -d apps.edu-dev.example.com -n edu-dev -f edu-dev -s 
+	setup_wildcard_tls.sh -d apps.fin-prd.example.com -n fin-prd -f prodrisk -c 
 
 EOF
         exit
