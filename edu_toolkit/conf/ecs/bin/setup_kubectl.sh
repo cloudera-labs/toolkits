@@ -120,7 +120,7 @@ function set_kubeconfig() {
 	result=$?
 	if [ ${result} -ne 0 ]; then
 		echo "Set the environmental variable for kubeconfig"
-		echo " " >> ${HOME}/.bashrc
+		echo "# Kube Config " >> ${HOME}/.bashrc
 		echo "export PATH=$PATH:/var/lib/rancher/rke2/bin" >> ${HOME}/.bashrc
 		echo "export KUBECONFIG=${HOME}/.kube/kubeconfig" >> ${HOME}/.bashrc
 	fi
