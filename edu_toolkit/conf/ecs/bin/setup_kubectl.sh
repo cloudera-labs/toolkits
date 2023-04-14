@@ -110,7 +110,7 @@ function gen_kubeconfig() {
 		mkdir ${HOME}/.kube
 	fi
 
-	sudo sed -e 's/certificate-authority-data/#&/' -e "s/server: .*/server: https:\/\/`hostname`:6443/" -e '/server/a \ \ \ \ insecure-skip-tls-verify: true' /etc/rancher/rke2/rke2.yaml > ${HOME}/.kube/kubconfig
+	sudo sed -e 's/certificate-authority-data/#&/' -e "s/server: .*/server: https:\/\/`hostname`:6443/" -e '/server/a \ \ \ \ insecure-skip-tls-verify: true' /etc/rancher/rke2/rke2.yaml > ${HOME}/.kube/kubeconfig
 }
 
 function set_kubeconfig() {
@@ -122,7 +122,7 @@ function set_kubeconfig() {
 		echo "Set the environmental variable for kubeconfig"
 		echo " " >> ${HOME}/.bashrc
 		echo "export PATH=$PATH:/var/lib/rancher/rke2/bin" >> ${HOME}/.bashrc
-		echo "export KUBECONFIG=${HOME}/.kube/kubconfig" >> ${HOME}/.bashrc
+		echo "export KUBECONFIG=${HOME}/.kube/kubeconfig" >> ${HOME}/.bashrc
 	fi
 
 	if [ ! -f /usr/bin/kubectl ]; then
