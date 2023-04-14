@@ -1,8 +1,0 @@
-email,identityProviderUserId,firstName,lastName,groups
-bo_biz@example.com,bo_biz,Bo,Biz,"biz"
-dana_dev@example.com,dana_dev,Dana,Dev,"dev"
-denis_deng@example.com,denis_deng,Denis,Deng,"deng"
-diego_deng@example.com,diego_deng,Diego,Deng,"deng"
-omar_ops@example.com,omar_ops,Omar,Ops,"ops"
-steff_sci@example.com,steff_sci,Steff,Sci,"sci"
-stella_sale@example.com,stella_sale,Stella,Sale,"sale"

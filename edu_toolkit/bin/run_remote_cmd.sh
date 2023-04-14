@@ -78,7 +78,8 @@ DESCRIPTION
 
 EXAMPLES
 	$ cat /home/user/conf/list_host.txt
-	$ run_remote_node.sh -c
+
+	$ run_remote_node.sh -c "sudo mkdir /var/data"
 
 	$ run_remote_node.sh -d
 EOF

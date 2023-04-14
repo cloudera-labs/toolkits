@@ -1,4 +1,0 @@
----
-cloudera_manager_api_user: admin
-cloudera_manager_api_password: admin
-cloudera_manager_tls_validate_certs: false

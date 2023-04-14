@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: cloudera_manager/repo
-  - role: cloudera_manager/common
