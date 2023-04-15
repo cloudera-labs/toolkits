@@ -39,7 +39,7 @@
 NUMARGS=$#
 DIR=${HOME}
 option=$1
-input="${DIR}/config/list_ecs_host.txt"
+input="${DIR}/conf/list_ecs_host.txt"
 sudo_user="training"
 priv_key="${DIR}/.ssh/admincourse.pem"
 #docker_store='/tmp/docker'
@@ -57,20 +57,23 @@ function help() {
 # Instructions for running this tool
 
 	echo "This tool is used to uninstall ECS. After completing all of the steps"
-	echo "you will be able to install a new instance of ECS cluster."
+	echo "you will be able to install a new instance of PvC ECS."
 	echo 
-	echo "1. Delete the Docker registry."
-	echo "    uninstall_ecs.sh delete_registry"
-	echo "2. Return to Cloudera Manager Home."
-	echo "    Select ECS Cluster > Stop"
-	echo "3. Clean the supporting file system."
-	echo "     uninstall_ecs.sh clean_file"
-	echo "4. Clean the IP tables"
-	echo "     uninstall_ecs.sh clean_iptable"
-	echo "5. Return to Cloudera Manager Home."
-	echo "     Select Data Services > Cluster > uninstall"
-	echo "6. Reboot the hosts"
-	echo "     uninstall_ecs.sh reboot"
+	echo "1. Stop and terminate all virtual warehouses, virtual clusters, and virtual workspaces." 
+	echo "2. Delete the ECS Docker registry. Look up and provide the correct hostname for the location of the Docker Registry master. This will not remove a local Docker Registry."
+	echo "    uninstall_ecs.sh --docker"
+	echo "3. Return to Cloudera Manager Home to stop the ECS cluster."
+	echo "    Select ECS > Stop"
+	echo "4. Reboot the ECS hosts. This will clear all ECS processes."
+	echo "     uninstall_ecs.sh --reboot"
+	echo "5. Clean the supporting file system."
+	echo "     uninstall_ecs.sh --ecs"
+	echo "6. Clean the IP tables"
+	echo "     uninstall_ecs.sh --iptable"
+	echo "7. Return to Cloudera Manager Home to uninstall the Docker Registry cluster."
+	echo "     Select Data Services > Action > uninstall"
+	echo "8. Reboot the hosts. This will return the ECS hosts to initial state."
+	echo "     uninstall_ecs.sh --reboot"
 }
 
 function call_include() {
@@ -238,23 +241,23 @@ function run_option() {
                 -h | --help)
                         help
                         ;;
-                delete_registry)
+               -d | --docker)
                         check_arg 1
-			delete_registry                        
-			msg_stop_ecs
+						delete_registry                        
+						msg_stop_ecs
                         ;;
-                clean_file)
+                -e | --ecs)
                         check_arg 1
                        	clean_file_system 
-			msg_file_system
+						msg_file_system
                         ;;
-                clean_iptable)
+                -i | --iptable)
                         check_arg 1
                        	clean_iptable 
-			msg_iptable
-			msg_uninstall_ecs
+						msg_iptable
+						msg_uninstall_ecs
                         ;;
-                reboot)
+                -r | --reboot)
                         check_arg 1
                        	reboot_ecs 
                         ;;
@@ -264,17 +267,22 @@ function run_option() {
         esac
 }
 
+function main() {
+	# Source Function
+	call_include
+
+	# Run Checks
+	check_sudo
+	check_file ${input}
+	check_file ${priv_key}
+
+	# Run 
+	run_option
+
+	# Review log file
+	# echo "Review log file at ${LOGFILE}
+}
+
 # MAIN
-# Source Function
-call_include
-
-# Run Checks
-check_sudo
-check_file ${input}
-check_file ${priv_key}
-
-# Run 
-run_option
-
-# Review log file
-# echo "Review log file at ${LOGFILE}
+main "$@"
+exit
