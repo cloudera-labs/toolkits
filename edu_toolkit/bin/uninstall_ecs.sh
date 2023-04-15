@@ -70,10 +70,10 @@ function help() {
 	echo "     uninstall_ecs.sh --ecs"
 	echo "6. Clean the IP tables"
 	echo "     uninstall_ecs.sh --iptable"
-	echo "7. Return to Cloudera Manager Home to uninstall the Docker Registry cluster."
-	echo "     Select Data Services > Action > uninstall"
-	echo "8. Reboot the hosts. This will return the ECS hosts to initial state."
+	echo "7. Reboot the hosts. This will return the ECS hosts to initial state."
 	echo "     uninstall_ecs.sh --reboot"
+	echo "8. Return to Cloudera Manager Home to uninstall the Docker Registry cluster."
+	echo "     Select Data Services > Action > uninstall"
 }
 
 function call_include() {
