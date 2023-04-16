@@ -87,7 +87,7 @@ function create_dir() {
 
 	cert_dir=/opt/pvc/${domain_name}/security/pki
 
-	ssh -t ${ecs_master} sudo ls ${cert_dir} 2>&1
+	ssh -t ${ecs_master} sudo ls ${cert_dir} >> ${logfile} 2>&1
 	ans=$?
 
 	if [ ! ${ans} -eq 0 ]; then
@@ -113,11 +113,28 @@ function push_cert() {
 	cert_dir=/opt/pvc/${domain_name}/security/pki
 	cert_file=${cert_name}.crt
 
-	if [ -f ${cert_dir}/${cert_file} ]; then
-		sudo scp ${cert_dir}/${cert_file} ${ecs_master}:/tmp
-		ssh -t ${ecs_master} "sudo  mv /tmp/${cert_file} ${cert_dir}/${cert_file}"
+	if [ -f ${cert_dir}/${key_file} ]; then
+		sudo scp ${cert_dir}/${cert_file} ${ecs_master}:/tmp/${cert_file}
+		ssh -t ${ecs_master} "sudo mv /tmp/${cert_file} ${cert_dir}/${cert_file}"
 	fi 
 }
+
+function check_cert() {
+
+	cert_dir=/opt/pvc/${domain_name}/security/pki
+	cert_file=${cert_name}.crt
+
+	ssh -t ${ecs_master} ls ${cert_dir}/${cert_file} >> ${logfile} 2>&1
+	ans=$?
+
+	if [ ${ans} -eq 0 ]; then
+		echo "Certificate files available on ${ecs_master}:"
+		ssh -t ${ecs_master} ls -l /opt/pvc/${domain_name}/security/pki
+	else
+		echo "ERROR: File transfered failed."
+	fi
+}
+
 
 function run_option() {
 # Case statement for options.
@@ -131,6 +148,7 @@ function run_option() {
 			create_dir
 			push_key
 			push_cert
+			check_cert
             ;;
         *)
             usage
@@ -144,6 +162,7 @@ function main() {
 	call_include
 	#check_tgt
 	check_sudo
+	setup_log
 
 	# Run command
 	run_option
