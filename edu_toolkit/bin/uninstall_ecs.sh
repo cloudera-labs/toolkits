@@ -36,12 +36,12 @@
 
 # VARIABLES
 # Modify these values as appropriate for your local environment
-NUMARGS=$#
-DIR=${HOME}
+num_arg=$#
+dir=${HOME}
 option=$1
-input="${DIR}/conf/list_ecs_host.txt"
+input="${dir}/conf/list_ecs_host.txt"
 sudo_user="training"
-priv_key="${DIR}/.ssh/admincourse.pem"
+priv_key="${dir}/.ssh/admincourse.pem"
 #docker_store='/tmp/docker'
 docker_store='/docker/*'
 local_store='/ecs/local-storage'
@@ -97,10 +97,10 @@ EOF
 function call_include() {
 # Test for script and run functions
 
-        if [ -f ${DIR}/bin/include.sh ]; then
-                source ${DIR}/bin//include.sh
+        if [ -f ${dir}/bin/include.sh ]; then
+                source ${dir}/bin//include.sh
         else
-                echo "ERROR: The file ${DIR}/bin/include.sh not found."
+                echo "ERROR: The file ${dir}/bin/include.sh not found."
                 echo "This required file provides supporting functions."
         exit 1
         fi
