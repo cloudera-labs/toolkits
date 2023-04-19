@@ -60,7 +60,7 @@ function help() {
 	echo "you will be able to install a new instance of PvC ECS."
 	echo 
 	echo "1. Stop and terminate all virtual warehouses, virtual clusters, and virtual workspaces." 
-	echo "2. Delete the ECS Docker registry. Look up and provide the correct hostname for the location of the Docker Registry master. This will not remove a local Docker Registry."
+	echo "2. Delete the Docker registry on ECS. Look up and provide the correct hostname for the location of the Docker Registry master. This will not remove a local Docker Registry."
 	echo "    uninstall_ecs.sh --docker"
 	echo "3. Return to Cloudera Manager Home to stop the ECS cluster."
 	echo "    Select ECS > Stop"
@@ -68,12 +68,12 @@ function help() {
 	echo "     uninstall_ecs.sh --reboot"
 	echo "5. Clean the supporting file system."
 	echo "     uninstall_ecs.sh --ecs"
-	echo "6. Clean the IP tables"
-	echo "     uninstall_ecs.sh --iptable"
-	echo "7. Reboot the hosts. This will return the ECS hosts to initial state."
-	echo "     uninstall_ecs.sh --reboot"
-	echo "8. Return to Cloudera Manager Home to uninstall the Docker Registry cluster."
+	echo "6. Return to Cloudera Manager Home to uninstall the Docker Registry cluster."
 	echo "     Select Data Services > Action > uninstall"
+	echo "7. Clean the IP tables"
+	echo "     uninstall_ecs.sh --iptable"
+	echo "8. Reboot the hosts. This will return the ECS hosts to initial state."
+	echo "     uninstall_ecs.sh --reboot"
 }
 
 function call_include() {
@@ -113,10 +113,23 @@ function delete_registry() {
 function msg_stop_ecs() {
 # Msg action to stop the cluster. 
 
-    echo "Prior to cleaning the file system."
-    echo "Return to Cloudera Manager Home"
-    echo " ECS Cluster > Stop"
-    echo "Next run the option to clean_file"
+    echo "Stop the ECS cluster:
+    echo "Return to Cloudera Manager Home:"
+    echo " ECS Cluster Action > Stop"
+}
+
+function msg_reboot() {
+# Order reboot
+
+	echo "Reboot to ECS cluster:"
+	echo "uninstall_ecs.sh --reboot
+}
+
+function msg_clean_file() {
+
+	echo "Clean the ECS file system:"
+	echo "uninstall_ecs.sh --ecs"
+
 }
 
 function clean_file_system() {
@@ -167,14 +180,28 @@ function clean_file_system() {
     done 10< "${input}"
 }
 
-function msg_file_system() {
+function msg_file_clean() {
 # Message for clean_file_system
 
 	echo "The file system is clean for:"
 	for host in $(cat ${input}); do 
 		echo " ${host}"
 	done
-	echo "Next run the clean_iptable option"
+}
+
+function msg_uninstall_ecs() {
+# Replace with REST API call to delete cluster 
+
+    echo "Uninstall the ECS cluster"
+    echo "Return to Cloudera Manager Home:"
+    echo "  Select Data Services > Cluster > Uninstall"
+}
+
+function msg_clean_iptable() {
+# Message to clean iptables.
+
+	echo "Clean the iptables"
+	echo "uinstall_ecs.sh --iptable"
 }
 
 function clean_iptable() {
@@ -208,21 +235,13 @@ function clean_iptable() {
     done 10< "${input}"
 }
 
-function msg_iptable() {
+function msg_iptable_clean() {
 # Message for clean_file_system
 
 	echo "The iptables are clean for:"
 	for host in $(cat ${input}); do
 		echo " ${host}"
 	done
-}
-
-function msg_uninstall_ecs() {
-# Replace with REST API call to delete cluster 
-
-    echo "Return to Cloudera Manager Home"
-    echo "  Select Data Services > Cluster > Uninstall"
-    echo "Next run the option reboot"
 }
 
 function reboot_ecs() {
@@ -243,19 +262,23 @@ function run_option() {
                         ;;
                -d | --docker)
                         check_arg 1
-						delete_registry                        
-						msg_stop_ecs
+			delete_registry                        
+			msg_stop_ecs
+			msg_reboot
+			msg_clean_file
                         ;;
                 -e | --ecs)
                         check_arg 1
                        	clean_file_system 
-						msg_file_system
+			msg_file_clean
+			msg_uninstall_ecs
+			msg_clean_iptable
                         ;;
                 -i | --iptable)
                         check_arg 1
                        	clean_iptable 
-						msg_iptable
-						msg_uninstall_ecs
+			msg_iptable_clean
+			msg_reboot
                         ;;
                 -r | --reboot)
                         check_arg 1
