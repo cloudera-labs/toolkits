@@ -55,25 +55,43 @@ function usage() {
 
 function help() {
 # Instructions for running this tool
+cat << EOF
 
-	echo "This tool is used to uninstall ECS. After completing all of the steps"
-	echo "you will be able to install a new instance of PvC ECS."
-	echo 
-	echo "1. Stop and terminate all virtual warehouses, virtual clusters, and virtual workspaces." 
-	echo "2. Delete the Docker registry on ECS. Look up and provide the correct hostname for the location of the Docker Registry master. This will not remove a local Docker Registry."
-	echo "    uninstall_ecs.sh --docker"
-	echo "3. Return to Cloudera Manager Home to stop the ECS cluster."
-	echo "    Select ECS > Stop"
-	echo "4. Reboot the ECS hosts. This will clear all ECS processes."
-	echo "     uninstall_ecs.sh --reboot"
-	echo "5. Clean the supporting file system."
-	echo "     uninstall_ecs.sh --ecs"
-	echo "6. Return to Cloudera Manager Home to uninstall the Docker Registry cluster."
-	echo "     Select Data Services > Action > uninstall"
-	echo "7. Clean the IP tables"
-	echo "     uninstall_ecs.sh --iptable"
-	echo "8. Reboot the hosts. This will return the ECS hosts to initial state."
-	echo "     uninstall_ecs.sh --reboot"
+SYNOPSIS
+	uninstall_ecs.sh [OPTION}
+
+DESCRIPTION
+	Tool for uninstalling ECS and ensuring the hosts are ready for a new install.
+
+	-h, --help
+		Help pages
+	-d, --docker
+		Uninstall docker
+	-e, --ecs
+		Clean the ECS file system
+	-i, --iptable
+		Clean the iptables
+	-r, --reboot
+		Reboot just the ECS cluster
+	
+INSTRUCTIONS 
+	 1. Stop and terminate all virtual warehouses, virtual clusters, and virtual workspaces. 
+	 2. Delete the Docker registry on ECS. Look up and provide the correct hostname for the location of the Docker Registry master. This will not remove a local Docker Registry.
+	     uninstall_ecs.sh --docker
+	 3. Return to Cloudera Manager Home to stop the ECS cluster.
+	     Select ECS > Stop
+	 4. Reboot the ECS hosts. This will clear all ECS processes.
+	      uninstall_ecs.sh --reboot
+	 5. Clean the supporting file system.
+	      uninstall_ecs.sh --ecs
+	 6. Return to Cloudera Manager Home to uninstall the Docker Registry cluster.
+	      Select Data Services > Action > uninstall
+	 7. Clean the IP tables
+	      uninstall_ecs.sh --iptable
+	 8. Reboot the hosts. This will return the ECS hosts to initial state.
+	      uninstall_ecs.sh --reboot
+EOF
+	exit
 }
 
 function call_include() {
