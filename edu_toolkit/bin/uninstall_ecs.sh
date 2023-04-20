@@ -207,37 +207,13 @@ function clean_iptable() {
     done 10< "${input}"
 }
 
-function reboot_action() {
+function reboot_ecs() {
 # Reboot the ecs hosts
 
 	while read -r -u10 host; do
 		echo "Reboot ${host}"
 		ssh -i ${priv_key} -o StrictHostKeyChecking=no ${sudo_user}@${host} "sudo reboot now";
 	done 10< "${input}"
-}
-
-function msg_cmd() {
-# Order reboot
-
-	echo "Instructions: Reboot to ECS cluster:"
-	echo "    uninstall_ecs.sh --reboot"
-}
-
-function msg_stop_ecs() {
-# Msg action to stop the cluster. 
-
-    echo " "
-    echo "Instructions: Stop the ECS cluster:"
-    echo "Return to Cloudera Manager Home:"
-    echo "    ECS Cluster Action > Stop"
-    msg_cmd
-}
-
-function msg_clean_file() {
-
-	echo "Instructions: Clean the ECS file system:"
-	echo "    uninstall_ecs.sh --ecs"
-
 }
 
 function msg_file_clean() {
@@ -247,21 +223,6 @@ function msg_file_clean() {
 	for host in $(cat ${input}); do 
 		echo " ${host}"
 	done
-}
-
-function msg_uninstall_ecs() {
-# Replace with REST API call to delete cluster 
-
-    echo "Uninstall the ECS cluster"
-    echo "Instrutions: Return to Cloudera Manager Home:"
-    echo "    Select Data Services > Cluster > Uninstall"
-}
-
-function msg_clean_iptable() {
-# Message to clean iptables.
-
-	echo "Instructions: Clean the iptables"
-	echo "    uinstall_ecs.sh --iptable"
 }
 
 function msg_iptable_clean() {
@@ -274,26 +235,6 @@ function msg_iptable_clean() {
 	msg_cmd
 }
 
-function msg_rebuild() {
-# Close
-
-	echo "The ECS hosts are ready for a rebuild."
-}
-
-function reboot_ecs() {
-# Read flag and select msg
-
-	flag=$1
-	
-	if [ ${flag} = 1 ]; then
-		reboot_action
-		msg_uninstall
-	else 
-		reboot_action
-		msg_rebuild
-	fi
-}
-
 function run_option() {
 # Case statement for options.
 
@@ -304,25 +245,20 @@ function run_option() {
                -d | --docker)
                         check_arg 1
 			delete_registry                        
-			msg_stop_ecs
-			reboot_ecs 1
                         ;;
                 -e | --ecs)
                         check_arg 1
                        	clean_file_system 
 			msg_file_clean
-			msg_uninstall_ecs
-			msg_clean_iptable
                         ;;
                 -i | --iptable)
                         check_arg 1
                        	clean_iptable 
 			msg_iptable_clean
-			reboot_ecs 2
                         ;;
                 -r | --reboot)
                         check_arg 1
-                       	reboot_action 
+                       	reboot_ecs 
                         ;;
                 *)
                         usage
