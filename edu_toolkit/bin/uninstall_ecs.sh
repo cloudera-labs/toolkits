@@ -232,7 +232,6 @@ function msg_iptable_clean() {
 	for host in $(cat ${input}); do
 		echo " ${host}"
 	done
-	msg_cmd
 }
 
 function run_option() {

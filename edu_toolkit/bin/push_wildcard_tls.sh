@@ -22,7 +22,7 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 # OR CONDITIONS OF ANY KIND, either express or implied.
 
-# Title: push_wildcard.sh
+# Title: push_wildcard_tls.sh
 # Author: WKD
 # Date: 07APR23
 # Purpose: Push wildcard certs to the ECS master.
@@ -52,10 +52,11 @@ function get_help() {
 
 cat << EOF
 SYNOPSIS
-	script_name.sh [OPTION} <domain_name> <cert_name>
+	push_wildcard_lts.sh [OPTION} <domain_name> <cert_name>
 
 DESCRIPTION
-	Detailed explaination. 
+	This tool will push the certificate and the key to the ECS master. The
+	default location is /opt/pvc/<domain_name>/security/pki.
 
 	-h, --help
 		help page
@@ -64,6 +65,7 @@ DESCRIPTION
 
 INSTRUCTION
 
+	push_wildcard.sh --push sam-lon03 sam
 	push_wildcard.sh --push sam-lon03 cloudsale
 
 EOF
