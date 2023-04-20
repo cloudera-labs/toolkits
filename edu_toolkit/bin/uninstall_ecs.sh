@@ -131,22 +131,23 @@ function delete_registry() {
 function msg_stop_ecs() {
 # Msg action to stop the cluster. 
 
-    echo "Stop the ECS cluster:
+    echo " "
+    echo "Instructions: Stop the ECS cluster:"
     echo "Return to Cloudera Manager Home:"
-    echo " ECS Cluster Action > Stop"
+    echo "    ECS Cluster Action > Stop"
 }
 
 function msg_reboot() {
 # Order reboot
 
-	echo "Reboot to ECS cluster:"
-	echo "uninstall_ecs.sh --reboot
+	echo "Instructions: Reboot to ECS cluster:"
+	echo "    uninstall_ecs.sh --reboot"
 }
 
 function msg_clean_file() {
 
-	echo "Clean the ECS file system:"
-	echo "uninstall_ecs.sh --ecs"
+	echo "Instructions: Clean the ECS file system:"
+	echo "    uninstall_ecs.sh --ecs"
 
 }
 
@@ -211,15 +212,15 @@ function msg_uninstall_ecs() {
 # Replace with REST API call to delete cluster 
 
     echo "Uninstall the ECS cluster"
-    echo "Return to Cloudera Manager Home:"
-    echo "  Select Data Services > Cluster > Uninstall"
+    echo "Instrutions: Return to Cloudera Manager Home:"
+    echo "    Select Data Services > Cluster > Uninstall"
 }
 
 function msg_clean_iptable() {
 # Message to clean iptables.
 
-	echo "Clean the iptables"
-	echo "uinstall_ecs.sh --iptable"
+	echo "Instructions: Clean the iptables"
+	echo "    uinstall_ecs.sh --iptable"
 }
 
 function clean_iptable() {
