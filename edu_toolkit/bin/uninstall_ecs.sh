@@ -128,29 +128,6 @@ function delete_registry() {
 	echo "Run this option again if there are additionally Docker registrys."
 }
 
-function msg_stop_ecs() {
-# Msg action to stop the cluster. 
-
-    echo " "
-    echo "Instructions: Stop the ECS cluster:"
-    echo "Return to Cloudera Manager Home:"
-    echo "    ECS Cluster Action > Stop"
-}
-
-function msg_reboot() {
-# Order reboot
-
-	echo "Instructions: Reboot to ECS cluster:"
-	echo "    uninstall_ecs.sh --reboot"
-}
-
-function msg_clean_file() {
-
-	echo "Instructions: Clean the ECS file system:"
-	echo "    uninstall_ecs.sh --ecs"
-
-}
-
 function clean_file_system() {
 # Remove the file system in support of ECS
 # Work through the host list and ensure that RKE is dead 
@@ -199,30 +176,6 @@ function clean_file_system() {
     done 10< "${input}"
 }
 
-function msg_file_clean() {
-# Message for clean_file_system
-
-	echo "The file system is clean for:"
-	for host in $(cat ${input}); do 
-		echo " ${host}"
-	done
-}
-
-function msg_uninstall_ecs() {
-# Replace with REST API call to delete cluster 
-
-    echo "Uninstall the ECS cluster"
-    echo "Instrutions: Return to Cloudera Manager Home:"
-    echo "    Select Data Services > Cluster > Uninstall"
-}
-
-function msg_clean_iptable() {
-# Message to clean iptables.
-
-	echo "Instructions: Clean the iptables"
-	echo "    uinstall_ecs.sh --iptable"
-}
-
 function clean_iptable() {
 # Clean out the iptable
 
@@ -254,6 +207,63 @@ function clean_iptable() {
     done 10< "${input}"
 }
 
+function reboot_action() {
+# Reboot the ecs hosts
+
+	while read -r -u10 host; do
+		echo "Reboot ${host}"
+		ssh -i ${priv_key} -o StrictHostKeyChecking=no ${sudo_user}@${host} "sudo reboot now";
+	done 10< "${input}"
+}
+
+function msg_cmd() {
+# Order reboot
+
+	echo "Instructions: Reboot to ECS cluster:"
+	echo "    uninstall_ecs.sh --reboot"
+}
+
+function msg_stop_ecs() {
+# Msg action to stop the cluster. 
+
+    echo " "
+    echo "Instructions: Stop the ECS cluster:"
+    echo "Return to Cloudera Manager Home:"
+    echo "    ECS Cluster Action > Stop"
+    msg_cmd
+}
+
+function msg_clean_file() {
+
+	echo "Instructions: Clean the ECS file system:"
+	echo "    uninstall_ecs.sh --ecs"
+
+}
+
+function msg_file_clean() {
+# Message for clean_file_system
+
+	echo "The file system is clean for:"
+	for host in $(cat ${input}); do 
+		echo " ${host}"
+	done
+}
+
+function msg_uninstall_ecs() {
+# Replace with REST API call to delete cluster 
+
+    echo "Uninstall the ECS cluster"
+    echo "Instrutions: Return to Cloudera Manager Home:"
+    echo "    Select Data Services > Cluster > Uninstall"
+}
+
+function msg_clean_iptable() {
+# Message to clean iptables.
+
+	echo "Instructions: Clean the iptables"
+	echo "    uinstall_ecs.sh --iptable"
+}
+
 function msg_iptable_clean() {
 # Message for clean_file_system
 
@@ -261,15 +271,27 @@ function msg_iptable_clean() {
 	for host in $(cat ${input}); do
 		echo " ${host}"
 	done
+	msg_cmd
+}
+
+function msg_rebuild() {
+# Close
+
+	echo "The ECS hosts are ready for a rebuild."
 }
 
 function reboot_ecs() {
-# Reboot the ecs hosts
+# Read flag and select msg
 
-	while read -r -u10 host; do
-		echo "Reboot ${host}"
-		ssh -i ${priv_key} -o StrictHostKeyChecking=no ${sudo_user}@${host} "sudo reboot now";
-	done 10< "${input}"
+	flag=$1
+	
+	if [ ${flag} = 1 ]; then
+		reboot_action
+		msg_uninstall
+	else 
+		reboot_action
+		msg_rebuild
+	fi
 }
 
 function run_option() {
@@ -283,8 +305,7 @@ function run_option() {
                         check_arg 1
 			delete_registry                        
 			msg_stop_ecs
-			msg_reboot
-			msg_clean_file
+			reboot_ecs 1
                         ;;
                 -e | --ecs)
                         check_arg 1
@@ -297,11 +318,11 @@ function run_option() {
                         check_arg 1
                        	clean_iptable 
 			msg_iptable_clean
-			msg_reboot
+			reboot_ecs 2
                         ;;
                 -r | --reboot)
                         check_arg 1
-                       	reboot_ecs 
+                       	reboot_action 
                         ;;
                 *)
                         usage
