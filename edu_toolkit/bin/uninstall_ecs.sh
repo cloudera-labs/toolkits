@@ -171,6 +171,7 @@ function clean_file_system() {
             sudo rm -rf /ecs;
             sudo rm -rf /docker;
             sudo rm -rf /var/lib/docker_server;
+	    sudo rm -rf /var/lib/rancher/rke2/server/db/etcd
             sudo rm -rf /etc/docker;
         ";
     done 10< "${input}"
