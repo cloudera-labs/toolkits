@@ -84,7 +84,7 @@ INSTRUCTIONS
 	      uninstall_ecs.sh --reboot
 	 5. Clean the supporting file system.
 	      uninstall_ecs.sh --ecs
-	 6. Return to Cloudera Manager Home to uninstall the Docker Registry cluster.
+	 6. Return to Cloudera Manager Home to uninstall the Data Services cluster.
 	      Select Data Services > Action > uninstall
 	 7. Clean the IP tables
 	      uninstall_ecs.sh --iptable
