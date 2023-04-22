@@ -61,16 +61,16 @@ SYNOPSIS
         setup_wildcard_tls.sh -d <app_domain> -n <cluster_name> -p <certificate_prefix> [ -c sign a csr with default CA | -s self-signed certificate]" 1>&2
 
 DESCRIPTION
-	This tool will generate a signed certificate file and a private key file.
-	The certificate is signed with a Subject Alternative Name, i.e. a wildcard.
-	The command line requires the ECS apps_domain and a prefix name for the 
-	certificate files. The tool can generate a certificate signed by a CA or it can 
-	generate a self-signed certifcate. The tool is configured to use the IPA
-	CA as the root CA. A set up requirement is to extract the private key from
-	IPA and copy it into the local /etc/ipa directory. Two openssl configuration
-	files are required. The first provides configuration for the CA on the 
-	local host. The second provides configuration for the Subject Alternative
-	Name, this is where the wildcard is configured.
+	This tool will generate a signed certificate file and a private
+	key file. The certificate is signed with a Subject Alternative Name,
+	i.e. a wildcard. The command line requires the ECS apps_domain and a 
+	prefix name for the certificate files. The tool can generate a certificate
+	signed by a CA or it can enerate a self-signed certifcate. The tool is 
+	configured to use the IPA CA as the root CA. A set up requirement is to 
+	extract the private key from IPA and copy it into the local /etc/ipa 
+	directory. Two openssl configuration files are required. The first provides 
+	configuration for the CA on the local host. The second provides configuration
+	for the Subject Alternative Name, this is where the wildcard is configured.
 
 	-h)
 		Help page
@@ -87,8 +87,10 @@ DESCRIPTION
 
 EXAMPLE
 	setup_wildcard_tls.sh -d <domain: sam-lon03.example.com> -n <name of cluster: sam-lon03> -p name of key: sam> -c (certificate signed by a CA) 
-	setup_wildcard_tls.sh -d apps.edu-dev.example.com -n edu-dev -p edu-dev -s 
-	setup_wildcard_tls.sh -d apps.fin-prd.example.com -n fin-prd -p prodrisk -c 
+
+	setup_wildcard_tls.sh -d apps.sam-lon03.example.com -n sam-lon03 -p sam -c 
+
+	setup_wildcard_tls.sh -d apps.fin-prd.example.com -n fin-prd -p prodrisk -s 
 
 EOF
         exit
