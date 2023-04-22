@@ -229,7 +229,7 @@ function move_certs() {
 		sudo mkdir -p ${pvc_pki} 
 	fi
 
-	run_cmd "sudo chmod 440 ${key_file}"
+	run_cmd "sudo chmod 400 ${key_file}"
 	run_cmd "sudo mv ${key_file} ${pvc_pki}/"
 	run_cmd "sudo mv ${cert_file} ${pvc_pki}/"
 	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pvc_pki}"
