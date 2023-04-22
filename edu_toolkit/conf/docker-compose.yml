@@ -1,0 +1,28 @@
+version: '3'
+services:
+  docker-registry:
+    image: registry:2
+    container_name: registry
+    restart: always
+    ports:
+    - "5000:5000"
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/registry.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/registry.key
+    volumes:
+      - /opt/docker-registry/auth:/auth
+      - /opt/docker-registry/certs:/certs
+      - /var/lib/registry:/var/lib/registry
+
+docker-registry-ui:
+image: konradkleine/docker-registry-frontend:latest
+container_name: docker-registry-ui
+restart: always
+ports:
+- "8080:80"
+environment:
+ENV_DOCKER_REGISTRY_HOST: docker-registry
+ENV_DOCKER_REGISTRY_PORT: 5000
