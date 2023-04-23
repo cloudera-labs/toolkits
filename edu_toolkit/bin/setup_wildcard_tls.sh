@@ -233,6 +233,8 @@ function move_certs() {
 	run_cmd "sudo mv ${key_file} ${pvc_pki}/"
 	run_cmd "sudo mv ${cert_file} ${pvc_pki}/"
 	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pvc_pki}"
+	run_cmd "echo Output certificates to:"
+	run_cmd "ls ${pvc_pki}"
 }
 
 function run_option() {
