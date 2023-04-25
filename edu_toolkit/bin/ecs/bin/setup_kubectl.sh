@@ -65,12 +65,11 @@ DESCRIPTION
 
 INSTRUCTIONS
 	1. Copy this script to the ecs master.
-		cd ~/bin/client
-		scp setup_kubeconfig.sh ecs-1.example.com:~
+		scp setup_kubeconfig.sh ecs-1.example.com:~/bin/
 	2. Login into the ECS master.
 		ssh ecs-1.example.com
 	3. Run this script in the admin user home directory.
-		./setup_kubeconfig.sh --generate
+		setup_kubeconfig.sh --generate
 	4. Source the .bashrc file.
 		source .bashrc
 	5. Test.
@@ -120,7 +119,7 @@ function set_kubeconfig() {
 	result=$?
 	if [ ${result} -ne 0 ]; then
 		echo "Set the environmental variable for kubeconfig"
-		echo " " >> ${HOME}/.bashrc
+		echo "# Kube Config " >> ${HOME}/.bashrc
 		echo "export PATH=$PATH:/var/lib/rancher/rke2/bin" >> ${HOME}/.bashrc
 		echo "export KUBECONFIG=${HOME}/.kube/kubeconfig" >> ${HOME}/.bashrc
 	fi
