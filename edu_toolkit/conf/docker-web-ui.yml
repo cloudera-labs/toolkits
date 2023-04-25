@@ -16,3 +16,13 @@ services:
       - /opt/docker-registry/auth:/auth
       - /opt/docker-registry/certs:/certs
       - /var/lib/registry:/var/lib/registry
+
+docker-registry-ui:
+image: konradkleine/docker-registry-frontend:latest
+container_name: docker-registry-ui
+restart: always
+ports:
+- "8080:80"
+environment:
+ENV_DOCKER_REGISTRY_HOST: docker-registry
+ENV_DOCKER_REGISTRY_PORT: 5000
