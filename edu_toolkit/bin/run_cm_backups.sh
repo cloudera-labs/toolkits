@@ -67,7 +67,7 @@ DESCRIPTION
 		Backup agents, databases, hdfs, and hue
         -d, --databases
                 Backup all CM and CDP datatabases
-        -h, --hdfs
+        -f, --hdfs
 		Backup HDFS
 	-u, --hue
 		Backup Hue
@@ -207,7 +207,7 @@ function run_option() {
 		check_arg 1
 		backup_db
 		;;
-	-h | --hdfs)
+	-f | --hdfs)
 		check_arg 1
 		backup_zookeeper
 		backup_journal
