@@ -49,7 +49,7 @@ class RangerPolicyExtractor:
         try:
             r = requests.get(
                 self.ranger_ui_protocol + "://" + self.ranger_ui_server_name + ":" + self.ranger_ui_port + "/service/public/v2/api/policy",
-                auth=HTTPBasicAuth(self.ranger_admin_user, self.ranger_admin_pass))
+                auth=HTTPBasicAuth(self.ranger_admin_user, self.ranger_admin_pass),verify=False)
         except requests.exceptions.RequestException as e:
             log.error(
                 "Issue connecting to Ranger Admin UI. Please check the configs provided. Also, the process is up and running and responding as expected.")
