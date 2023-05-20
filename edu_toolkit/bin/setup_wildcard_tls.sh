@@ -356,6 +356,7 @@ function run_wildcard() {
 	run_cmd "rm ${conf_file}"
 	move_certs
 	log_info "Move ${key_file} and ${cert_file} to ${pvc_pki}"
+	run_cmd "ls -ltr ${pvc_pki}"
 }
 
 function main() {
