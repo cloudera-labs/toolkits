@@ -40,7 +40,7 @@ dir=${HOME}
 option=$1
 file_quota=$2
 space_quota=$3
-user=${dir}/conf/listuser.txt
+user=${dir}/conf/list_user.txt
 logfile=${dir}/log/$(basename $0).log
 
 # FUNCTIONS
@@ -65,17 +65,17 @@ DESCRIPTION
 	-h, --help
 		Help page
 	-a, --add
-		Add a user to HDFS
+		Add users to HDFS
 	-d, --delete
-		Delete a user from HDFS
+		Delete users from HDFS
 	-l, --list
 		List all HDFS users
 	-s, --setquota <file_quota> <space_quota>
-		Set a file quota and a space quotaq
+		Set a file quota and a space quota on all usersq
 	-c, --clearquota
-		Clear all quotas on a user
-	-q, --listquota
-		List the quotas
+		Clear all quotas on all users
+	-q, --quota
+		List all quotas
 EOF
         exit 
 }
@@ -176,7 +176,7 @@ function run_option() {
 			check_arg 1
 			clear_quota 
 			;;
-		-q | --listquota)
+		-q | --quota)
 			check_arg 1
 			list_quota 
 			;;

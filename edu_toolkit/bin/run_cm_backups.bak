@@ -36,9 +36,8 @@
 # VARIABLE
 num_arg=$#
 dir=${HOME}
-backup_file=CDH7.1.7
-db_password=BadPass@1
-host_file=${dir}/conf/list_host.txt
+host=cmhost.example.com
+host_FILE=${dir}/conf/listhosts.txt
 option=$1
 logfile=${dir}/log/cm_backup.log
 
@@ -47,6 +46,7 @@ function usage() {
         echo "Usage: $(basename $0) [OPTION]"
         exit
 }
+
 
 function get_help() {
 # Help page
@@ -95,98 +95,87 @@ function setup_log() {
 	echo "---- Disregard tar warnings below --------"
 }
 
-function stop_cm() {
-# Stop CM
-
-	echo "-- Shutting down Cloudera Manager on cmhost"
-	sudo systemctl stop cloudera-scm-server
-}
-
-function make_dir() {
-# Make backup directory
-
-	export cm_backup_dir="${backup_file}_$(date +%F)"
-	mkdir -p /tmp/$cm_backup_dir
-}
+# echo "-- Shutting down Cloudera Manager on cmhost"
+# sudo systemctl stop cloudera-scm-server
 
 function backup_db() {
 # Back up CDH databases
 
-	echo "---- Backing up MySQL databases hue and metastore"
-	mysqldump -u root -p${db_password} --databases hue metastore > /tmp/$cm_backup_dir/backup.sql
+	echo "---- Backing up MySQL databases oozie, hue, and metastore"
+	export CDH_BACKUP_dir="`date +%F`-CDH7.1.2"
+	mkdir -p /tmp/$CDH_BACKUP_dir
+	mysqldump -u root -ptraining --databases oozie hue metastore > /tmp/$CDH_BACKUP_dir/backup.sql
+}
+
+function backup_cm_agent() {
+# Back up Cloudera Manager agent 
+
+	export CM_BACKUP_dir="`date +%F`-CM7.1.3"
+
+	echo "---- Saving agent files and yum repos on cmhost"
+	mkdir -p /tmp/$CM_BACKUP_dir
+	sudo -E tar -cf /tmp/$CM_BACKUP_dir/cloudera-scm-agent.tar --exclude=*.sock /etc/cloudera-scm-agent /etc/default/cloudera-scm-agent /var/run/cloudera-scm-agent /var/lib/cloudera-scm-agent
+	sudo -E tar -cf /tmp/$CM_BACKUP_dir/repository.tar /etc/yum.repos.d
 }
 
 function backup_agent() {
 # Back up CM agents
 
-	echo "---- Saving agent files and yum repos"
-	for host in $(cat ${host_file}); do
-		ssh -tt ${host} sudo -E tar -cf /tmp/$cm_backup_dir/${host}_agent.tar --exclude=*.sock /etc/cloudera-scm-agent /etc/default/cloudera-scm-agent /var/run/cloudera-scm-agent /var/lib/cloudera-scm-agent
-		ssh -tt ${host} sudo -E tar -cf /tmp/$cm_backup_dir/${host}_repository.tar /etc/yum.repos.d
-	done
+	echo "---- Saving agent files and yum repos on worker-1"
+	ssh worker-1 mkdir -p /tmp/$CM_BACKUP_dir
+	ssh worker-1 sudo -E tar -cf /tmp/$CM_BACKUP_dir/cloudera-scm-agent.tar --exclude=*.sock /etc/cloudera-scm-agent /etc/default/cloudera-scm-agent /var/run/cloudera-scm-agent /var/lib/cloudera-scm-agent
+	ssh worker-1 sudo -E tar -cf /tmp/$CM_BACKUP_dir/repository.tar /etc/yum.repos.d
 }
 
 function backup_zookeeper() {
 # Back up zookeeper data
 
 	echo "---- Backing up zookeeper directories"
-	cp -rp /var/lib/zookeeper/ /tmp/${backup_file}_-zookeeper-backup
-	ssh -tt master-1.example.com sudo cp -rp /var/lib/zookeeper/ /tmp/${backup_file}_zookeeper.bak
-	ssh -tt master-2.example.com sudo cp -rp /var/lib/zookeeper/ /tmp/${backup_file}_zookeeper.bak
-	ssh -tt master-3.example.com sudo cp -rp /var/lib/zookeeper/ /tmp/${backup_file}_zookeeper.bak
+	cp -rp /var/lib/zookeeper/ /tmp/CDH7.1.2-zookeeper-backup
+	ssh master-1 cp -rp /var/lib/zookeeper/ /tmp/CDH7.1.2-zookeeper-backup
+	ssh master-2 cp -rp /var/lib/zookeeper/ /tmp/CDH7.1.2-zookeeper-backup
 }
 
 function backup_journal() {
 # Back up Journal Node data
 
-	echo "---- Backing up Journal Node" 
+	echo "---- Backing up Journal Node data on master-1, worker-2, and worker-3"
 	echo "---- Note that these commands are expected to fail if HDFS is not configured for high availability"
-	ssh -tt master-1.example.com sudo cp -rp /dfs/jn /tmp/${backup_file}_jn.bak
-	ssh -tt master-2.example.com sudo cp -rp /dfs/jn /tmp/${backup_file}_jn.bak
-	ssh -tt master-3.example.com sudo cp -rp /dfs/jn /tmp/${backup_file}_jn.bak
+	ssh root@master-1 cp -rp /dfs/jn /tmp/CDH7.1.2-dfsjn-backup
+	ssh root@worker-2 cp -rp /dfs/jn /tmp/CDH7.1.2-dfsjn-backup
+	ssh root@worker-3 cp -rp /dfs/jn /tmp/CDH7.1.2-dfsjn-backup
 }
 
 function backup_namenode() {
 # Create rollback directories on all NameNode hosts
 
-	nn_list="master-1.example.com master-2.example.com master-3.example.com"
-
 	echo "---- Creating NameNode rollback directories on master-1"
-	for host in $(echo ${nn_list}); do
-		ssh -tt ${host} sudo mkdir -p /etc/hadoop/conf.rollback.namenode
-		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-NAMENODE\$" | head -1`/* /etc/hadoop/conf.rollback.namenode/'
-		ssh -tt ${host} sudo rm /etc/hadoop/conf.rollback.namenode/log4j.properties
-	done
+	ssh root@master-1 mkdir -p /etc/hadoop/conf.rollback.namenode
+	ssh root@master-1 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-NAMENODE\$" | head -1`/* /etc/hadoop/conf.rollback.namenode/'
+	ssh root@master-1 rm /etc/hadoop/conf.rollback.namenode/log4j.properties
 }
 
 function backup_datanode() {
 # Create rollback directories on all DataNode hosts
 
-	dn_list="worker-1.example.com worker-2.example.com worker-3.example.com worker-4.example.com"
-
 	echo "---- Creating DataNode rollback directories on worker-1"
-	for host in $(echo ${dn_list}); do
-		ssh -tt ${host} sudo mkdir -p /etc/hadoop/conf.rollback.datanode/
-		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-DATANODE\$" | head -1`/* /etc/hadoop/conf.rollback.datanode/'
-		ssh -tt ${host} sudo cp -pf /etc/hadoop/conf.cloudera.hdfs/log4j.properties /etc/hadoop/conf.rollback.datanode/
-	done
+	ssh root@worker-1 mkdir -p /etc/hadoop/conf.rollback.datanode/
+	ssh root@worker-3 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-DATANODE\$" | head -1`/* /etc/hadoop/conf.rollback.datanode/'
+	#ssh root@worker-1 rm /etc/hadoop/conf.rollback.datanode/log4j.properties
+	ssh root@worker-1 cp -pf /etc/hadoop/conf.cloudera.hdfs/log4j.properties /etc/hadoop/conf.rollback.datanode/
 }
 
 function backup_hue() {
 # Back up Hue Server registry file on cmhost
 
-	hue_list="edge.example.com"
-
-	echo "---- Backing up Hue Server registry filet"
-	for host in $({echo ${hue_list}); do
-		ssh -tt ${host} sudo mkdir -p /opt/cloudera/parcels_backup/
-		ssh -tt ${host} sudo cp -p /opt/cloudera/parcels/CDH/lib/hue/app.reg /opt/cloudera/parcels_backup/app.reg-${backup_file}
-	done
+	echo "---- Backing up Hue Server registry file on cmhost"
+	sudo mkdir -p /opt/cloudera/parcels_backup/
+	sudo cp -p /opt/cloudera/parcels/CDH/lib/hue/app.reg /opt/cloudera/parcels_backup/app.reg-CDH7.1.2
 }
 
 function msg_backup() {
 
-	echo "---- CM backup log file has been generated."
+	echo "---- $CM_BACKUP_LOG log file has been generated."
 	echo "---- Backup script complete.  You can upgrade the cluster now."
 }
 
@@ -199,11 +188,13 @@ function run_option() {
 		;;
 	-a | --agent)
 		check_arg 1	
+		backup_cm_agent
 		backup_agent
 		;;
 	-c | --cm)
 		check_arg 1
 		backup_db
+		backup_cm_agent
 		backup_agent
 		backup_zookeeper
 		backup_journal
@@ -239,10 +230,6 @@ function main() {
 	call_include
 	check_sudo
 	setup_log
-
-	# Setup
-	stop_cm
-	make_dir	
 
 	# Run command
 	run_option
