@@ -124,9 +124,8 @@ function backup_server() {
 function backup_services() {
 # Backup Cloudera Management Services
 
+	sudo cp -rp /var/lib/cloudera-host-monitor /var/lib/cloudera-host-monitor-${date_now}
 	sudo cp -rp /var/lib/cloudera-service-monitor /var/lib/cloudera-service-monitor-${date_now}
-	sudo cp -rp /var/lib/cloudera-host-monitor /var/lib/cloudera-host-monitor-${date_now}
-	sudo cp -rp /var/lib/cloudera-host-monitor /var/lib/cloudera-host-monitor-${date_now}
 	sudo cp -rp /var/lib/cloudera-scm-eventserver /var/lib/cloudera-scm-eventserver-${date_now}
 }
 
@@ -135,7 +134,7 @@ function backup_db() {
 
 	echo "---- Backing up MySQL databases hue and metastore"
 	mkdir ${dir}/db
-	mysqldump -u root -p ${db_password} --databases scm hue metastore > ${dir}/db/$backup_dir/mysql_db_backup.sql
+	mysqldump -u root -p ${db_password} --databases scm hue metastore > ${dir}/db/mysql_db_backup_${date_now}.sql
 }
 
 function backup_zookeeper() {
@@ -158,11 +157,11 @@ function backup_journal() {
 }
 
 function backup_namenode() {
-# Create rollback directories on all NameNode hosts
+# Create backup directories on all NameNode hosts
 
 	nn_list="master-1.example.com"
 
-	echo "---- Creating NameNode rollback directories"
+	echo "---- Creating NameNode backup directories"
 	for host in $(echo ${nn_list}); do
 		ssh -tt ${host} sudo mkdir -p /etc/hadoop/namenode_backup_${date_now}
 		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-NAMENODE\$" | head -1`/* /etc/hadoop/namenode_backup_${date_now}'
@@ -171,7 +170,7 @@ function backup_namenode() {
 }
 
 function backup_datanode() {
-# Create rollback directories on all DataNode hosts
+# Create backup directories on all DataNode hosts
 
 	dn_list="worker-1.example.com worker-2.example.com worker-3.example.com worker-4.example.com"
 
@@ -179,7 +178,7 @@ function backup_datanode() {
 	for host in $(echo ${dn_list}); do
 		ssh -tt ${host} sudo mkdir -p /etc/hadoop/datanode_backup_${date_now}
 		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-DATANODE\$" | head -1`/* /etc/hadoop/datanode_backup_${date_now}'
-		ssh -tt ${host} sudo cp -pf /etc/hadoop/conf.cloudera.hdfs/log4j.properties /etc/hadoop/datanode_backup_${date_now}/ 
+		ssh -tt ${host} sudo cp -pf /etc/hadoop/conf/log4j.properties /etc/hadoop/datanode_backup_${date_now}/ 
 	done
 }
 
@@ -224,13 +223,13 @@ function run_option() {
 		;;
 	-c | --cm)
 		check_arg 1
+		backup_db
 		backup_server
 		backup_services
 		backup_zookeeper
-		backup_journal
+#		backup_journal
 		backup_namenode
 		backup_datanode
-		backup_db
 		backup_agent
 		backup_hue
 		msg_backup
@@ -242,7 +241,7 @@ function run_option() {
 	-f | --hdfs)
 		check_arg 1
 		backup_zookeeper
-		backup_journal
+#		backup_journal
 		backup_namenode
 		backup_datanode
 		;;
