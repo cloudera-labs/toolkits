@@ -102,7 +102,9 @@ function make_dir() {
 # Make backup directory
 
 	export backup_dir="${backup_name}_${date_now}"
-	mkdir -p ${dir}/${backup_dir}
+	if [ ! -d ${dir}/${backup_dir} ]; then
+		mkdir -p ${dir}/${backup_dir}
+	fi
 }
 
 function stop_cm() {
@@ -133,7 +135,9 @@ function backup_db() {
 # Back up CDH databases
 
 	echo "---- Backing up MySQL databases hue and metastore"
-	mkdir ${dir}/db
+	if [ ! -d ${dir}/db ]; then
+		mkdir ${dir}/db
+	fi
 	mysqldump -uroot -p${db_password} --databases scm hue metastore > ${dir}/db/mysql_db_backup_${date_now}.sql
 }
 
