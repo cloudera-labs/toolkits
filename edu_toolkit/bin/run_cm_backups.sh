@@ -214,7 +214,7 @@ function backup_hue() {
 	hue_list="edge.example.com"
 
 	echo "---- Backing up Hue Server registry filet"
-	for host in $({echo ${hue_list}); do
+	for host in $(echo ${hue_list}); do
 		ssh -tt ${host} sudo mkdir -p /opt/cloudera/parcels_backup/
 		ssh -tt ${host} sudo cp -p /opt/cloudera/parcels/CDH/lib/hue/app.reg /opt/cloudera/parcels_backup/app.reg-${backup_file}
 	done
