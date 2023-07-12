@@ -167,7 +167,7 @@ function backup_namenode() {
 		nn_dir=$(ssh -tt ${host} sudo "ls -t1 /var/run/cloudera-scm-agent/process | grep -e "NAMENODE\$" | head -1")
 		nn_dir="${nn_dir%%[[:cntrl:]]}"
 		ssh -tt ${host} sudo cp -rpf /var/run/cloudera-scm-agent/process/${nn_dir} /etc/hadoop/namenode_backup_${date_now}
-		ssh -tt ${host} sudo rm /etc/hadoop/namenode_backup_${date_now}/log4j.properties
+		ssh -tt ${host} sudo rm /etc/hadoop/namenode_backup_${date_now}/${nn_dir}/log4j.properties
 	done
 }
 
@@ -181,8 +181,8 @@ function backup_datanode() {
 		ssh -tt ${host} sudo mkdir -p /etc/hadoop/datanode_backup_${date_now}
 		dn_dir=$(ssh -tt ${host} sudo "ls -t1 /var/run/cloudera-scm-agent/process | grep -e "DATANODE\$" | head -1")
 		dn_dir="${dn_dir%%[[:cntrl:]]}"
-		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/${dn_dir} /etc/hadoop/datanode_backup_${date_now}
-		ssh -tt ${host} sudo cp -pf /etc/hadoop/conf/log4j.properties /etc/hadoop/datanode_backup_${date_now}/ 
+		ssh -tt ${host} sudo cp -rpf /var/run/cloudera-scm-agent/process/${dn_dir} /etc/hadoop/datanode_backup_${date_now}
+		ssh -tt ${host} sudo cp -pf /etc/hadoop/conf/log4j.properties /etc/hadoop/datanode_backup_${date_now}/${dn_dir}/
 	done
 }
 
