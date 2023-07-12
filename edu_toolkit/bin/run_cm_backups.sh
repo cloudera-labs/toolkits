@@ -37,7 +37,7 @@
 num_arg=$#
 dir=${HOME}
 date_now=$(date +%y%m%d)
-backup_dir=backup_cdp_7.1.7
+backup_name=cdp_7.1.7
 db_password=BadPass@1
 host_file=${dir}/conf/list_host.txt
 option=$1
@@ -101,8 +101,8 @@ function setup_log() {
 function make_dir() {
 # Make backup directory
 
-	export cm_backup_dir="${backup_file}_${date_now}"
-	mkdir -p /tmp/$cm_backup_dir
+	export backup_dir="${backup_name}_${date_now}"
+	mkdir -p ${dir}/${backup_dir}
 }
 
 function stop_cm() {
@@ -116,8 +116,8 @@ function backup_server() {
 # Backup the CM server
 
   	echo "---- Backing up Cloudera Manager Server"
-	sudo -E tar -cf ${cm_backup_dir}/cloudera-scm-server_${date_now}.tar /etc/cloudera-scm-server /etc/default/cloudera-scm-server
-	sudo -E tar -cf $cm_backup_dir/repository_server_${date_now}.tar /etc/yum.repos.d
+	sudo -E tar -cf ${backup_dir}/cloudera-scm-server_${date_now}.tar /etc/cloudera-scm-server /etc/default/cloudera-scm-server
+	sudo -E tar -cf $backup_dir/repository_server_${date_now}.tar /etc/yum.repos.d
 
 }
 
@@ -135,7 +135,7 @@ function backup_db() {
 
 	echo "---- Backing up MySQL databases hue and metastore"
 	mkdir ${dir}/db
-	mysqldump -u root -p ${db_password} --databases scm hue metastore > ${dir}/db/$cm_backup_dir/mysql_db_backup.sql
+	mysqldump -u root -p ${db_password} --databases scm hue metastore > ${dir}/db/$backup_dir/mysql_db_backup.sql
 }
 
 function backup_zookeeper() {
@@ -188,8 +188,8 @@ function backup_agent() {
 
 	echo "---- Saving agent files and yum repos"
 	for host in $(cat ${host_file}); do
-		ssh -tt ${host} sudo -E tar -cf ${dir}/$cm_backup_dir/${host}_agent_${date_now}.tar --exclude=*.sock /etc/cloudera-scm-agent /etc/default/cloudera-scm-agent /var/run/cloudera-scm-agent /var/lib/cloudera-scm-agent
-		ssh -tt ${host} sudo -E tar -cf ${dir}/$cm_backup_dir/${host}_repository_${date_now}.tar /etc/yum.repos.d
+		ssh -tt ${host} sudo -E tar -cf ${dir}/$backup_dir/${host}_agent_${date_now}.tar --exclude=*.sock /etc/cloudera-scm-agent /etc/default/cloudera-scm-agent /var/run/cloudera-scm-agent /var/lib/cloudera-scm-agent
+		ssh -tt ${host} sudo -E tar -cf ${dir}/$backup_dir/${host}_repository_${date_now}.tar /etc/yum.repos.d
 	done
 }
 
