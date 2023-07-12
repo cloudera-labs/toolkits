@@ -134,7 +134,7 @@ function backup_db() {
 
 	echo "---- Backing up MySQL databases hue and metastore"
 	mkdir ${dir}/db
-	mysqldump -u root -p ${db_password} --databases scm hue metastore > ${dir}/db/mysql_db_backup_${date_now}.sql
+	mysqldump -uroot -p${db_password} --databases scm hue metastore > ${dir}/db/mysql_db_backup_${date_now}.sql
 }
 
 function backup_zookeeper() {
@@ -164,11 +164,10 @@ function backup_namenode() {
 	echo "---- Creating NameNode backup directories"
 	for host in $(echo ${nn_list}); do
 		ssh -tt ${host} sudo mkdir -p /etc/hadoop/namenode_backup_${date_now}
-		#ssh -ttt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-NAMENODE\$" | head -1`/* /etc/hadoop/namenode_backup_${date_now}'
 		nn_dir=$(ssh -tt ${host} sudo "ls -t1 /var/run/cloudera-scm-agent/process | grep -e "NAMENODE\$" | head -1")
-		echo $nn_dir
-		#ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/${nn_dir}/* /etc/hadoop/namenode_backup_${date_now}'
-		#ssh -tt ${host} sudo rm /etc/hadoop/namenode_backup_${date_now}/log4j.properties
+		nn_dir="${nn_dir%%[[:cntrl:]]}"
+		ssh -tt ${host} sudo cp -rpf /var/run/cloudera-scm-agent/process/${nn_dir} /etc/hadoop/namenode_backup_${date_now}
+		ssh -tt ${host} sudo rm /etc/hadoop/namenode_backup_${date_now}/log4j.properties
 	done
 }
 
@@ -180,7 +179,9 @@ function backup_datanode() {
 	echo "---- Creating DataNode backup directories"
 	for host in $(echo ${dn_list}); do
 		ssh -tt ${host} sudo mkdir -p /etc/hadoop/datanode_backup_${date_now}
-		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-DATANODE\$" | head -1`/* /etc/hadoop/datanode_backup_${date_now}'
+		dn_dir=$(ssh -tt ${host} sudo "ls -t1 /var/run/cloudera-scm-agent/process | grep -e "DATANODE\$" | head -1")
+		dn_dir="${dn_dir%%[[:cntrl:]]}"
+		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/${dn_dir} /etc/hadoop/datanode_backup_${date_now}
 		ssh -tt ${host} sudo cp -pf /etc/hadoop/conf/log4j.properties /etc/hadoop/datanode_backup_${date_now}/ 
 	done
 }
