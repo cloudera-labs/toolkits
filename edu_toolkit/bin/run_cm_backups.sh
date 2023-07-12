@@ -164,8 +164,11 @@ function backup_namenode() {
 	echo "---- Creating NameNode backup directories"
 	for host in $(echo ${nn_list}); do
 		ssh -tt ${host} sudo mkdir -p /etc/hadoop/namenode_backup_${date_now}
-		ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-NAMENODE\$" | head -1`/* /etc/hadoop/namenode_backup_${date_now}'
-		ssh -tt ${host} sudo rm /etc/hadoop/namenode_backup_${date_now}/log4j.properties
+		#ssh -ttt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/`ls -t1 /var/run/cloudera-scm-agent/process  | grep -e "-NAMENODE\$" | head -1`/* /etc/hadoop/namenode_backup_${date_now}'
+		nn_dir=$(ssh -tt ${host} sudo "ls -t1 /var/run/cloudera-scm-agent/process | grep -e "NAMENODE\$" | head -1")
+		echo $nn_dir
+		#ssh -tt ${host} sudo 'cp -rpf /var/run/cloudera-scm-agent/process/${nn_dir}/* /etc/hadoop/namenode_backup_${date_now}'
+		#ssh -tt ${host} sudo rm /etc/hadoop/namenode_backup_${date_now}/log4j.properties
 	done
 }
 
