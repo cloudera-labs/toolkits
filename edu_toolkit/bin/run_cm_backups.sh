@@ -74,6 +74,14 @@ DESCRIPTION
 		Stop the Cloudera Manager server
 	-u, --hue
 		Backup Hue
+INSTRUCTIONS
+	1. Always stop Cloudera Manager first
+		run_cm_backups.sh -s
+	2. Select the type of backup and run it.
+		run_cm_backups.sh -c
+	3. Verify the backup directories
+		ls cdp_N.N.N_YYMMDD
+		ls db	
 EOF
         exit
 }
@@ -214,8 +222,12 @@ function backup_hue() {
 
 function msg_backup() {
 
-	echo "---- CM backup log file has been generated."
-	echo "---- Backup script complete. You may upgrade the cluster now."
+	echo "---- Backup is complete."
+	echo "---- The backup log file has been generated."
+	echo "---- Ignore the backup errors from the tar command."
+	# Review log file
+	echo "Review log file at ${logfile}"
+	echo "---- Cloudera Manager and the cluster are ready for upgrade."
 }
 
 function run_option() {
@@ -280,8 +292,6 @@ function main() {
 	# Run command
 	run_option
 
-	# Review log file
-	echo "Review log file at ${logfile}"
 }
 
 #MAIN
