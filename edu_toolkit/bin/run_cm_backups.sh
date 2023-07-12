@@ -70,6 +70,8 @@ DESCRIPTION
                 Backup all CM and CDP datatabases
         -f, --hdfs
 		Backup HDFS
+	-s, --stop
+		Stop the Cloudera Manager server
 	-u, --hue
 		Backup Hue
 EOF
@@ -244,6 +246,10 @@ function run_option() {
 		backup_namenode
 		backup_datanode
 		;;
+	-s | --stop)
+		check_arg 1
+		stop_cm
+		;;
 	-u | --hue)
 		check_arg 1
 		backup_hue
@@ -263,7 +269,6 @@ function main() {
 
 	# Setup
 	make_dir	
-	stop_cm
 
 	# Run command
 	run_option
