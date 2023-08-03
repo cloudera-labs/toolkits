@@ -31,7 +31,7 @@ def hosts(args):
 
     # Configure HTTPS authentication
     AMBARI_USER_ID = "admin"
-    AMBARI_USER_PW = "vsrivastava"
+    AMBARI_USER_PW = "admin"
     AMBARI_DOMAIN = args
     HTTPS = False
     if HTTPS:
