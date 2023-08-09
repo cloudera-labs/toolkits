@@ -40,7 +40,7 @@
 # $> bash <name-of-this-script> <second-docker-registry-server/repository_name>
 
 # The next line sets the following variable to the first command line argument if present.
-DOCKER_REGISTRY_DEST=${1:-registry.example.com:5000/cloudera-docker-images}
+DOCKER_REGISTRY_DEST=${1:-registry-1.example.com:5000/cloudera-docker-images}
 # The next line sets the following variable to the second command line argument if present.
 COPY_DOCKER_MODE=${2:-DOWNLOAD_OR_PULL_AND_PUSH}
 
@@ -96,7 +96,8 @@ onExit() {
   fi
 
   if [ $completedCount -eq 270 ]; then
-    rm -rf "$TOP_LEVEL_DIR"
+# WKD Remove to preserve the Docker packages in the temp location
+#    rm -rf "$TOP_LEVEL_DIR"
     exit 0
   elif [ $errorCount -eq 0 ]; then
     echo "Remaining images are being processed by another script."
