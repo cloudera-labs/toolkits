@@ -14,6 +14,7 @@
 # $> docker login <your-docker-registry-server/some-path>
 # or
 # $> podman login <your-docker-registry-server/some-path>
+# Modified by WKD for EDU
 
 # Basic Usage:
 # ------------
