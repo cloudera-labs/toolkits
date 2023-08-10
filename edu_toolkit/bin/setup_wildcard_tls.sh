@@ -88,11 +88,11 @@ DESCRIPTION
 		Sign with self_sign
 
 EXAMPLE
-	setup_wildcard_tls.sh -d <domain: sam-lon03.example.com> -n <name of cluster: sam-lon03> -p name of key: sam> -c (certificate signed by a CA) 
+	setup_wildcard_tls.sh -d <domain: apps.ecs-1.example.com> -n <name of cluster: ecs-1> -p name of key: sam> -c (certificate signed by a CA) 
 
-	setup_wildcard_tls.sh -d apps.sam-lon03.example.com -n sam-lon03 -p sam -c 
+	setup_wildcard_tls.sh -d apps.ecs-1.example.com -n ecs-1 -p sam -c 
 
-	setup_wildcard_tls.sh -d apps.fin-prd.example.com -n fin-prd -p prodrisk -s 
+	setup_wildcard_tls.sh -d apps.ecs-1.example.com -n ecs-1 -p prdrisk -s 
 
 EOF
         exit
@@ -223,18 +223,18 @@ function create_self_signed_cert() {
 function move_certs() {
 	# Make a pki directory ecs
 
-	pvc_pki=/opt/pvc/${cluster_name}/security/pki
+	ecs_pki=/opt/${cluster_name}/security/pki
 
-	if [ ! -d ${pvc_pki} ]; then
-		sudo mkdir -p ${pvc_pki} 
+	if [ ! -d ${ecs_pki} ]; then
+		sudo mkdir -p ${ecs_pki} 
 	fi
 
 	run_cmd "sudo chmod 400 ${key_file}"
-	run_cmd "sudo mv ${key_file} ${pvc_pki}/"
-	run_cmd "sudo mv ${cert_file} ${pvc_pki}/"
-	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${pvc_pki}"
+	run_cmd "sudo mv ${key_file} ${ecs_pki}/"
+	run_cmd "sudo mv ${cert_file} ${ecs_pki}/"
+	run_cmd "sudo chown -R cloudera-scm:cloudera-scm ${ecs_pki}"
 	run_cmd "echo Output certificates to:"
-	run_cmd "ls ${pvc_pki}"
+	run_cmd "ls ${ecs_pki}"
 }
 
 function run_option() {
@@ -355,8 +355,8 @@ function run_wildcard() {
 	# Cleanup
 	run_cmd "rm ${conf_file}"
 	move_certs
-	log_info "Move ${key_file} and ${cert_file} to ${pvc_pki}"
-	run_cmd "ls -ltr ${pvc_pki}"
+	log_info "Move ${key_file} and ${cert_file} to ${ecs_pki}"
+	run_cmd "ls -ltr ${ecs_pki}"
 }
 
 function main() {

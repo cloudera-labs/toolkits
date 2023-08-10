@@ -35,15 +35,15 @@
 # VARIABLE
 num_arg=$#
 dir=${HOME}
-ecs_master=ecs-1.example.com
 option=$1
-domain_name=$2
-cert_name=$3
+host_name=$2
+cluster_name=$3
+cert_name=$4
 logfile=${dir}/log/$(basename $0).log
 
 # FUNCTIONS
 function usage() {
-        echo "Usage: $(basename $0) [OPTION] <domain_name> <cert_name>"
+        echo "Usage: $(basename $0) [OPTION] <host_name> <cluster_name> <cert_name>"
         exit
 }
 
@@ -52,21 +52,21 @@ function get_help() {
 
 cat << EOF
 SYNOPSIS
-	push_wildcard_lts.sh [OPTION} <domain_name> <cert_name>
+	push_wildcard_lts.sh [OPTION} <host_name> <cluster_name> <cert_name>
 
 DESCRIPTION
 	This tool will push the certificate and the key to the ECS master. The
-	default location is /opt/pvc/<domain_name>/security/pki.
+	default location is /opt/<host_name>/security/pki.
 
 	-h, --help
 		help page
-	-p, --push <domain_name> <cert_name>
-		Push the certificate to the ECS master
+	-p, --push <host_name> <cluster_name> <cert_name>
+		Push the certificate to the host 
 
 INSTRUCTION
 
-	push_wildcard.sh --push sam-lon03 sam
-	push_wildcard.sh --push sam-lon03 cloudsale
+	push_wildcard.sh --push ecs-master-1.example.com ecs-1 sam
+	push_wildcard.sh --push ecs-master-1.example.com ecs-1 cloudsale
 
 EOF
         exit
@@ -87,51 +87,51 @@ function call_include() {
 function create_dir() {
 # Description 
 
-	cert_dir=/opt/pvc/${domain_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 
-	ssh -t ${ecs_master} sudo ls ${cert_dir} >> ${logfile} 2>&1
+	ssh -t ${host_name} sudo ls ${cert_dir} >> ${logfile} 2>&1
 	ans=$?
 
 	if [ ! ${ans} -eq 0 ]; then
-		ssh -t ${ecs_master} sudo mkdir -p /opt/pvc/${domain_name}/security/pki
+		ssh -t ${host_name} sudo mkdir -p /opt/${cluster_name}/security/pki
 	fi
 }
 
 function push_key() {
 
-	cert_dir=/opt/pvc/${domain_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 	key_file=${cert_name}.key
 
 	if [ -f ${cert_dir}/${key_file} ]; then
 		sudo chmod 666 ${cert_dir}/${key_file}
-		sudo scp ${cert_dir}/${key_file} ${ecs_master}:/tmp/${key_file}
-		ssh -t ${ecs_master} "sudo mv /tmp/${key_file} ${cert_dir}/${key_file}"
-		ssh -t ${ecs_master} "sudo chmod 440 ${cert_dir}/${key_file}"
+		sudo scp ${cert_dir}/${key_file} ${host_name}:/tmp/${key_file}
+		ssh -t ${host_name} "sudo mv /tmp/${key_file} ${cert_dir}/${key_file}"
+		ssh -t ${host_name} "sudo chmod 400 ${cert_dir}/${key_file}"
 	fi 
 }
 
 function push_cert() {
 
-	cert_dir=/opt/pvc/${domain_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 	cert_file=${cert_name}.crt
 
 	if [ -f ${cert_dir}/${key_file} ]; then
-		sudo scp ${cert_dir}/${cert_file} ${ecs_master}:/tmp/${cert_file}
-		ssh -t ${ecs_master} "sudo mv /tmp/${cert_file} ${cert_dir}/${cert_file}"
+		sudo scp ${cert_dir}/${cert_file} ${host_name}:/tmp/${cert_file}
+		ssh -t ${host_name} "sudo mv /tmp/${cert_file} ${cert_dir}/${cert_file}"
 	fi 
 }
 
 function check_cert() {
 
-	cert_dir=/opt/pvc/${domain_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 	cert_file=${cert_name}.crt
 
-	ssh -t ${ecs_master} ls ${cert_dir}/${cert_file} >> ${logfile} 2>&1
+	ssh -t ${host_name} ls ${cert_dir}/${cert_file} >> ${logfile} 2>&1
 	ans=$?
 
 	if [ ${ans} -eq 0 ]; then
-		echo "Certificate files available on ${ecs_master}:"
-		ssh -t ${ecs_master} ls -l /opt/pvc/${domain_name}/security/pki
+		echo "Certificate files available on ${host_name}:"
+		ssh -t ${host_name} ls -l /opt/${cluster_name}/security/pki
 	else
 		echo "ERROR: File transfered failed."
 	fi
@@ -143,18 +143,18 @@ function run_option() {
 
     case "${option}" in
         -h | --help)
-            get_help
-            ;;
+            	get_help
+            	;;
         -p |--push)
-            check_arg 3
-			create_dir
-			push_key
-			push_cert
-			check_cert
-            ;;
+            	check_arg 4
+		create_dir
+		push_key
+		push_cert
+		check_cert
+            	;;
         *)
-            usage
-            ;;
+            	usage
+            	;;
     esac
 }
 
@@ -162,7 +162,6 @@ function main() {
 
 	# Run checks
 	call_include
-	#check_tgt
 	check_sudo
 	setup_log
 

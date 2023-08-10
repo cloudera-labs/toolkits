@@ -13,6 +13,6 @@ services:
       REGISTRY_HTTP_TLS_CERTIFICATE: /certs/registry.crt
       REGISTRY_HTTP_TLS_KEY: /certs/registry.key
     volumes:
-      - /opt/docker-registry/auth:/auth
-      - /opt/docker-registry/certs:/certs
+      - /opt/registry/auth:/auth
+      - /opt/registry/certs:/certs
       - /var/lib/registry:/var/lib/registry
