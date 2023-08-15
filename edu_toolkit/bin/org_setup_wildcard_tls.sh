@@ -140,7 +140,7 @@ function run_cmd() {
 function setup_ca() {
 	# Configuration setup for IPA as CA
 
-	if [ ! -f ${ca_path}/serial.txt ]; then
+	if [ ! -f ${ca_path}/openssl.cnf ]; then
 		run_cmd "touch index.txt serial.txt"
 		run_cmd "echo "1234" > serial.txt"
 		run_cmd "sudo chown root:root index.txt serial.txt" 
