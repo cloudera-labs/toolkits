@@ -14,7 +14,7 @@
 # $> docker login <your-docker-registry-server/some-path>
 # or
 # $> podman login <your-docker-registry-server/some-path>
-# Modified by WKD for EDU
+# IMPORTANT: Modified by EDU are marked with EDU
 
 # Basic Usage:
 # ------------
@@ -40,6 +40,7 @@
 # You can use this script to copy all the Docker images to this second registry by running this command:
 # $> bash <name-of-this-script> <second-docker-registry-server/repository_name>
 
+# EDU points to classroom host registry-1
 # The next line sets the following variable to the first command line argument if present.
 DOCKER_REGISTRY_DEST=${1:-registry-1.example.com:5000/cloudera-docker-images}
 # The next line sets the following variable to the second command line argument if present.
@@ -97,7 +98,7 @@ onExit() {
   fi
 
   if [ $completedCount -eq 270 ]; then
-# WKD Remove to preserve the Docker packages in the temp location
+# EDU Remove this line to preserve the Docker packages in the temp location
 #    rm -rf "$TOP_LEVEL_DIR"
     exit 0
   elif [ $errorCount -eq 0 ]; then
@@ -273,6 +274,7 @@ downloadPackageOnly() {
 
   # The status of a packge is different from a docker image.
   # So when it is not in a good state, we can move it to 'started'
+# EDU Pull from the air-gap repo on cmhost
   if [ "$status" != "started" ] && [ "$status" != "downloaded" ] && [ "$status" != "done" ]; then
     echo ''
     echo "${bold}Downloading $imageTgz${normal}"
