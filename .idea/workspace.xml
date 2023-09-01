@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cb0a075c-ecf9-4eeb-acf1-4d3d456bfaf6" name="Changes" comment=":construction: typo fixed">
-      <change beforePath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/ranger_policy_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/ranger_policy_extractor.py" afterDir="false" />
-    </list>
+    <list default="true" id="cb0a075c-ecf9-4eeb-acf1-4d3d456bfaf6" name="Changes" comment=":construction: typo fixed" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/CDH-Discovery-Tool/requirements.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-reports-builder/mac_report_builder.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/CDH-Discovery-Tool/mac-discovery-reports-builder/mac_report_builder.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/discovery_bundle_builder.sh" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/upgrade-toolkit/HDP-Discovery-Tool/mac-discovery-bundle-builder/conf/log-config.yaml" root0="FORCE_HIGHLIGHTING" />
-  </component>
   <component name="ProjectId" id="2Lf3vSgqiUkWi7ELlt1ynoqgn90" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -27,17 +24,17 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/upgrade-toolkit" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/upgrade-toolkit/Hive Code Scanner" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/upgrade-toolkit/Hive Code Scanner" />
       <recent name="$PROJECT_DIR$/upgrade-toolkit" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="67a4d1c7-09fc-4ad2-bbe1-3c329ee80bdb" name="Default Changelist" comment="" />
       <created>1676248540543</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -89,6 +86,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Hive Code Scanner" />
