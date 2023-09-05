@@ -14,7 +14,7 @@ GRANT ALL on scm.* TO 'scm'@'localhost' IDENTIFIED BY 'BadPass@1';
 CREATE DATABASE hue DEFAULT CHARACTER SET utf8;
 GRANT ALL on hue.* TO 'hue'@'%' IDENTIFIED BY 'BadPass@1';
 CREATE DATABASE metastore DEFAULT CHARACTER SET utf8;
-GRANT ALL on metastore.* TO 'metastore'@'%' IDENTIFIED BY 'BadPass@1';
+GRANT ALL on metastore.* TO 'hive'@'%' IDENTIFIED BY 'BadPass@1';
 CREATE DATABASE oozie DEFAULT CHARACTER SET utf8;
 GRANT ALL on oozie.* TO 'oozie'@'%' IDENTIFIED BY 'BadPass@1';
 CREATE DATABASE ranger DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;

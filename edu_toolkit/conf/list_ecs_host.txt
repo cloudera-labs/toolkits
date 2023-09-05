@@ -1,5 +1,5 @@
-ecs-1.example.com
-ecs-2.example.com
-ecs-3.example.com
-ecs-4.example.com
-ecs-5.example.com
+ecs-master-1.example.com
+ecs-worker-1.example.com
+ecs-worker-2.example.com
+ecs-worker-3.example.com
+ecs-worker-4.example.com

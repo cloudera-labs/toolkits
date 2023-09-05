@@ -396,7 +396,7 @@ function run_option() {
 	case "${option}" in
 		-h | --help)
 			check_arg 1	
-			get_help | less
+			get_help 
 			;;
 		-b | --backup)
 			check_arg 1	
@@ -432,7 +432,7 @@ function run_option() {
 			;;
 		-s | --show)
 			check_arg 1
-			show_mariadb | less
+			show_mariadb
 			;;
 		-t | --tls)
 			check_arg 1

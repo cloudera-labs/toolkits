@@ -36,7 +36,7 @@
 num_arg=$#
 dir=${HOME}
 option=$1
-#content=${dir}/training_material_security
+#content=${dir}/training_materials/security
 content=${dir}/src/toolkits/edu_toolkit
 logfile=${dir}/log/$(basename $0).log
 
@@ -52,7 +52,7 @@ function get_help() {
 
 cat << EOF
 SYNOPSIS
-        setup_studentg.sh [OPTION]
+        setup_student.sh [OPTION]
 
 DESCRIPTION
         Setup the student for the user training
