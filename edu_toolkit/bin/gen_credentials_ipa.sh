@@ -54,7 +54,7 @@ else
   if [[ $HOST =~ \. ]]; then
     ipa host-add $HOST --force --no-reverse
   else
-    ipa host-add $HOST.apps.ecs-1.example.com --force --no-reverse
+    ipa host-add $HOST.apps.ecs-master-1.example.com --force --no-reverse
   fi
 #end change
 fi
