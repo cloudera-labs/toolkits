@@ -8,6 +8,10 @@ Tour hosts
    * Sudo
 Tour file system
 Restart and build fully secure w/ Knox
+Configure Knox Bookmark
+Knox SSO
+https://edge.example.com:8443/gateway/knoxsso/knoxauth/login.html?originalUrl=https://edge.example.com:8443/gateway/homepage/home/
+
 
 ## Ch 05 Tun Infra
 Set Up Kerberos user
@@ -20,12 +24,13 @@ manage_mariadb.sh --tls
 manage_mariadb.sh --show
 Auto-TLS import /etc/my.cnf.d/ssl/ca.crt
 
-Configure Knox Bookmark
-Knox SSO
-https://edge.example.com:8443/gateway/knoxsso/knoxauth/login.html?originalUrl=https://edge.example.com:8443/gateway/homepage/home/
-
-
 ##Ch 06 HDFS in Depth
+## Superuser for HDFS and YARNs
+kinit allan_admin
+BadPass@1
+klist
+hdfs dfs -mkdir /user/allan_admin
+
 # HDFS
 hdfs
 hdfs dfs
@@ -45,7 +50,7 @@ cd /hadoop/hdfs
 
 # Find the block ID
 find . -name <BLOCK_ID>
-cd /hadoop/hdfs/data/current/BP-xxxxx/current/finalized/subdirx
+cd /dfs/dn/current/BP-xxxxx/current/finalized/subdir0/
 ls -lh
 file *
 stat *
@@ -67,6 +72,9 @@ JARFILE=/opt/cloudera/parcels/CDH/jars/hadoop-examples.jar
 # Submitting jobs
 # Syntaxyarn jar <Jar_File>  <mainClass> <inputpath> <outputpath> [args]
 yarn jar ${JARFILE} wordcount latin output
+hdfs dfs -ls output
+hdfs dfs -head output/part-r-00000
+hdfs dfs -rm -r -skipTrash output
 
 # List running jobs
 yarn application -list

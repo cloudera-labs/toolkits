@@ -7,7 +7,7 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 # OR CONDITIONS OF ANY KIND, either express or implied.
 
-# Title: run-jobs.sh
+# Title: run-job.sh
 # Author: WKD  
 # Date: 1R18
 # Purpose: Provide MapReduce workload on the Hadoop cluster by running 
@@ -43,7 +43,7 @@
 # VARIABLES
 num_arg=$#
 dir=${HOME}
-jar_file=/opt/cloudera/CDH/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar
+jar_file=/opt/cloudera/parcels/CDH/jar/hadoop-examples.jar
 date_time=$(date +%Y%m%d%H%M)
 log_file="${dir}/log/run-jobs.log"
 
@@ -53,7 +53,7 @@ function usage() {
         exit 1
 }
 
-function callInclude() {
+function call_include() {
 # Test for script and run functions
 
         if [ -f ${dir}/bin/include.sh ]; then
@@ -88,7 +88,7 @@ function setJob() {
 function setKinit() {
 # Kinit as user
 
-	if  yesno "Does this user require a KGT? " ; then
+	if  yes_no "Does this user require a KGT? " ; then
 		read -p "Set ${user_name} KDC password: " PASSWORD
 		sudo -H -u ${user_name} bash -c "echo ${PASSWORD} | kinit ${user_name}/EDU"
 	fi
@@ -145,7 +145,7 @@ function cleanOutDir() {
 	done
 }
 
-function runOption() {
+function run_option() {
 # Case statement for run jobs
 
         case "${option}" in
@@ -173,15 +173,15 @@ function runOption() {
 
 ## IN
 # Source functions
-callInclude
+call_include
 
 # Run checks
-checkSudo
+check_sudo
 
 # Run setups
-setupLog ${log_file}
+setup_log ${log_file}
 
 # Run option
 trap "interrupt 1" 1 2 3 15
 intro
-runOption
+run_option
