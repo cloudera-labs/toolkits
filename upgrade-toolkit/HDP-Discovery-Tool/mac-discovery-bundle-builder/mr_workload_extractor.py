@@ -131,21 +131,13 @@ class MapreduceExtractor:
         config_types = current_config_api_response['items'][0]['configurations']
         for config_type in config_types:
             if config_type['type'] == 'hdfs-site':
+                hdfs_config['ns'] = config_type['properties']['dfs.nameservices'].split(",")[0]
+                hdfs_config['nn1'] = config_type['properties']['dfs.ha.namenodes.' + hdfs_config['ns']].split(",")[0]
                 if config_type['properties']['dfs.http.policy'] == "HTTP_ONLY":
                     hdfs_config['http_type'] = 'http'
                 else:
                     hdfs_config['http_type'] = 'https'
-                try:
-                    hdfs_config['nameservices'] = config_type['properties']['dfs.nameservices']
-                    hdfs_config['namenodes.mycluster'] = config_type['properties']['dfs.ha.namenodes.mycluster']
-                    hdfs_config['port'] = config_type['properties'][
-                        'dfs.namenode.' + hdfs_config['http_type'] + '-address.' + hdfs_config['nameservices'] + '.' +
-                        hdfs_config['namenodes.mycluster'].split(",")[0]].split(":")[-1]
-                except:
-                    log.debug("HA is not enabled on this cluster")
-                    hdfs_config['port'] = \
-                        config_type['properties']['dfs.namenode.' + hdfs_config['http_type'] + '-address'].split(":")[
-                            -1]
+                hdfs_config['port'] = config_type['properties']['dfs.namenode.' + hdfs_config['http_type'] + '-address' + '.' + hdfs_config['ns'] + '.' + hdfs_config['nn1']].split(":")[-1]
                 hdfs_config['web_hdfs_enabled'] = config_type['properties']['dfs.webhdfs.enabled']
         return hdfs_config
 
@@ -188,7 +180,7 @@ class MapreduceExtractor:
 
     def get_cluster_name(self):
         try:
-            r = requests.get(self.ambari_http_protocol+"://"+self.ambari_server_host+":"+self.ambari_server_port+"/api/v1/clusters",auth = HTTPBasicAuth(self.ambari_user, self.ambari_pass))
+            r = requests.get(self.ambari_http_protocol+"://"+self.ambari_server_host+":"+self.ambari_server_port+"/api/v1/clusters",auth = HTTPBasicAuth(self.ambari_user, self.ambari_pass),verify=False)
         except requests.exceptions.RequestException as e:
             log.debug(
                 "Issue connecting to ambari server. Please check the process is up and running and responding as expected.")

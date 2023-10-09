@@ -1,0 +1,150 @@
+file_name,line_number,problematic_search,recommendation
+test_hqls/test9.hql,5,table operations,Enclose the database name and the table name in backticks AS `mydb`.`mytable2`
+test_hqls/test9.hql,3,application,"the word application cannot be used in queries in CDP, Change applications. Enclose queries in backticks"
+test_hqls/test9.hql,3,time,"the word time cannot be used in queries in CDP, Change time. Enclose queries in backticks"
+test_hqls/test9.hql,8,application,"the word application cannot be used in queries in CDP, Change applications. Enclose queries in backticks"
+test_hqls/test9.hql,8,time,"the word time cannot be used in queries in CDP, Change time. Enclose queries in backticks"
+test_hqls/test8.hql,10,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table1`
+test_hqls/test8.hql,13,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table1`
+test_hqls/test8.hql,16,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table1`
+test_hqls/test8.hql,19,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table2`
+test_hqls/test8.hql,27,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table3_external_case`
+test_hqls/test8.hql,30,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table4_lcase`
+test_hqls/test8.hql,33,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table6_tab_beggining_of_line`
+test_hqls/test8.hql,36,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table7_external_mixed_case`
+test_hqls/test8.hql,39,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table8_temporary`
+test_hqls/test8.hql,42,table operations,Enclose the database name and the table name in backticks AS `test_db`.`table9_not_exists`
+test_hqls/test1.hql,79,table operations,Enclose the database name and the table name in backticks AS `mydb`.`employees`
+test_hqls/test1.hql,80,table operations,Enclose the database name and the table name in backticks AS `mydb`.`employees`
+test_hqls/test1.hql,81,table operations,Enclose the database name and the table name in backticks AS `mydb`.`employees`
+test_hqls/test1.hql,1,mapred.map.tasks,"mapred.map.tasks is deprecated, use mapreduce.job.maps instead"
+test_hqls/test1.hql,2,hive.exec.mode.local.auto,"hive.exec.mode.local.auto is deprecated, use hive.exec.mode.local.auto.inputbytes.max instead"
+test_hqls/test1.hql,3,hive.merge.mapfiles,"hive.merge.mapfiles is deprecated, use hive.merge.smallfiles.avgsize instead"
+test_hqls/test1.hql,4,hive.map.aggr,"hive.map.aggr is deprecated, use mapreduce.combine.class instead"
+test_hqls/test1.hql,5,hive.optimize.index.filter,"hive.optimize.index.filter is deprecated, use hive.optimize.index.autotune instead"
+test_hqls/test1.hql,6,hive.limit.query.max.table.partition,The parameter hive.limit.query.max.table.partition has been deprecated and must be removed from your code
+test_hqls/test1.hql,7,hive.warehouse.subdir.inherit.perms,The parameter hive.warehouse.subdir.inherit.perms has been deprecated and must be removed from your code
+test_hqls/test1.hql,8,hive.stats.fetch.partition.stats,The parameter hive.stats.fetch.partition.stats has been deprecated and must be removed from your code
+test_hqls/test1.hql,9,hive.metastore.hbase.cache.ttl,The parameter hive.metastore.hbase.cache.ttl has been deprecated and must be removed from your code
+test_hqls/test1.hql,10,hive.metastore.hbase.catalog.cache.size,The parameter hive.metastore.hbase.catalog.cache.size has been deprecated and must be removed from your code
+test_hqls/test1.hql,11,hive.metastore.hbase.aggregate.stats.cache.size,The parameter hive.metastore.hbase.aggregate.stats.cache.size has been deprecated and must be removed from your code
+test_hqls/test1.hql,12,hive.metastore.hbase.aggregate.stats.max.partitions,The parameter hive.metastore.hbase.aggregate.stats.max.partitions has been deprecated and must be removed from your code
+test_hqls/test1.hql,13,hive.metastore.hbase.aggregate.stats.false.positive.probability,The parameter hive.metastore.hbase.aggregate.stats.false.positive.probability has been deprecated and must be removed from your code
+test_hqls/test1.hql,14,hive.metastore.hbase.aggregate.stats.max.variance,The parameter hive.metastore.hbase.aggregate.stats.max.variance has been deprecated and must be removed from your code
+test_hqls/test1.hql,15,hive.metastore.hbase.cache.max.writer.wait,The parameter hive.metastore.hbase.cache.max.writer.wait has been deprecated and must be removed from your code
+test_hqls/test1.hql,16,hive.metastore.hbase.cache.max.reader.wait,The parameter hive.metastore.hbase.cache.max.reader.wait has been deprecated and must be removed from your code
+test_hqls/test1.hql,17,hive.metastore.hbase.cache.max.full,The parameter hive.metastore.hbase.cache.max.full has been deprecated and must be removed from your code
+test_hqls/test1.hql,18,hive.metastore.hbase.cache.clean.until,The parameter hive.metastore.hbase.cache.clean.until has been deprecated and must be removed from your code
+test_hqls/test1.hql,19,hive.metastore.hbase.connection.class,The parameter hive.metastore.hbase.connection.class has been deprecated and must be removed from your code
+test_hqls/test1.hql,20,hive.metastore.hbase.aggr.stats.cache.entries,The parameter hive.metastore.hbase.aggr.stats.cache.entries has been deprecated and must be removed from your code
+test_hqls/test1.hql,21,hive.metastore.hbase.aggr.stats.memory.ttl,The parameter hive.metastore.hbase.aggr.stats.memory.ttl has been deprecated and must be removed from your code
+test_hqls/test1.hql,22,hive.metastore.hbase.aggr.stats.invalidator.frequency,The parameter hive.metastore.hbase.aggr.stats.invalidator.frequency has been deprecated and must be removed from your code
+test_hqls/test1.hql,23,hive.metastore.hbase.aggr.stats.hbase.ttl,The parameter hive.metastore.hbase.aggr.stats.hbase.ttl has been deprecated and must be removed from your code
+test_hqls/test1.hql,24,hive.driver.parallel.compilation,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,25,datanucleus.connectionPool.maxPoolSize,"datanucleus.connectionPool.maxPoolSize used to be 30, after upgrade this changes to 10"
+test_hqls/test1.hql,26,datanucleus.connectionPoolingType,"datanucleus.connectionPoolingType used to be BONECP, after upgrade this changes to HikariCP"
+test_hqls/test1.hql,27,hive.auto.convert.join.noconditionaltask.size,"hive.auto.convert.join.noconditionaltask.size used to be 20971520, after upgrade this changes to 52428800"
+test_hqls/test1.hql,28,hive.auto.convert.sortmerge.join,"hive.auto.convert.sortmerge.join used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,29,hive.auto.convert.sortmerge.join.to.mapjoin,"hive.auto.convert.sortmerge.join used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,30,hive.cbo.enable,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,31,hive.cbo.show.warnings,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,32,hive.compactor.worker.threads,"property used to be 0, after upgrade this changes to 5"
+test_hqls/test1.hql,33,hive.compute.query.using.stats,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,34,hive.default.fileformat.managed,"property used to be NONE, after upgrade this changes to ORC"
+test_hqls/test1.hql,35,hive.exec.dynamic.partition.mode,"property used to be strict, after upgrade this changes to nonstrict"
+test_hqls/test1.hql,36,hive.exec.max.dynamic.partitions,"property used to be 1000, after upgrade this changes to 5000"
+test_hqls/test1.hql,37,hive.exec.max.dynamic.partitions.pernode,"property used to be 100, after upgrade this changes to 2000"
+test_hqls/test1.hql,38,hive.exec.reducers.max,"property used to be 1099, after upgrade this changes to 1009"
+test_hqls/test1.hql,39,hive.execution.engine,"property used to be mr, after upgrade this changes to tez"
+test_hqls/test1.hql,40,hive.fetch.task.conversion,"property used to be minimal, after upgrade this changes to more"
+test_hqls/test1.hql,41,hive.fetch.task.conversion.threshold,"property used to be 256MB, after upgrade this changes to 1GB"
+test_hqls/test1.hql,42,hive.hashtable.key.count.adjustment,"property used to be 1, after upgrade this changes to 0.99"
+test_hqls/test1.hql,43,hive.limit.optimize.enable,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,44,hive.limit.pushdown.memory.usage,"property used to be 0.1, after upgrade this changes to 0.04"
+test_hqls/test1.hql,45,hive.mapjoin.hybridgrace.hashtable,"property used to be TRUE, after upgrade this changes to FALSE"
+test_hqls/test1.hql,46,hive.mapred.reduce.tasks.speculative.execution,"property used to be TRUE, after upgrade this changes to FALSE"
+test_hqls/test1.hql,47,hive.metastore.aggregate.stats.cache.enabled,"property used to be TRUE, after upgrade this changes to FALSE"
+test_hqls/test1.hql,48,hive.metastore.disallow.incompatible.col.type.changes,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,49,hive.metastore.dml.events,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,50,hive.metastore.event.message.factory,"property used to be org.apache.hadoop.hive.metastore.messaging.json.ExtendedJSONMessageFactory, after upgrade this changes to org.apache.hadoop.hive.metastore.messaging.json.gzip.GzipJSONMessageEncoder"
+test_hqls/test1.hql,51,hive.metastore.uri.selection,"property used to be SEQUENTIAL, after upgrade this changes to RANDOM"
+test_hqls/test1.hql,52,hive.metastore.warehouse.dir,"property used to be /user/hive/warehouse, after upgrade this changes to /warehouse/tablespace/managed/hive"
+test_hqls/test1.hql,53,hive.optimize.metadataonly,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,54,hive.optimize.point.lookup.min,"property used to be 31, after upgrade this changes to 2"
+test_hqls/test1.hql,55,hive.prewarm.numcontainers,"property used to be 10, after upgrade this changes to 3"
+test_hqls/test1.hql,56,hive.script.operator.env.blacklist,"property used to be hive.txn.valid.txns,hive.script.operator.env.blacklist, after upgrade this changes to hive.txn.valid.txns,hive.txn.tables.valid.writeids,hive.txn.valid.writeids,hive.script.operator.env.blacklist"
+test_hqls/test1.hql,57,hive.security.command.whitelist,"property used to be set,reset,dfs,add,list,delete,reload,compile, after upgrade this changes to set,reset,dfs,add,list,delete,reload,compile,llap"
+test_hqls/test1.hql,58,hive.server2.enable.doAs,"property used to be TRUE, after upgrade this changes to FALSE"
+test_hqls/test1.hql,59,hive.server2.idle.session.timeout,"property used to be 12, after upgrade this changes to 24"
+test_hqls/test1.hql,60,hive.server2.max.start.attempts,"property used to be 30, after upgrade this changes to 5"
+test_hqls/test1.hql,61,hive.server2.parallel.ops.in.session,"property used to be TRUE, after upgrade this changes to FALSE"
+test_hqls/test1.hql,62,hive.server2.support.dynamic.service.discovery,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,63,hive.server2.tez.initialize.default.sessions,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,64,hive.server2.thrift.max.worker.threads,"property used to be 100, after upgrade this changes to 500"
+test_hqls/test1.hql,65,hive.server2.thrift.resultset.max.fetch.size,"property used to be 1000, after upgrade this changes to 10000"
+test_hqls/test1.hql,66,hive.service.metrics.file.location,"property used to be /var/log/hive/metrics-hiveserver2/metrics.log, after upgrade this changes to /var/log/hive/metrics-hiveserver2-hiveontez/metrics.log"
+test_hqls/test1.hql,67,hive.stats.column.autogather,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,68,hive.stats.deserialization.factor,"property used to be 1, after upgrade this changes to 10"
+test_hqls/test1.hql,69,hive.support.special.characters.tablename,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,70,hive.tez.auto.reducer.parallelism,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,71,hive.tez.bucket.pruning,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,72,hive.tez.container.size,"property used to be -1, after upgrade this changes to 4096"
+test_hqls/test1.hql,73,hive.tez.exec.print.summary,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,74,hive.txn.manager,"property used to be org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager, after upgrade this changes to org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
+test_hqls/test1.hql,75,hive.vectorized.execution.mapjoin.minmax.enabled,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,76,hive.vectorized.execution.mapjoin.native.fast.hashtable.enabled,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test1.hql,77,hive.vectorized.use.row.serde.deserialize,"property used to be FALSE, after upgrade this changes to TRUE"
+test_hqls/test3.hql,2,table operations,Enclose the database name and the table name in backticks AS `mydb`.`employees`
+test_hqls/test3.hql,1,hive.exec.mode.local.auto,"hive.exec.mode.local.auto is deprecated, use hive.exec.mode.local.auto.inputbytes.max instead"
+test_hqls/test2.hql,2,table operations,Enclose the database name and the table name in backticks AS `mydb`.`employees`
+test_hqls/test2.hql,1,mapred.map.tasks,"mapred.map.tasks is deprecated, use mapreduce.job.maps instead"
+test_hqls/test6.hql,2,hive.limit.query.max.table.partition,The parameter hive.limit.query.max.table.partition has been deprecated and must be removed from your code
+test_hqls/test6.hql,3,hive.warehouse.subdir.inherit.perms,The parameter hive.warehouse.subdir.inherit.perms has been deprecated and must be removed from your code
+test_hqls/test6.hql,4,hive.stats.fetch.partition.stats,The parameter hive.stats.fetch.partition.stats has been deprecated and must be removed from your code
+test_hqls/test7.hql,2,hive.limit.query.max.table.partition,The parameter hive.limit.query.max.table.partition has been deprecated and must be removed from your code
+test_hqls/test7.hql,3,hive.warehouse.subdir.inherit.perms,The parameter hive.warehouse.subdir.inherit.perms has been deprecated and must be removed from your code
+test_hqls/test7.hql,4,hive.stats.fetch.partition.stats,The parameter hive.stats.fetch.partition.stats has been deprecated and must be removed from your code
+test_hqls/test5.hql,2,table operations,Enclose the database name and the table name in backticks AS `database1`.`table1`
+test_hqls/test5.hql,3,table operations,Enclose the database name and the table name in backticks AS `database2`.`table2`
+test_hqls/test5.hql,4,table operations,Enclose the database name and the table name in backticks AS `database3`.`table3`
+test_hqls/test4.hql,2,table operations,Enclose the database name and the table name in backticks AS `mydb`.`employees`
+test_hqls/test4.hql,1,hive.merge.mapfiles,"hive.merge.mapfiles is deprecated, use hive.merge.smallfiles.avgsize instead"
+test_hqls/test12.hql,1,acos,"ACOS(2) function returend NAN, after upgrade the function returns null consistent with SQL standards"
+test_hqls/test12.hql,2,asin,"ASIN(2) function returend NAN, after upgrade the function returns null consistent with SQL standards"
+test_hqls/test12.hql,3,corr,"CORR returned 'NaN' for N*SUM(x*x) = SUM(x)*SUM(x) and N*SUM(y*y) = SUM(y)*SUM(y). However, the function is expected to return NULL per the standards."
+test_hqls/test12.hql,4,covar_samp,COVAR_SAMP returns '0' when the function is applied to a set with a single element. The function is expected to return NULL.
+test_hqls/test12.hql,4,var_samp,"By default,aggregate functions were not in compliance with SQL:2011 standards and returns '0' when the function is applied to a set with a single element, after upgrade it returns null "
+test_hqls/test12.hql,5,cast decimal value,"In CDH, fractional digits appear in the output of a cast of a decimal value that has only zeros in the fractional part, after upgrade fractional decimal digits are dropped in the output of a cast of a decimal value that has only zeros in the fractional part, workaround is to cast the value as string"
+test_hqls/test12.hql,7,stddev_samp,"By default,aggregate functions were not in compliance with SQL:2011 standards and returns '0' when the function is applied to a set with a single element, after upgrade it returns null "
+test_hqls/test12.hql,8,var_samp,"By default,aggregate functions were not in compliance with SQL:2011 standards and returns '0' when the function is applied to a set with a single element, after upgrade it returns null "
+test_hqls/test12.hql,9,not null,"By default,You could enable/enforce a NOT NULL constraint on an external table, after upgrade enabling or enforcing a NOT NULL constraint on an external table causes an error. Workaround is removing the NOT NULL constraint in CREATE TABLE or ALTER TABLE statements."
+test_hqls/test12.hql,10,add_months includes time,"By default, the add months query incorrectly omitted the time, after upgrade the query output includes the time"
+test_hqls/test12.hql,11,add_months includes time,"By default, the add months query incorrectly omitted the time, after upgrade the query output includes the time"
+test_hqls/test12.hql,11,add_months date validation,"By default ADD_MONTHS function would execute on invalid dates, after upgrade CDP performs validation of the date before executing the ADD_MONTHS function."
+test_hqls/test12.hql,12,from_unixtime,"By default, The functions supported the system time zone , The functions now support the user session time zone "
+test_hqls/test12.hql,13,current_timestamp,"CURRENT_TIMESTAMP returns the result in different output formats, after upgrade CDP CDP gives output format for CURRENT_TIMESTAMP YYYY-MM-DD HH:MM:SS.fff."
+test_hqls/test12.hql,14,length,"By default,the LENGTH function supports double in addition to string, char, varchar or binary, after upfgrade LENGTH supports columns of data type string, char, varchar or binary. Double is not supported by length() in CDP, workaround is to cast the double value to char"
+test_hqls/test12.hql,15,unix_timestamp for hours,"In CDH, you can use lowercase hh to represent hours of a timestamp in the format specification, after upgrade Hive in CDP requires uppercase HH"
+test_hqls/test12.hql,15,unix_timestamp for microseconds,"In CDH you do not have to include microseconds in the format specification, after upgrade microseconds SSS are required in the format specification.For example, 'MM-dd-yyyy HH:mm:ss.SSS"
+test_hqls/test12.hql,17,cast zeros as null,"By Default, casting of an invalid date returns a result. Please ensure cast is as desired."
+test_hqls/test12.hql,17,casting invalid dates,"Casting of invalid date (zero value in one or more of the 3 fields of date, month, year) returns a NULL value, after upgrade Casting of an invalid date returns a result."
+test_hqls/test12.hql,18,hive.txn.xlock.mergeinsert,"MERGE INSERT operation is treated as regular INSERT and acquires a SHARED_READ lock, which does not prevent other INSERT operations. By default the property is set to false in cdp."
+test_hqls/test12.hql,19,order by,"By default,hive.default.nulls.last is false. In ascending (ASC) order, NULL appears first. In descending (DESC) order, NULL appears last, after upgrade hive.default.nulls.last is true. In ascending (ASC) order, NULL appears last. In descending (DESC) order, NULL appears first, workaround is set hive.default.nulls.last to false"
+test_hqls/test12.hql,20,coalesce,"In CDH the NVL and COALESCE function were both used for the same purpose - to replace a NULL value with a non-NULL value. Both the functions were compiled separately, after upgrade the NVL function is compiled to COALESCE, which is reflected in the execution plan generated using the EXPLAIN command. The optimizations that are performed on the COALESCE function are also performed on the NVL calls."
+test_hqls/test12.hql,21,cast unix_timestamp to string,"In CDH Casting a unix timestamp as a string without defining the proper date and time format works. In CDP it provides null. Wokraround is to provide full date,time format yyyy-MM-dd:HH:mm:ss"
+test_hqls/test12.hql,22,trailing zeros of decimal constants,"Hive removes trailing zeros of decimal constants in some cases. Padding decimal values with trailing zeros is not consistent, after upgrade CDP provides the fix that pads constant decimal values with trailing zeros up to the specified scale"
+test_hqls/test12.hql,23,date_add,"Some of the original date functions, such as TO_DATE, DATE_ADD, and DATE_SUB returned string values instead of date values. This was because the date return type was not available in Hive when these functions were introduced after upgrade the return type of to_date, date_add, and date_sub functions from string to date."
+test_hqls/test12.hql,24,date_sub,"Some of the original date functions, such as TO_DATE, DATE_ADD, and DATE_SUB returned string values instead of date values. This was because the date return type was not available in Hive when these functions were introduced after upgrade the return type of to_date, date_add, and date_sub functions from string to date."
+test_hqls/test12.hql,25,Julian dates,"In CDH Julian calendar (before Oct 15, 1582) dates are handled improperly by date/timestamp UDFs.In CDP, Hive uses a proleptic Gregorian calendar used in SQL standard to handle Julian dates"
+test_hqls/test10.hql,4,hive.limit.query.max.table.partition,The parameter hive.limit.query.max.table.partition has been deprecated and must be removed from your code
+test_hqls/test10.hql,7,time,"the word time cannot be used in queries in CDP, Change time. Enclose queries in backticks"
+test_hqls/test10.hql,10,application,"the word application cannot be used in queries in CDP, Change applications. Enclose queries in backticks"
+test_hqls/test10.hql,13,numeric,"the word numeric cannot be used in queries in CDP, Change numeric. Enclose queries in backticks"
+test_hqls/test10.hql,16,sync,"the word sync cannot be used in queries in CDP, Change sync. Enclose queries in backticks"
+test_hqls/test10.hql,20,hive.warehouse.subdir.inherit.perms,The parameter hive.warehouse.subdir.inherit.perms has been deprecated and must be removed from your code
+test_hqls/test10.hql,26,hive.stats.fetch.partition.stats,The parameter hive.stats.fetch.partition.stats has been deprecated and must be removed from your code
+test_hqls/test11.hql,3,cast timestamp,"By Default, casting a numeric type value into a timestamp produces a result that reflects the UTC instead of the time zone of the cluster.You can set hive.strict.timestamp.conversion to false for legacy behavior."
+test_hqls/test11.hql,6,cast zeros as null,"By Default, casting of an invalid date returns a result. Please ensure cast is as desired."
+test_hqls/test11.hql,6,casting invalid dates,"Casting of invalid date (zero value in one or more of the 3 fields of date, month, year) returns a NULL value, after upgrade Casting of an invalid date returns a result."
+test_hqls/test11.hql,7,cast zeros as null,"By Default, casting of an invalid date returns a result. Please ensure cast is as desired."
+test_hqls/test11.hql,7,casting invalid dates,"Casting of invalid date (zero value in one or more of the 3 fields of date, month, year) returns a NULL value, after upgrade Casting of an invalid date returns a result."
