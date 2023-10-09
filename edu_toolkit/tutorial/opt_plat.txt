@@ -1,0 +1,125 @@
+
+## Ch 01 Set Up
+Set up screen
+Login IPA
+Login CM
+Tour hosts
+   * Ssh
+   * Sudo
+Tour file system
+Restart and build fully secure w/ Knox
+
+## Ch 05 Tun Infra
+Set Up Kerberos user
+setup_zeppelin_interpreter.sh --keytab
+setup_zeppelin_interpreter.sh --config
+Restart zeppelin
+manage_mariadb.sh -h
+manage_mariadb.sh --show
+manage_mariadb.sh --tls
+manage_mariadb.sh --show
+Auto-TLS import /etc/my.cnf.d/ssl/ca.crt
+
+Configure Knox Bookmark
+Knox SSO
+https://edge.example.com:8443/gateway/knoxsso/knoxauth/login.html?originalUrl=https://edge.example.com:8443/gateway/homepage/home/
+
+
+##Ch 06 HDFS in Depth
+# HDFS
+hdfs
+hdfs dfs
+
+# Create dataset
+cd ~/data/latin
+hdfs dfs -mkdir latin 
+hdfs dfs -put latin.txt latin 
+hdfs fsck /user/allan_admin/latin
+hdfs fsck /user/allan_admin/latin -files -blocks
+hdfs fsck /user/allan_admin/latin -files -blocks -locations
+hdfs fsck /user/allan_admin/latin -files -blocks -locations -racks
+
+# Find block
+sudo su -
+cd /hadoop/hdfs
+
+# Find the block ID
+find . -name <BLOCK_ID>
+cd /hadoop/hdfs/data/current/BP-xxxxx/current/finalized/subdirx
+ls -lh
+file *
+stat *
+cat <BLOCK_ID>
+vim <BLOCK_ID>
+
+Ch 08 Tune HDFS
+hdfs dfs -D dfs.blocksize=2097152 -cp nyse/ new block/
+
+Ch 09 YARN in Depth
+# Display syntax and help
+yarn
+yarn -help
+yarn application
+
+# Set Jar File Var
+JARFILE=/opt/cloudera/parcels/CDH/jars/hadoop-examples.jar
+
+# Submitting jobs
+# Syntaxyarn jar <Jar_File>  <mainClass> <inputpath> <outputpath> [args]
+yarn jar ${JARFILE} wordcount latin output
+
+# List running jobs
+yarn application -list
+
+# Check status of job
+yarn application -status <Application_ID>
+
+# Kill running jobs
+yarn application -kill <Application_ID>
+
+# Display help for YARN logs
+yarn logs -help
+
+# View log files
+yarn logs -applicationId <Application ID>
+yarn logs -applicationId <Application ID> -log_files <log_file_type>
+yarn logs -applicationId <Application ID> -log_files stderr
+
+# List container IDs
+yarn logs -applicationId <Application ID> -show_application_log_info
+
+# View log files for one Container
+yarn logs -applicationId <Application ID> -containerId <Container ID>
+yarn logs -applicationId <Application ID> -show_container_log_info
+
+# Check Resource Manager
+yarn rmadmin -checkHealth
+
+Ch 10 Manage Yarn jobs
+run-job.sh 
+Run job review RM Web UI
+Review YARN history Web UI
+
+Ch 11 Tune YARN
+run-job.sh change Container sizes
+
+Ch 12 Build YARN Queues
+build biz ops eng
+Set min guar and max
+Assign users and groups
+
+Ch 13 Conf YARN queues
+Configure 
+
+Chap 14 Run YARN queues
+run-job.sh input jobs into various queues
+monitor with RM Web UI
+
+Chap 15 Workload Schedule
+Edit spreadsheet
+
+Chap 16 Hive in Depth
+Build two databases
+
+Chap 17 Hive and Data
+
