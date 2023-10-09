@@ -43,7 +43,8 @@
 # VARIABLES
 num_arg=$#
 dir=${HOME}
-jar_file=/opt/cloudera/parcels/CDH/jar/hadoop-examples.jar
+password=BadPass@1
+jar_file=/opt/cloudera/parcels/CDH/jars/hadoop-examples.jar
 date_time=$(date +%Y%m%d%H%M)
 log_file="${dir}/log/run-jobs.log"
 
@@ -107,7 +108,7 @@ function runPiJobs() {
                 echo "Starting cycle $i of ${loops} at $(date +"%T")"
                 echo >> ${log_file}
                 echo "****Cycle $i of ${loops} at $(date +"%T")" >> ${log_file}
-		sudo -u ${user_name} nohup yarn jar ${jar_file} pi -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${MAPPERS} ${CALCS} >> ${log_file} 2>&1 &
+		echo ${password} | su - ${user_name} nohup yarn jar ${jar_file} pi -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${MAPPERS} ${CALCS} >> ${log_file} 2>&1 &
                 sleep ${TIMELAG}
 		echo ${TIMELAG} seconds
         done
@@ -127,7 +128,7 @@ function runWordJobs() {
         	echo "Starting cycle $i of ${loops} at $(date +"%T")"
         	echo >> ${log_file}
         
-		sudo -u ${user_name} nohup yarn jar ${jar_file} wordcount -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${in_dir} ${out_dir}$i >> ${log_file} 2>&1 &
+		echo ${password| | su - ${user_name} nohup yarn jar ${jar_file} wordcount -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${in_dir} ${out_dir}$i >> ${log_file} 2>&1 &
 		PID=$!
 		echo pid equals $PID
 		sleep ${TIMELAG}
