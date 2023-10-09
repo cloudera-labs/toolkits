@@ -128,7 +128,7 @@ function runWordJobs() {
         	echo "Starting cycle $i of ${loops} at $(date +"%T")"
         	echo >> ${log_file}
         
-		echo ${password| | su - ${user_name} nohup yarn jar ${jar_file} wordcount -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${in_dir} ${out_dir}$i >> ${log_file} 2>&1 &
+		echo ${password} | su - ${user_name} nohup yarn jar ${jar_file} wordcount -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${in_dir} ${out_dir}$i >> ${log_file} 2>&1 &
 		PID=$!
 		echo pid equals $PID
 		sleep ${TIMELAG}
