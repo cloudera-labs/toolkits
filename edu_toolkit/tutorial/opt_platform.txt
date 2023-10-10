@@ -1,17 +1,21 @@
+## Ch 00 Set Up
+Run Ansible to level 5 
+
+ 
+ 
+637 VIEWS
 
 ## Ch 01 Set Up
 Set up screen
 Login IPA
 Login CM
 Tour hosts
-   * Ssh
-   * Sudo
+   * ssh
+   * sudo
 Tour file system
-Restart and build fully secure w/ Knox
 Configure Knox Bookmark
 Knox SSO
 https://edge.example.com:8443/gateway/knoxsso/knoxauth/login.html?originalUrl=https://edge.example.com:8443/gateway/homepage/home/
-
 
 ## Ch 05 Tun Infra
 Set Up Kerberos user
@@ -57,8 +61,16 @@ stat *
 cat <BLOCK_ID>
 vim <BLOCK_ID>
 
-Ch 08 Tune HDFS
-hdfs dfs -D dfs.blocksize=2097152 -cp nyse/ new block/
+## Ch 08 Tune HDFS
+# Change block size
+hdfs dfs -D dfs.blocksize=2097152 -cp nyse/ new_nyse//
+hdfs dfs -rm -r -skipTrash nyse/
+
+# Change rep, this impacts the NN tables to lower  4
+hdfs dfs -setrep -w 4 nyse/ 
+
+# Change rep recursively
+hdfs dfs -setrep -R -w 2 nyse/
 
 Ch 09 YARN in Depth
 # Display syntax and help
@@ -111,10 +123,32 @@ Review YARN history Web UI
 Ch 11 Tune YARN
 run-job.sh change Container sizes
 
-Ch 12 Build YARN Queues
+Ch 12 Build YARN Queue
+# Manually create working dir for users
+hdfs dfs -mkdir /user/bo_biz
+hdfs dfs -chown bo_biz:bo_biz /user/bo_biz
+hdfs dfs -mkdir /user/dana_dev
+hdfs dfs -chown dana_dev:dana_dev /user/dana_dev
+hdfs dfs -mkdir /user/omar_ops
+hdfs dfs -chwon omar_ops:omar_ops /user/omar_ops
+
+# Install queue manager
+ssh master-2.example.com 
+sudo mkdir /var/lib/hadoop-yarn/
+sudo chmod +077 /var/lib/hadoop-yarn/
+sudo chown yarn:hadoop /var/lib/hadoop-yarn/
+Use Cluster Service Add to add YARN queue manager
+Use CM YARN to turn on YARN queue manager
+Restart YARN
+
+# Create queues and assign users
+Cluster > YARN queue manager Web UI
 build biz ops eng
-Set min guar and max
+Set min and max capacity
 Assign users and groups
+* bo_biz biz
+* dana_dev dev
+* omar_ops ops
 
 Ch 13 Conf YARN queues
 Configure 
