@@ -99,7 +99,7 @@ function run_pi_job() {
                 echo "Starting cycle $i of ${loops} at $(date +"%T")"
                 echo >> ${log_file}
                 echo "****Cycle $i of ${loops} at $(date +"%T")" >> ${log_file}
-		echo ${password} | su - ${user_name} -c "yarn jar ${jar_file} pi -D mapreduce.job.queuename=${queue_name} -D mapreduce.map.memory.mb=${map_mem} -D mapreduce.reduce.memory.mb=${red_mem} -D yarn.scheduler.maximum-allocation-num_vcores=${num_vcore} ${num_map} ${num_calc} >> ${log_file} 2>&1 &
+		echo ${password} | su - ${user_name} -c "yarn jar ${jar_file} pi -D mapreduce.job.queuename=${queue_name} -D mapreduce.map.memory.mb=${map_mem} -D mapreduce.reduce.memory.mb=${red_mem} -D yarn.scheduler.maximum-allocation-num_vcores=${num_vcore} ${num_map} ${num_calc}" >> ${log_file} 2>&1 &
                 sleep ${time_lag}
 		echo ${time_lag} seconds
         done
