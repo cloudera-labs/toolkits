@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import csv
 import logging.config
 import os
 import os.path
+import pandas as pd
 import shutil
+import tempfile
 import zipfile
 from datetime import datetime
 from pathlib import Path
@@ -60,10 +63,45 @@ class HdfsFsImageExtractor:
                 ['hdfs', 'oiv', '-p', 'Delimited', '-delimiter', '","', '-i',
                  fs_image_path, '-o', hdfs_fs_csv_path])
             os.remove(fs_image_path)
+            try:
+                """
+                'hdfs iov' has a bug which generates broken CSV in case filenames have commas
+                in them. Below code checks if CSV is valid, and if it's not fixes it.
+                """
+                pd.read_csv(hdfs_fs_csv_path)
+            except pd.errors.ParserError:
+                self.fix_broken_hdfs_csv(hdfs_fs_csv_path)
+                pd.read_csv(hdfs_fs_csv_path) # Try to read csv again to verify it is fixed
             return hdfs_fs_csv_path
         else:
             log.error("No local FSImage copy could be created due to previous error - skipping CSV conversion!")
             return
+
+    def fix_broken_hdfs_csv(self, input_file_path):
+        with open(input_file_path, mode='r', encoding='utf-8') as infile:
+            reader = csv.reader(infile)
+
+            header = next(reader)
+            header_length = len(header)
+
+            """
+            Since the input_file may be pretty large we need to "stream" the results from one file to another to save RAM.
+            Instead of saving input_file contents into memory.
+            """
+            with tempfile.NamedTemporaryFile(mode='w+', newline='', encoding='utf-8', delete=False) as outfile:
+                writer = csv.writer(outfile)
+                writer.writerow(header)  # Write header
+
+                for row in reader:
+                    if len(row) > header_length:
+                        # Merge cells to match header length
+                        extra_cells = ','.join(row[:len(row) - header_length + 1])
+                        corrected_row = [extra_cells] + row[len(row) - header_length + 1:]
+                        writer.writerow(corrected_row)
+                    else:
+                        writer.writerow(row)
+
+            os.rename(outfile.name, input_file_path)
 
     def fetch_client_config(self, cluster_name, hdfs_service_name):
         response = self.services_resource.get_client_config(cluster_name=cluster_name,
