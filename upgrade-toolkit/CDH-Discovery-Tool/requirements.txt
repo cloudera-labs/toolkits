@@ -1,5 +1,5 @@
 cm-client==33.0.0
-requests==2.27.1
+requests==2.31.0
 PyYAML==6.0
 jaydebeapi==1.2.3
 openpyxl==3.0.9
