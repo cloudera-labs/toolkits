@@ -154,9 +154,9 @@ function clear_quota() {
 function list_quota() {
 # Setting quotas for user from the user.txt file
 
-	"Listing quotas for:"
+       	hdfs -count -q  -v /user/allan_admin 
 	while IFS=: read -r new_user new_group; do
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -count -q -h -v /user/${new_user}" 
+        	hdfs dfs -count -q -h /user/${new_user} 
 	done < ${user}
 }
 
