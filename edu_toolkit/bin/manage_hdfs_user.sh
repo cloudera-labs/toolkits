@@ -74,7 +74,12 @@ DESCRIPTION
 	-l, --list
 		List all HDFS users
 	-s, --setquota <file_quota> <space_quota>
-		Set a file quota and a space quota on all usersq
+		Set a file quota and a space quota on all users
+		The file quota is a hard limit of the number of directories and files.
+		The space quota is a hard limit of the total size of all of the files
+		under the directory. The space quota takes replication into account.
+		Use a postfix to identity the byte size. 600m for 600 megabytes, 20g
+		for 20 gigabytes, and 2t for 2 terabytes.  
 	-c, --clearquota
 		Clear all quotas on all users
 	-q, --quota
@@ -121,7 +126,7 @@ function delete_user() {
 function list_user() {
 # List hdfs user
 
-        echo ${password} | su -l ${adminuser} -c "hdfs dfs -ls /user" >> ${password} 2>&1
+        echo ${password} | su -l ${adminuser} -c "hdfs dfs -ls /user" | tee -a ${logfile} 
 }
 
 function set_quota() {
@@ -151,8 +156,7 @@ function list_quota() {
 
 	"Listing quotas for:"
 	while IFS=: read -r new_user new_group; do
-		echo  "    ${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -count -q -h /user/${new_user}" >> ${logfile} 2>&1
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -count -q -h -v /user/${new_user}" 
 	done < ${user}
 }
 
