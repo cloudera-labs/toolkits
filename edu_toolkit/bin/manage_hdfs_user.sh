@@ -99,10 +99,11 @@ function add_user() {
 # Add a block of working directories for HDFS user 
 # from the user.txt.
 
+	echo "Adding working directory for:"
 	while IFS=: read -r new_user new_group; do
-		echo "Adding working directory for ${new_user}"
-		echo ${password} | su -l ${adminuser} -c "hdfs dfs -mkdir /user/${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -chown ${new_user}:${new_group} /user/${new_user}"
+		echo "    ${new_user}"
+		echo ${password} | su -l ${adminuser} -c "hdfs dfs -mkdir /user/${new_user}" >> ${logfile} 2>&1
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -chown ${new_user}:${new_group} /user/${new_user}" >> ${logfile} 2>&1
 	done < ${user}
 }
 
@@ -110,44 +111,48 @@ function delete_user() {
 # Delete a block of working directories for HDFS user 
 # from the user.txt file.
 
+	echo "Deleting working directory for:"
 	while IFS=: read -r new_user new_group; do
-		echo "Deleting working directory for ${new_user} from HDFS."
-		echo ${password} | su -l ${adminuser} -c "hdfs dfs -rm -r -skipTrash /user/${new_user}"
+		echo "    ${new_user}"
+		echo ${password} | su -l ${adminuser} -c "hdfs dfs -rm -r -skipTrash /user/${new_user}" >> ${logfile} 2>&1
 	done < ${user}
 }
 
 function list_user() {
 # List hdfs user
 
-        echo ${password} | su -l ${adminuser} -c "hdfs dfs -ls /user"
+        echo ${password} | su -l ${adminuser} -c "hdfs dfs -ls /user" >> ${password} 2>&1
 }
 
 function set_quota() {
 # Setting quotas for user from the user.txt file
 
+	echo "Setting quotas for:"
 	while IFS=: read -r new_user new_group; do
-		echo "Setting quotas for ${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -setQuota ${file_quota} /user/${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -setSpaceQuota ${space_quota} /user/${new_user}"
+		echo "    ${new_user}"
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -setQuota ${file_quota} /user/${new_user}" >> ${logfile} 2>&1
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -setSpaceQuota ${space_quota} /user/${new_user}" >> ${logfile} 2>&1
 	done < ${user}
 }
 
 function clear_quota() {
 # Clearing the quotas for user from the user.txt file
 
+	echo "Clearing quotas for:"
 	while IFS=: read -r new_user new_group; do
-		echo "Clearing quotas for ${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -clrQuota /user/${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -clrSpaceQuota /user/${new_user}"
+		echo "    ${new_user}"
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -clrQuota /user/${new_user}" >> ${logfile} 2>&1
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfsadmin -clrSpaceQuota /user/${new_user}" >> ${logfile} 2>&1
 	done < ${user}
 }
 
 function list_quota() {
 # Setting quotas for user from the user.txt file
 
+	"Listing quotas for:"
 	while IFS=: read -r new_user new_group; do
-		echo "Listing quotas for ${new_user}"
-        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -count -q -h /user/${new_user}"
+		echo  "    ${new_user}"
+        	echo ${password} | su -l ${adminuser} -c "hdfs dfs -count -q -h /user/${new_user}" >> ${logfile} 2>&1
 	done < ${user}
 }
 
@@ -197,6 +202,7 @@ function main() {
 	# Run checks
 	check_sudo
 	check_file ${dir}/conf/list_user.txt
+	setup_log
 
 	# Run options
 	run_option
