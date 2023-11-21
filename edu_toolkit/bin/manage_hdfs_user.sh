@@ -76,12 +76,14 @@ DESCRIPTION
 	-l, --list
 		List all quotas
 	-q, --quota <file_quota> <space_quota>
-		Set a file quota and a space quota on all users
-		The file quota is a hard limit of the number of directories and files.
-		The space quota is a hard limit of the total size of all of the files
-		under the directory. The space quota takes replication into account.
-		Use a postfix to identity the byte size. 600m for 600 megabytes, 20g
-		for 20 gigabytes, and 2t for 2 terabytes.  
+		Set a file quota and a space quota on all users.  The file 
+		quota is a hard limit of the number of directories and files.
+		The space quota is a hard limit of the total size of all of 
+		the files under the directory. The space quota takes replication
+	 	into account. Use a postfix to identity the byte size. 
+			600m for 600 megabytes 
+			20g for 20 gigabytes 
+			2t for 2 terabytes.  
 	-u, --users
 		List all HDFS users
 EOF
