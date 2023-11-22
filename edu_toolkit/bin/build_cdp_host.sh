@@ -185,13 +185,13 @@ function check_os() {
 
 	echo "CDP requires CentOS version  7.9."
 	if [ -f /etc/centos-release ]; then
-		grep 7.9 /etc/centos-release
-		if [ $? -eq 1 ]; then
+		grep 7.9 /etc/centos-release > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo -n "CentOS version:"
+			cat /etc/centos-release
+		else
 			echo "ERROR: The OS version is incorrect."
 		fi
-	else
-		echo -n "CentOS version:"
-		cat /etc/centos-release
 	fi
 }
 
@@ -199,13 +199,13 @@ function check_java() {
 # Check the Java version
 	echo "CDP requires either OpenJDK version 1.8 or Oracle JDK version 1.8"
 	if [ -f /usr/java/default/bin/javac ]; then
-		javac -version | grep 1.8
+		javac -version | grep 1.8 > /dev/null 2>&1
 		if [ $? -eq 1 ]; then
+			echo -n "OpenJDK version: "
+			javac -version
+		else
 			echo "ERROR: The JDK version is incorrect."
 		fi
-	else
-		echo -n "OpenJDK version: "
-		javac -version
 	fi
 }
 
@@ -214,13 +214,13 @@ function check_python() {
 
 	echo "CDP requires Python version 2.7."
 	if [ -f /usr/bin/python ]; then
-		python --version | grep 2.7
-		if [ $? -eq 1 ]; then
+		python --version | grep 2.7 > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo -n "Python version: "
+			python --version
+		else
 			echo "ERROR: The Python version is incorrect"
 		fi
-	else
-		echo -n "Python version: "
-		python --version
 	fi
 }
 
