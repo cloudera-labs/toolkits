@@ -89,9 +89,9 @@ function check_sudo() {
 
 function make_dir() {
 
-	if [ ! -d $dir/bin ]; then
+	if [ ! -d ${dir}/bin ]; then
 		for directory in bin conf data ddl notebook tutorial; do
-			mkdir $directory
+			mkdir ${dir}/${directory}
 		done
 	fi
 }

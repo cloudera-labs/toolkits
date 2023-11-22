@@ -1,4 +1,4 @@
-#!/bin/bash
+2>&1 | awk -F '"' '/version/ $#!/bin/bash
 
 # Copyright 2021 Cloudera, Inc.
 #
@@ -183,38 +183,43 @@ function check_sudo() {
 function check_os() {
 # Check the CentOS version
 
-	echo "CDP requires CentOS version  7.9."
+	echo "CDP requires CentOS version 7.9"
 	if [ -f /etc/centos-release ]; then
 		grep 7.9 /etc/centos-release > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			echo -n "CentOS version:"
+			echo -n "CentOS version: "
 			cat /etc/centos-release
 		else
 			echo "ERROR: The OS version is incorrect."
 		fi
 	fi
+	echo
 }
 
 function check_java() {
 # Check the Java version
+
 	echo "CDP requires either OpenJDK version 1.8 or Oracle JDK version 1.8"
 	if [ -f /usr/java/default/bin/javac ]; then
-		javac -version | grep 1.8 > /dev/null 2>&1
-		if [ $? -eq 1 ]; then
+		version=$(javac -version 2>&1) 
+		echo ${version} | grep 1.8 > /dev/null
+		if [ $? -eq 0 ]; then
 			echo -n "OpenJDK version: "
 			javac -version
 		else
 			echo "ERROR: The JDK version is incorrect."
 		fi
 	fi
+	echo
 }
 
 function check_python() {
 # Check the Python version
 
-	echo "CDP requires Python version 2.7."
+	echo "CDP requires Python version 2.7"
 	if [ -f /usr/bin/python ]; then
-		python --version | grep 2.7 > /dev/null 2>&1
+		version=$(python --version 2>&1)
+		echo ${version} | grep 2.7 > /dev/null
 		if [ $? -eq 0 ]; then
 			echo -n "Python version: "
 			python --version
@@ -222,6 +227,7 @@ function check_python() {
 			echo "ERROR: The Python version is incorrect"
 		fi
 	fi
+	echo
 }
 
 function check_swap() {
