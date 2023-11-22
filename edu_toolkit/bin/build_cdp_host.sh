@@ -100,21 +100,25 @@ EOF
 	exit
 }
 
+function intro() {
+# Intro remarks.
+
+	log_date
+
+	echo "*** S E T U P   H O S T   F O R   C D P ***"
+	echo
+	echo "This script will configure a host to support CDP."
+	echo "Once the script is completed and the host is validated"
+	echo "the host should be used as a gold image."
+	echo "This script may also be used by a CDP admin to validate a host."
+	check_continue
+}
+
+### INCLUDE
 function check_arg() {
 # Check if arguments exits
 
         if [ ${num_arg} -ne "$1" ]; then
-                usage
-        fi
-}
-
-function check_sudo() {
-# Testing for sudo access to root
-
-        sudo ls /root > /dev/null 2>&1
-        result=$?
-        if [ ${result} -ne 0 ]; then
-                echo "ERROR: You must have sudo to root to run this script"
                 usage
         fi
 }
@@ -165,25 +169,17 @@ function check_continue() {
         fi
 }
 
-function intro() {
-# Intro remarks.
+### VALIDATE 
+function check_sudo() {
+# Testing for sudo access to root
 
-	log_date
-
-	echo "*** S E T U P   H O S T   F O R   C D P ***"
-	echo
-	echo "This script will configure a host to support CDP."
-	echo "Once the script is completed and the host is validated"
-	echo "this host should be used by the system admins as a gold image."
-	echo "This script may also be used by a CDP admin to validate a host."
-	echo
-	echo "*** W A R N I N G  ***"
-	echo "This script should not be run on a host where Cloudera Manager"
-	echo "and/or a CDP Cluster is deployed. "
-	check_continue
+        sudo ls /root > /dev/null 2>&1
+        result=$?
+        if [ ${result} -ne 0 ]; then
+                echo "ERROR: You must have sudo to root"
+        fi
 }
 
-### VALIDATE 
 function check_os() {
 # Check the CentOS version
 
@@ -221,6 +217,7 @@ function check_python() {
 		python --version | grep 2.7
 		if [ $? -eq 1 ]; then
 			echo "ERROR: The Python version is incorrect"
+		fi
 	else
 		echo -n "Python version: "
 		python --version
@@ -474,7 +471,7 @@ function install_lib() {
 	sudo yum install -y libxml2-devel 
 }
 
-### CONFIGURE HOST
+### CONFIGURE
 function set_kernel() {
 # Set swappiness to minimum level of 1 and disable Transparent Huge Page
 # Disable transparent huge pages on reboot by appending to /etc/rc.d/rc.local
@@ -501,7 +498,7 @@ function set_kernel() {
 	fi
 }
 
-function setUlimit() {
+function set_limit() {
 # set ulimit to 10000
 
 	echo "***CDP recommends setting the ulimit command to unlimited."
@@ -513,7 +510,7 @@ function setUlimit() {
 	fi
 }
 
-function set_random_number() {
+function set_random() {
 # Install rng-tools in support of entropy
 
 	echo "***CDP recommends installing a Random Number Generator."
@@ -742,7 +739,7 @@ function run_option() {
         -e | --environment)
             	check_arg 1
 		set_kernel
-		set_random_number
+		set_random
 		set_nscd
 		set_firewalld
 		set_selinux
@@ -793,9 +790,6 @@ function run_option() {
 }
 
 function main() {
-
-	# Source functions
-	call_include
 
 	# Run checks
 	check_sudo
