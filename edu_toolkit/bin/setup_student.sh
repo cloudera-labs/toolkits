@@ -75,7 +75,6 @@ function check_arg() {
         fi
 }
 
-
 function check_sudo() {
 # Testing for sudo access to root
 
@@ -85,6 +84,15 @@ function check_sudo() {
                 echo "ERROR: You must have sudo to root to run this script"
                 usage
         fi
+}
+
+function make_dir() {
+
+	if [ ! -d $dir/bin ]; then
+		for directory in bin conf data notebook tutorial; do
+			mkdir $directory
+		done
+	fi
 }
 
 function copy_dir() {
@@ -116,7 +124,7 @@ function delete_dir() {
 # delete the student directories for training
 
 	cd ${HOME}
-	rm -r -f ansible bin conf data ddl notebook tutorial
+	rm -r -f bin conf data ddl notebook tutorial
 }
 
 function clean_dir() {
@@ -148,6 +156,7 @@ function run_option() {
                         ;;
                 -s |--setup)
                         check_arg 1
+			make_dir
 			copy_dir
 			setup_conf
 			clean_dir
