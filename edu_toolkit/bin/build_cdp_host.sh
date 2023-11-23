@@ -264,9 +264,9 @@ function check_ulimit() {
 
 	echo "CDP recommends setting the ulimit command to unlimited."
 	if [[ $(ulimit) == "unlimited" ]]; then
-		echo "Ulimit is unlimited."
+		echo "ulimit is unlimited."
 	else
-		echo "ERROR: Ulimit is not unlimited."
+		echo "ERROR: ulimit is not unlimited."
 	fi
 	echo
 }
@@ -343,7 +343,7 @@ function check_tuned() {
 	echo
 }
 
-function check_sudo() {
+function check_sudoers() {
 # Check config changes to sudo
 
 	echo "CDP recommends adding $JAVA_HOME to the sudoers file."
@@ -789,7 +789,7 @@ function run_option() {
 		check_firewalld
 		check_selinux
 		check_tuned
-		check_sudo
+		check_sudoers
 		check_skel
 		check_admin
 		;;
