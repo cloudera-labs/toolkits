@@ -313,7 +313,7 @@ function check_firewalld() {
 	echo "CDP recommends not installing or disabling firewalld."
 	if  ! systemctl -q is-active firewalld ; then
 		echo "The daemon firewalld is not installed or is disabled."
-	echo
+	else
 		echo "ERROR: The daemonfirewalld is running"
 	fi
 	echo
@@ -334,7 +334,7 @@ function check_selinux() {
 function check_tuned() {
 # Check tuned is diabled
 
-	echo "***CDP recommends not installing or disabling tuned."
+	echo "CDP recommends not installing or disabling tuned."
 	if ! systemctl -q is-active tuned ; then
 		echo "The daemon tuned is not installed or is disabled."
 	else	
@@ -347,7 +347,7 @@ function check_sudo() {
 # Check config changes to sudo
 
 	echo "CDP recommends adding $JAVA_HOME to the sudoers file."
-	if [[ $(grep "java/default/bin" /etc/sudoers) ]]; then
+	if [[ $(sudo grep "java/default/bin" /etc/sudoers) ]]; then
 		echo "The /etc/sudoers file is correct."
 	else
 		echo "ERROR: $JAVA_HOME is not in the sudoers file."
@@ -358,7 +358,7 @@ function check_sudo() {
 function check_skel() {
 # Check the skel directory
 
-	echo "***CDP recommends configuring /etc/skel for OS users."
+	echo "CDP recommends configuring /etc/skel for OS users."
 	if [ -f /etc/skel/.bashrc ]; then
 		echo "The /etc/skel directory is configured."
 	else
@@ -370,8 +370,9 @@ function check_skel() {
 function check_admin() {
 # Check the admin user
 
+	echo "CDP recommends configuring the system admin user."
 	if [ -f /home/${sysadmin}/.bashrc ]; then
-		echo "The ${sysadmin} is configured."
+		echo "The sysadmin, ${sysadmin}, is configured."
 	else
 		echo "ERROR: The admin user, ${sysadmin}, is not configured."
 	fi
