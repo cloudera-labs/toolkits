@@ -133,7 +133,7 @@ function clean_out_dir() {
         	echo "Deleting the output directory $i"
         	echo "****Deleting output directory $i" >> ${log_file}
 		wait $PID
-		sudo -u ${user_name} hdfs dfs -rm -r -skipTrash /user/${user_name}/${out_dir}$i >> ${log_file} 2>&1
+		echo ${password} |su - ${user_name} -c "hdfs dfs -rm -r -skipTrash /user/${user_name}/${out_dir}$i" >> ${log_file} 2>&1
 	done
 }
 
