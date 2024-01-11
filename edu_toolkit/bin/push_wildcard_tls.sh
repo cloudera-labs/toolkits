@@ -87,7 +87,7 @@ function call_include() {
 function create_dir() {
 # Description 
 
-	cert_dir=/opt/pvc/${cluster_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 
 	ssh -t ${host_name} sudo ls ${cert_dir} >> ${logfile} 2>&1
 	ans=$?
@@ -99,7 +99,7 @@ function create_dir() {
 
 function push_key() {
 
-	cert_dir=/opt/pvc/${cluster_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 	key_file=${cert_name}.key
 
 	if [ -f ${cert_dir}/${key_file} ]; then
@@ -112,7 +112,7 @@ function push_key() {
 
 function push_cert() {
 
-	cert_dir=/opt/pvc/${cluster_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 	cert_file=${cert_name}.crt
 
 	if [ -f ${cert_dir}/${key_file} ]; then
@@ -123,7 +123,7 @@ function push_cert() {
 
 function check_cert() {
 
-	cert_dir=/opt/pvc/${cluster_name}/security/pki
+	cert_dir=/opt/${cluster_name}/security/pki
 	cert_file=${cert_name}.crt
 
 	ssh -t ${host_name} ls ${cert_dir}/${cert_file} >> ${logfile} 2>&1
