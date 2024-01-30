@@ -7,7 +7,7 @@
 # the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
 # OR CONDITIONS OF ANY KIND, either express or implied.
 
-# Title: run-jobs.sh
+# Title: run-job.sh
 # Author: WKD  
 # Date: 1R18
 # Purpose: Provide MapReduce workload on the Hadoop cluster by running 
@@ -43,7 +43,8 @@
 # VARIABLES
 num_arg=$#
 dir=${HOME}
-jar_file=/opt/cloudera/CDH/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar
+password=BadPass@1
+jar_file=/opt/cloudera/parcels/CDH/jars/hadoop-examples.jar
 date_time=$(date +%Y%m%d%H%M)
 log_file="${dir}/log/run-jobs.log"
 
@@ -53,7 +54,7 @@ function usage() {
         exit 1
 }
 
-function callInclude() {
+function call_include() {
 # Test for script and run functions
 
         if [ -f ${dir}/bin/include.sh ]; then
@@ -72,34 +73,25 @@ function intro() {
 	read -p "Set the type of job to run [pi|wordcount]: " option
 }
 
-function setJob() {
+function set_job() {
 # Set job inputs
 	read -p "Set name of job submitter: " user_name
-        read -p "Set name of queue: " QUEUENAME
+        read -p "Set name of queue: " queue_name
 	echo "Memory: 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192" 
-        read -p "Set mapper memory: " pram 
-        read -p "Set reducer memory: " REDRAM 
+        read -p "Set mapper memory: " map_mem 
+        read -p "Set reducer memory: " red_mem 
 	echo "Vcore: 1, 2, 3, 4, 5, 6, 7, 8"
-        read -p "Set vcore: " vcore 
+        read -p "Set num_vcore: " num_vcore 
         read -p "Set number of job loops: " loops
-        read -p "Set seconds between jobs: " TIMELAG
+        read -p "Set seconds between jobs: " time_lag
 }
 
-function setKinit() {
-# Kinit as user
-
-	if  yesno "Does this user require a KGT? " ; then
-		read -p "Set ${user_name} KDC password: " PASSWORD
-		sudo -H -u ${user_name} bash -c "echo ${PASSWORD} | kinit ${user_name}/EDU"
-	fi
+function set_pi_job() {
+        read -p "Set number of mappers: " num_map
+        read -p "Set number of pi calculations: " num_calc
 }
 
-function setPiJobs() {
-        read -p "Set number of mappers: " PPERS
-        read -p "Set number of pi calculations: " CALCS
-}
-
-function runPiJobs() {
+function run_pi_job() {
 # Run the pi job in a loop
 
         for ((i=1;i <= ${loops}; i++)) ; do
@@ -107,19 +99,19 @@ function runPiJobs() {
                 echo "Starting cycle $i of ${loops} at $(date +"%T")"
                 echo >> ${log_file}
                 echo "****Cycle $i of ${loops} at $(date +"%T")" >> ${log_file}
-		sudo -u ${user_name} nohup yarn jar ${jar_file} pi -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${MAPPERS} ${CALCS} >> ${log_file} 2>&1 &
-                sleep ${TIMELAG}
-		echo ${TIMELAG} seconds
+		echo ${password} | su - ${user_name} -c "yarn jar ${jar_file} pi -D mapreduce.job.queuename=${queue_name} -D mapreduce.map.memory.mb=${map_mem} -D mapreduce.reduce.memory.mb=${red_mem} -D yarn.scheduler.maximum-allocation-num_vcores=${num_vcore} ${num_map} ${num_calc}" >> ${log_file} 2>&1 &
+                sleep ${time_lag}
+		echo ${time_lag} seconds
         done
 }
 
-function setWordJobs() {
+function set_wordcount_job() {
 # Set job inputs
 	read -p "Set input directory: " in_dir 
 	read -p "Set output directory: " out_dir
 }
 
-function runWordJobs() {
+function run_word_job() {
 # Run wordcount jobs	
 
 	for ((i=1;i <= ${loops};i++)) ; do
@@ -127,25 +119,25 @@ function runWordJobs() {
         	echo "Starting cycle $i of ${loops} at $(date +"%T")"
         	echo >> ${log_file}
         
-		sudo -u ${user_name} nohup yarn jar ${jar_file} wordcount -D mapreduce.job.queuename=${QUEUENAME} -D mapreduce.map.memory.mb=${pram} -D mapreduce.reduce.memory.mb=${REDRAM} -D yarn.scheduler.maximum-allocation-vcores=${vcoreS} ${in_dir} ${out_dir}$i >> ${log_file} 2>&1 &
+		echo ${password} | su - ${user_name} -c "yarn jar ${jar_file} wordcount -D mapreduce.job.queuename=${queue_name} -D mapreduce.map.memory.mb=${map_mem} -D mapreduce.reduce.memory.mb=${red_mem} -D yarn.scheduler.maximum-allocation-num_vcores=${num_vcore} ${in_dir} ${out_dir}$i" >> ${log_file} 2>&1 &
 		PID=$!
 		echo pid equals $PID
-		sleep ${TIMELAG}
+		sleep ${time_lag}
 	done
 }
 
-function cleanOutDir() {
+function clean_out_dir() {
 # Remove the output directories	
 
 	for ((i=1;i <= ${loops};i++)) ; do
         	echo "Deleting the output directory $i"
         	echo "****Deleting output directory $i" >> ${log_file}
 		wait $PID
-		sudo -u ${user_name} hdfs dfs -rm -r -skipTrash /user/${user_name}/${out_dir}$i >> ${log_file} 2>&1
+		echo ${password} |su - ${user_name} -c "hdfs dfs -rm -r -skipTrash /user/${user_name}/${out_dir}$i" >> ${log_file} 2>&1
 	done
 }
 
-function runOption() {
+function run_option() {
 # Case statement for run jobs
 
         case "${option}" in
@@ -153,17 +145,15 @@ function runOption() {
                         usage
                         ;;
                 pi)
-			setJob
-			setKinit
-			setPiJobs
-			runPiJobs
+			set_job
+			set_pi_job
+			run_pi_job
                         ;;
                 wordcount)
-			setJob
-			setKinit
-			setWordJobs
-			cleanOutDir
-			runWordJobs
+			set_job
+			set_wordcount_job
+			clean_out_dir
+			run_word_job
                         ;;
                 *)
                         usage
@@ -173,15 +163,15 @@ function runOption() {
 
 ## IN
 # Source functions
-callInclude
+call_include
 
 # Run checks
-checkSudo
+check_sudo
 
 # Run setups
-setupLog ${log_file}
+setup_log ${log_file}
 
 # Run option
 trap "interrupt 1" 1 2 3 15
 intro
-runOption
+run_option

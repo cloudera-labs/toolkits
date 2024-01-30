@@ -1,4 +1,5 @@
 #!/bin/bash
+# This needs to be converted to Edu format
 #Script developed by - Kuldeep Kulkarni (http://crazyadmins.com)
 #######################################
 

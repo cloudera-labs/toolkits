@@ -46,6 +46,10 @@ num_arg=$#
 option=$1
 dir=${HOME}
 logfile=${dir}/log/$(basename $0).log
+ver_os=7.9
+ver_java=1.8
+ver_python=2.7
+sysadmin=training
 
 # FUNCTIONS
 function usage() {
@@ -74,29 +78,30 @@ DESCRIPTION
 		Changes to kernel, random_number, nscd, firewalld, 
 		selinux, and tune
 	-i | --install)
-		Install jdk, python tool, security, and libraries
-	-o | --os)
-		Check the operating system
+		Install jdk, python, security, and libraries
 	-u | --user)
 		Configure user root, sudo, skel and admin user.
 	-v | --validate)
 		Validate the host 
 	-y | --yum)
 		Run yum update
+
+INSTRUCTIONS
+
+	When building a host for a gold image:
+		build_cdp_host.sh --validate
+		build_cdp_host.sh --install
+		build_cdp_host.sh --environment
+		build_cdp_host.sh --user
+		build_cdp_host.sh --yum
+
+	When updating a host:
+		build_cdp_host.sh --yum
+
+	When validating a host:
+		build_cdp_host.sh --validate
 EOF
 	exit
-}
-
-function call_include() {
-# Calls include script to run functions
-
-        if [ -f ${dir}/bin/include.sh ]; then
-                source ${dir}/bin/include.sh
-        else
-                echo "ERROR: The file ./include.sh not found."
-                echo "This required file provides supporting functions."
-                exit 1
-        fi
 }
 
 function intro() {
@@ -108,27 +113,273 @@ function intro() {
 	echo
 	echo "This script will configure a host to support CDP."
 	echo "Once the script is completed and the host is validated"
-	echo "this host should be used by the system admins as a gold image."
+	echo "the host should be used as a gold image."
 	echo "This script may also be used by a CDP admin to validate a host."
-	echo
-	echo "*** W A R N I N G  ***"
-	echo "This script should not be run on a host where Cloudera Manager"
-	echo -n "and/or a CDP Cluster is deployed. "
 	check_continue
 }
 
-### OS CHECK
-function check_os() {
-# Check the release for CentOS
+### INCLUDE
+function check_arg() {
+# Check if arguments exits
 
-	echo
-	echo "***CDP requires CentOS version 7.6, 7.7, 7.8, or 7.9."
-	echo -n "The current verion is "
-	cat /etc/centos-release
-	echo "ACTION: If the OS version is incorrect exit and rebuild."
+        if [ ${num_arg} -ne "$1" ]; then
+                usage
+        fi
 }
 
-### INSTALLING PACKAGES
+function setup_log() {
+# Check the existance of the log directory and setup the log file_check.
+
+        if [ ! -d ${dir}/log ]; then
+                mkdir ${dir}/log
+        fi
+}
+
+function log_date() {
+# Insert date for log
+
+        today=$(date +%Y%m%d%H%M)
+        echo "****Log ${today}****" >> ${logfile}
+}
+
+function yes_no() {
+        word=$1
+
+        while :; do
+                echo -n "${word} (y/n)?  "
+                read YES_NO junk
+
+                case ${YES_NO} in
+                        Y|y|YES|Yes|yes)
+                                return 0
+                                ;;
+                        N|n|NO|No|no)
+                                return 1
+                                ;;
+                        *)
+                                echo "Enter y or n"
+                                ;;
+                esac
+        done
+}
+
+function check_continue() {
+# Check if answer is correct and then break from the loop
+
+        if  yes_no "Continue? "; then
+                echo
+        else
+                exit
+        fi
+}
+
+### VALIDATE 
+function check_sudo() {
+# Testing for sudo access to root
+
+        sudo ls /root > /dev/null 2>&1
+        result=$?
+        if [ ${result} -ne 0 ]; then
+                echo "ERROR: You must have sudo to root"
+        fi
+}
+
+function check_os() {
+# Check the CentOS version
+
+	echo "CDP requires CentOS version ${ver_os}"
+	if [ -f /etc/centos-release ]; then
+		grep ${ver_os} /etc/centos-release > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo -n "CentOS version: "
+			cat /etc/centos-release
+		else
+			echo "ERROR: The OS version is incorrect."
+		fi
+	fi
+	echo
+}
+
+function check_java() {
+# Check the Java version
+
+	echo "CDP requires either OpenJDK version ${ver_java} or Oracle JDK version ${ver_java}"
+	PATH=${PATH}:/usr/java/default/bin
+	if [ -f /usr/java/default/bin/javac ]; then
+		version=$(javac -version 2>&1) 
+		echo ${version} | grep ${ver_java} > /dev/null
+		if [ $? -eq 0 ]; then
+			echo -n "OpenJDK version: "
+			javac -version
+		else
+			echo "ERROR: The JDK version is incorrect."
+		fi
+	else
+		echo "Java is not installed"
+	fi
+	echo
+}
+
+function check_python() {
+# Check the Python version
+
+	echo "CDP requires Python version ${ver_python}"
+	if [ -f /usr/bin/python ]; then
+		version=$(python --version 2>&1)
+		echo ${version} | grep ${ver_python} > /dev/null
+		if [ $? -eq 0 ]; then
+			echo -n "Python version: "
+			python --version
+		else
+			echo "ERROR: The Python version is incorrect"
+		fi
+	else
+		echo "Python is not installed"
+	fi
+	echo
+}
+
+function check_swap() {
+
+	echo "CDP requires swap to be set to 1" 
+	if [[ $(cat /proc/sys/vm/swappiness) = 1 ]]; then
+		echo "Swappiness is set to 1."
+	else
+		echo "ERROR: Swappness is not set to 1."
+	fi
+	echo
+}
+
+function check_huge() {
+
+	echo "CDP requires hugepages to be disabled"
+	if [[ $(grep hugepage /etc/rc.d/rc.local) ]]; then
+		echo "Transparent Hugepage is disabled."
+	else
+		echo "ERROR: Hugepages is not disabled"
+	fi
+	echo
+}
+
+function check_ulimit() {
+
+	echo "CDP recommends setting the ulimit command to unlimited."
+	if [[ $(ulimit) == "unlimited" ]]; then
+		echo "ulimit is unlimited."
+	else
+		echo "ERROR: ulimit is not unlimited."
+	fi
+	echo
+}
+
+function check_random() {
+# Check random number generator
+
+	echo "CDP recommends installing a Random Number Generator."
+	if systemctl -q is-active rngd ; then
+		echo "The daemon rngd is running."
+	else
+		echo "ERROR: The random number generator is not running"
+	fi
+	echo
+}
+
+function check_ntp() {
+# Check ntp
+
+	echo "CDP requires ntpd."
+	if systemctl -q is-active ntpd ; then
+		echo "The daemon ntpd is running."
+	else
+		echo "ERROR: The ntpd is not running"
+	fi
+	echo
+}
+
+function check_nscd() {
+# Check nscd
+
+	echo "CDP recommends installing nscd."
+	if systemctl -q is-active nscd ; then
+		echo "The daemonnscd is running."
+	else
+		echo "ERROR: The daemon nscd is not running"
+	fi
+	echo
+}
+
+function check_firewalld() {
+# Check firewalld is disabled
+
+	echo "CDP recommends not installing or disabling firewalld."
+	if  ! systemctl -q is-active firewalld ; then
+		echo "The daemon firewalld is not installed or is disabled."
+	else
+		echo "ERROR: The daemonfirewalld is running"
+	fi
+	echo
+}
+
+function check_selinux() {
+# Check selinux is diabled
+
+	echo "CDP requires SELinux to be disabled during install of Runtime."
+	if [[ $(getenforce) == "Disabled" ]]; then
+		echo "SELinux is disabled."
+	else
+		echo "ERROR: SELinux is enabled"
+	fi
+	echo
+}
+
+function check_tuned() {
+# Check tuned is diabled
+
+	echo "CDP recommends not installing or disabling tuned."
+	if ! systemctl -q is-active tuned ; then
+		echo "The daemon tuned is not installed or is disabled."
+	else	
+		echo "ERROR: The daemon tuned is running"
+	fi
+	echo
+}
+
+function check_sudoers() {
+# Check config changes to sudo
+
+	echo "CDP recommends adding $JAVA_HOME to the sudoers file."
+	if [[ $(sudo grep "java/default/bin" /etc/sudoers) ]]; then
+		echo "The /etc/sudoers file is correct."
+	else
+		echo "ERROR: $JAVA_HOME is not in the sudoers file."
+	fi
+	echo
+}
+
+function check_skel() {
+# Check the skel directory
+
+	echo "CDP recommends configuring /etc/skel for OS users."
+	if [ -f /etc/skel/.bashrc ]; then
+		echo "The /etc/skel directory is configured."
+	else
+		echo "ERROR: The skel directory is not configured."
+	fi
+	echo
+}
+
+function check_admin() {
+# Check the admin user
+
+	echo "CDP recommends configuring the system admin user."
+	if [ -f /home/${sysadmin}/.bashrc ]; then
+		echo "The sysadmin, ${sysadmin}, is configured."
+	else
+		echo "ERROR: The admin user, ${sysadmin}, is not configured."
+	fi
+}
+
+### INSTALL
 function set_epel() {
 # Install epel repo for CentOS
 
@@ -145,11 +396,10 @@ function set_epel() {
 function install_jdk() {
 # Install OpenJDK
 
-	echo "***CDP requires either OpenJDK version 1.8 or Oracle JDK version 1.8"
 	if [ -f /usr/java/default/bin/javac ]; then
-		echo -n "OpenJDK is installed: "
+		echo -n "OpenJDK version: "
 		javac -version
-		echo "ACTION: If JDK version is incorrect exit and rebuild."
+		echo "ACTION: If Java version is incorrect exit and rebuild."
 	else
 		yes_no "Install OpenJDK 1.8 "
 		ans=$?
@@ -158,20 +408,19 @@ function install_jdk() {
 		sudo yum install -y java-1.8.0-openjdk-devel
 		sudo mkdir /user/java
 		sudo ln -s /usr/lib/jvm/java /usr/java/default
-		echo "JAVA_HOME will be /usr/java/default"
+		echo "It is important to set JAVA_HOME=/usr/java/default in user paths"
 	fi
 }
 
 function install_python() {
 # Install python 
 
-	echo "***CDP requires Python version 2.7 or greater."
 	if [ -f /usr/bin/python ]; then
-		echo -n "Python is installed: "
+		echo -n "Python version: "
 		python --version
 		echo "ACTION: If Python version is incorrect exit and rebuild."
 	else
-		yes_no "Install Python 2.7 "
+		yes_no "Install Python 2.7? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
         	sudo yum install -y python2.7-devel
@@ -183,12 +432,11 @@ function install_python() {
 }
 
 function install_tool() {
-# Install common tools, this list is based on the premise the initial
+# Install common tools, this list is based on the premise that the initial
 # CentOS install was stripped down. Many of these packages may already
 # be installed.
 
-	echo "***CDP recommends installing common tools and commands."
-	yes_no "Install common packages "
+	yes_no "Install common packages? "
 	ans=$?
 	if [ $ans -eq 1 ]; then return 1; fi
         sudo yum install -y ack \
@@ -208,9 +456,6 @@ function install_tool() {
         		psmisc \
         		mosh \
         		nano \
-        		openssl \
-        		openssh-server \
-        		openssh-clients \
 			screen \
         		sudo \
         		tar \
@@ -225,9 +470,9 @@ function install_tool() {
 function install_security() {
 # Install security packages, this is not required if you are using FreeIPA
 
-	echo "***CDP, when using Active Directory, requires security packages."
+	echo "CDP, when using Active Directory, requires security packages."
 	echo "If you are using FreeIPA do NOT install the security packages."
-	yes_no "Install Security packages "
+	yes_no "Install Security packages? "
 	ans=$?
 	if [ $ans -eq 1 ]; then return 1; fi
 	sudo yum install -y adcli \
@@ -238,32 +483,33 @@ function install_security() {
         		kkbind-utils \
         		krb5-workstation \
         		openldap-clients \
-        		openssl
+        		openssl \
+        		openssh-server \
+        		openssh-clients 
 	echo
-	echo "The sssd deamon must be configured for Active Directory."
-	echo "ACTION: Configure and run the install-sssd-ad.sh script." 
+	echo "The sssd deamon must be configured for Active Directory or IPA."
+	echo "ACTION: If using Active Directory then configure and run the"
+	echo "install-sssd-ad.sh script." 
 }
 
 function install_lib() {
 # Install libraries
 
-	echo "***CDP requires development libraries."
-	yes_no "Install library packages "
+	yes_no "Install library packages? "
 	ans=$?
 	if [ $ans -eq 1 ]; then return 1; fi
 	sudo yum install -y libxml2-devel 
 }
 
-### CONFIGURE THE host
+### CONFIGURE
 function set_kernel() {
 # Set swappiness to minimum level of 1 and disable Transparent Huge Page
 # Disable transparent huge pages on reboot by appending to /etc/rc.d/rc.local
 
-	echo "***CDP requires changes to the OS kernel."
 	if [[ $(cat /proc/sys/vm/swappiness) = 1 ]]; then
 		echo "Swappiness is set to 1."
 	else	
-		yes_no "Set kernel parameters for swap "
+		yes_no "Set kernel parameters for swap? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo sysctl -w vm.swappiness=1
@@ -273,7 +519,7 @@ function set_kernel() {
 	if [[ $(grep hugepage /etc/rc.d/rc.local) ]]; then
 		echo "Transparent Hugepage is disabled."
 	else
-		yes_no "Set kernel parameters for transparent huge pages "
+		yes_no "Set kernel parameters for transparent huge pages? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo cp ${dir}/conf/rc.local /etc/rc.d/rc.local
@@ -281,10 +527,9 @@ function set_kernel() {
 	fi
 }
 
-function setUlimit() {
+function set_limit() {
 # set ulimit to 10000
 
-	echo "***CDP recommends setting the ulimit command to unlimited."
 	if [[ $(ulimit) == "unlimited" ]]; then
 		echo "Ulimit is unlimited."
 		ans=$?
@@ -293,14 +538,13 @@ function setUlimit() {
 	fi
 }
 
-function set_random_number() {
+function set_random() {
 # Install rng-tools in support of entropy
 
-	echo "***CDP recommends installing a Random Number Generator."
 	if systemctl -q is-active rngd ; then
 		echo "The daemon rngd is running."
 	else
-		yes_no "Install rng-tools "
+		yes_no "Install rng-tools? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo yum install -y rng-tools
@@ -313,11 +557,10 @@ function set_ntp() {
 # Set the Network Time Protocol. This is important for inter node 
 # communications. 
 
-	echo "***CDP requires ntpd."
 	if systemctl -q is-active ntpd ; then
 		echo "The daemon ntpd is running."
 	else
-		yes_no "Install ntpd "
+		yes_no "Install ntpd? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo yum install -y ntpd ntpdate
@@ -330,11 +573,10 @@ function set_nscd() {
 # Enable Name Service Caching (nscd) with only hostname caching 
 # enabled for a 30-60 second period.
 
-	echo "***CDP recommends installing nscd."
 	if systemctl -q is-active nscd ; then
 		echo "The daemon nscd is running."
 	else
-		yes_no "Install nscd "
+		yes_no "Install nscd? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo yum install -y nscd
@@ -342,13 +584,14 @@ function set_nscd() {
 		sudo systemctl start nscd
 	fi
 
-# The sssd and nscd are not directly compatiable. It is
-# important to make the following changes to the /etc/nscd.conf file.
-# enable-cache passwd no
-# enable-cache group no
-# enable-cache host yes
-# positive-time-to-live hosts 60
-# negative-time-to-live hosts 20
+	echo "The sssd and nscd are not directly compatiable. It is"
+	echo "These changes have been made to the /etc/nscd.conf file."
+	echo "   enable-cache passwd no"
+	echo "   enable-cache group no"
+	echo "   enable-cache host yes"
+	echo "   positive-time-to-live hosts 60"
+	echo "   negative-time-to-live hosts 20"
+
 	if [ -f ${dir}/conf/nscd.conf ]; then
 		sudo cp ${dir}/conf/nscd.conf /etc/nscd.conf
 	fi
@@ -358,11 +601,10 @@ function set_firewalld() {
 # Turn off and disable firewalld. While it can be restarted after the 
 # setup is complete, it is recommended firewalld is left off.
 
-	echo "***CDP recommends not installing or disabling firewalld."
 	if  ! systemctl -q is-active firewalld ; then
 		echo "The daemon firewalld is not installed or is disabled."
 	else 
-		yes_no "Disable firewalld "
+		yes_no "Disable firewalld? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo systemctl stop firewalld 
@@ -375,11 +617,10 @@ function set_selinux() {
 # that SELinux is disabled. CDP security protocols reduce the requirement
 # for SELinux.
 
-	echo "***CDP requires SELinux be disabled during install."
 	if [[ $(getenforce) == "Disabled" ]]; then
 		echo "SELinux is disabled."
 	else
-		yes_no "Disable SELinux "
+		yes_no "Disable SELinux? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo setenforce 0
@@ -390,11 +631,10 @@ function set_selinux() {
 function set_tune() {
 # Disable the tune service
 
-	echo "***CDP recommends not installing or disabling tuned."
 	if ! systemctl -q is-active tuned ; then
 		echo "The daemon tuned is not installed or is disabled."
 	else 
-		yes_no "Disable tuned "
+		yes_no "Disable tuned? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		sudo systemctl start tuned
@@ -408,11 +648,10 @@ function set_tune() {
 function config_root() {
 # Lock the root password, there should be no ssh access either. 
 
-	echo "***CDP recommends locking the root password."
 	if [ -f /root/.bashrc ]; then
 		echo "The root user is configured."
 	else
-		yes_no "Configure the root user "
+		yes_no "Configure the root user? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		if [ -f ${dir}/conf/bashrc ]; then
@@ -427,11 +666,10 @@ function config_root() {
 function config_sudo() {
 # Configure the sudoers directory file
 
-	echo "***CDP recommends adding $JAVA_HOME to the sudoers file."
 	if [[ $(grep "java/default/bin" /etc/sudoers) ]]; then
 		echo "The /etc/sudoers file is correct."
 	else 	
-		yes_no "Configure sudo file "
+		yes_no "Configure sudo file? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		if [ -f ${dir}/conf/sudoers ]; then
@@ -443,11 +681,10 @@ function config_sudo() {
 function config_skel() {
 # Configure the Skel file for users
 
-	echo "***CDP recommends configuring /etc/skel for OS users."
 	if [ -f /etc/skel/.bashrc ]; then
 		echo "The /etc/skel directory is correct."
 	else
-		yes_no "Configure the /etc/skel directory "
+		yes_no "Configure the /etc/skel directory? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 		if [ -d ${dir}/conf/skel ]; then
@@ -458,48 +695,43 @@ function config_skel() {
 
 function config_admin() {
 # Setup the admin user $admin
-
-	echo "***CDP recommends creating a local account for an admin user."
-	echo -n "Enter the name of the admin user? "
-	read ADMINUSER 
 	
-	if [ -f /home/${ADMINUSER}/.bashrc ]; then
-		echo "The ${ADMINUSER} is configured."
+	if [ -f /home/${sysadmin}/.bashrc ]; then
+		echo "The sysadmin, ${sysadmin}, is configured."
 	else
-		yes_no "Configure the admin user "
+		yes_no "Configure the admin user? "
 		ans=$?
 		if [ $ans -eq 1 ]; then return 1; fi
 
-		sudo useradd -G wheel ${ADMINUSER}
+		sudo useradd -G wheel ${sysadmin}
 
 		if [ -f ${dir}/conf/bashrc ]; then
-			sudo cp ${dir}/conf/bash_profile /home/${ADMINUSER}/.bash_profile
-			sudo cp ${dir}/conf/bashrc /home/${ADMINUSER}/.bashrc
+			sudo cp ${dir}/conf/bash_profile /home/${sysadmin}/.bash_profile
+			sudo cp ${dir}/conf/bashrc /home/${sysadmin}/.bashrc
 		fi
 
 		# setup public keys access 
-		if [ ! -d /home/${ADMINUSER}/.ssh ]; then
-			sudo mkdir /home/${ADMINUSER}/.ssh
-			sudo chmod 700 /home/${ADMINUSER}/.ssh
+		if [ ! -d /home/${sysadmin}/.ssh ]; then
+			sudo mkdir /home/${sysadmin}/.ssh
+			sudo chmod 700 /home/${sysadmin}/.ssh
 		fi
 
 		# Allow access to the admin user from the local host
 		# This may be a security consideration for your environment
 		if [ -f ${dir}/conf/authorized_keys ]; then
 			sudo cp ${dir}/certs/authorized_keys /home/${ADMINUSR}/.ssh/authorized_keys
-			sudo chmod 600 /home/${ADMINUSER}/.ssh/authorized_keys
+			sudo chmod 600 /home/${sysadmin}/.ssh/authorized_keys
 		fi
 
 		# change ownership
-		sudo chown -R ${ADMINUSER}:${ADMINUSER} /home/${ADMINUSER} 
+		sudo chown -R ${sysadmin}:${sysadmin} /home/${sysadmin} 
 	fi
 }
 
 function update_yum() {
 # Update packages and add additional packages as required. 
 
-	echo "***CDP recommends updating all software."
-	yes_no "Update software with yum update "
+	yes_no "Update software with yum update? "
 	ans=$?
 	if [ $ans -eq 1 ]; then return 1; fi
 	sudo yum update && yum clean all
@@ -508,9 +740,8 @@ function update_yum() {
 function validate_host() {
 # Post the follow on instructions, primarily testing the success 
 # of the build.
-	echo
+
 	echo "ACTION: Reboot the host and then validate the changes"
-	echo "by running this script again."
 }
 
 function run_option() {
@@ -518,55 +749,62 @@ function run_option() {
 
     case "${option}" in
         -h | --help)
-            get_help
-            ;;
+            	get_help
+            	;;
         -e | --environment)
-            check_arg 1
-			set_kernel
-			set_random_number
-			set_nscd
-			set_firewalld
-			set_selinux
-			set_tune
-            ;;
+            	check_arg 1
+		set_kernel
+		set_random
+		set_nscd
+		set_firewalld
+		set_selinux
+		set_tune
+            	;;
         -i | --install)
-            check_arg 1
-			intro
-			install_jdk
-			install_python
-			install_tool
-			install_security
-			install_lib
-            ;;
-		-o | --os)
-			check_arg 1
-			check_os
-			;;
+            	check_arg 1
+		intro
+		install_jdk
+		install_python
+		install_tool
+		install_security
+		install_lib
+            	;;
         -u | --user)
-            check_arg 1
-			config_root
-			config_sudo
-			config_skel
-			config_admin
-            ;;
-		-v | --validate)
-			check_arg 1
-			validate_host
-			;;
+            	check_arg 1
+		config_root
+		config_sudo
+		config_skel
+		config_admin
+            	;;
+	-v | --validate)
+		check_arg 1
+		check_os
+		check_java
+		check_python
+		check_swap
+		check_huge
+		check_ulimit
+		check_random
+		check_ntp
+		check_nscd
+		check_firewalld
+		check_selinux
+		check_tuned
+		check_sudoers
+		check_skel
+		check_admin
+		;;
         -y | --yum)
-            check_arg 1
-            update_yum
-            ;;
+            	check_arg 1
+            	update_yum
+            	;;
         *)
-            usage
-            ;;
+            	usage
+            	;;
     esac
 }
 
 function main() {
-
-	# Source functions
-	call_include
 
 	# Run checks
 	check_sudo

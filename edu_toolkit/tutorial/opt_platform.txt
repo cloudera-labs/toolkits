@@ -1,0 +1,167 @@
+## Ch 00 Set Up
+Run Ansible to level 5 
+
+ 
+ 
+637 VIEWS
+
+## Ch 01 Set Up
+Set up screen
+Login IPA
+Login CM
+Tour hosts
+   * ssh
+   * sudo
+Tour file system
+Configure Knox Bookmark
+Knox SSO
+https://edge.example.com:8443/gateway/knoxsso/knoxauth/login.html?originalUrl=https://edge.example.com:8443/gateway/homepage/home/
+
+## Ch 05 Tun Infra
+Set Up Kerberos user
+setup_zeppelin_interpreter.sh --keytab
+setup_zeppelin_interpreter.sh --config
+Restart zeppelin
+manage_mariadb.sh -h
+manage_mariadb.sh --show
+manage_mariadb.sh --tls
+manage_mariadb.sh --show
+Auto-TLS import /etc/my.cnf.d/ssl/ca.crt
+
+##Ch 06 HDFS in Depth
+## Superuser for HDFS and YARNs
+kinit allan_admin
+BadPass@1
+klist
+hdfs dfs -mkdir /user/allan_admin
+
+# HDFS
+hdfs
+hdfs dfs
+
+# Create dataset
+cd ~/data/latin
+hdfs dfs -mkdir latin 
+hdfs dfs -put latin.txt latin 
+hdfs fsck /user/allan_admin/latin
+hdfs fsck /user/allan_admin/latin -files -blocks
+hdfs fsck /user/allan_admin/latin -files -blocks -locations
+hdfs fsck /user/allan_admin/latin -files -blocks -locations -racks
+
+# Find block
+sudo su -
+cd /hadoop/hdfs
+
+# Find the block ID
+find . -name <BLOCK_ID>
+cd /dfs/dn/current/BP-xxxxx/current/finalized/subdir0/
+ls -lh
+file *
+stat *
+cat <BLOCK_ID>
+vim <BLOCK_ID>
+
+## Ch 08 Tune HDFS
+# Change block size
+hdfs dfs -D dfs.blocksize=2097152 -cp nyse/ new_nyse//
+hdfs dfs -rm -r -skipTrash nyse/
+
+# Change rep, this impacts the NN tables to lower  4
+hdfs dfs -setrep -w 4 nyse/ 
+
+# Change rep recursively
+hdfs dfs -setrep -R -w 2 nyse/
+
+Ch 09 YARN in Depth
+# Display syntax and help
+yarn
+yarn -help
+yarn application
+
+# Set Jar File Var
+JARFILE=/opt/cloudera/parcels/CDH/jars/hadoop-examples.jar
+
+# Submitting jobs
+# Syntaxyarn jar <Jar_File>  <mainClass> <inputpath> <outputpath> [args]
+yarn jar ${JARFILE} wordcount latin output
+hdfs dfs -ls output
+hdfs dfs -head output/part-r-00000
+hdfs dfs -rm -r -skipTrash output
+
+# List running jobs
+yarn application -list
+
+# Check status of job
+yarn application -status <Application_ID>
+
+# Kill running jobs
+yarn application -kill <Application_ID>
+
+# Display help for YARN logs
+yarn logs -help
+
+# View log files
+yarn logs -applicationId <Application ID>
+yarn logs -applicationId <Application ID> -log_files <log_file_type>
+yarn logs -applicationId <Application ID> -log_files stderr
+
+# List container IDs
+yarn logs -applicationId <Application ID> -show_application_log_info
+
+# View log files for one Container
+yarn logs -applicationId <Application ID> -containerId <Container ID>
+yarn logs -applicationId <Application ID> -show_container_log_info
+
+# Check Resource Manager
+yarn rmadmin -checkHealth
+
+Ch 10 Manage Yarn jobs
+run-job.sh 
+Run job review RM Web UI
+Review YARN history Web UI
+
+Ch 11 Tune YARN
+run-job.sh change Container sizes
+
+Ch 12 Build YARN Queue
+# Manually create working dir for users
+hdfs dfs -mkdir /user/bo_biz
+hdfs dfs -chown bo_biz:bo_biz /user/bo_biz
+hdfs dfs -mkdir /user/dana_dev
+hdfs dfs -chown dana_dev:dana_dev /user/dana_dev
+hdfs dfs -mkdir /user/omar_ops
+hdfs dfs -chwon omar_ops:omar_ops /user/omar_ops
+
+# Install queue manager
+ssh master-2.example.com 
+sudo mkdir /var/lib/hadoop-yarn/
+sudo chmod +077 /var/lib/hadoop-yarn/
+sudo chown yarn:hadoop /var/lib/hadoop-yarn/
+Use Cluster Service Add to add YARN queue manager
+Use CM YARN to turn on YARN queue manager
+Restart YARN
+
+# Create queues and assign users
+Cluster > YARN queue manager Web UI
+build biz ops eng
+Set min and max capacity
+Assign users and groups
+* bo_biz biz
+* dana_dev dev
+* omar_ops ops
+
+Ch 13 Conf YARN queues
+Configure 
+
+Chap 14 Run YARN queues
+run-job.sh input jobs into various queues
+monitor with RM Web UI
+
+Chap 15 Workload Schedule
+Edit spreadsheet
+
+Chap 16 Hive in Depth
+Build two databases
+
+Chap 17 Hive and Data
+

@@ -36,6 +36,8 @@
 num_arg=$#
 dir=${HOME}
 option=$1
+username=training
+
 #content=${dir}/training_materials/security
 content=${dir}/src/toolkits/edu_toolkit
 logfile=${dir}/log/$(basename $0).log
@@ -75,7 +77,6 @@ function check_arg() {
         fi
 }
 
-
 function check_sudo() {
 # Testing for sudo access to root
 
@@ -87,12 +88,21 @@ function check_sudo() {
         fi
 }
 
+function make_dir() {
+
+	if [ ! -d ${dir}/bin ]; then
+		for directory in bin conf data ddl notebook tutorial; do
+			mkdir ${dir}/${directory}
+		done
+	fi
+}
+
 function copy_dir() {
 # Describe function.
 
 	if [ -d ${content} ] ; then
-		sudo cp -R ${content}/* ${HOME}/
-		cd ${HOME}
+		sudo cp -R ${content}/* ${dir}/
+		cd ${dir}
 		sudo chown -R training:training bin conf data ddl notebook tutorial
 	else
 		echo "Configure the content directory in the script"
@@ -103,10 +113,9 @@ function copy_dir() {
 function setup_conf() {
 # Setup configuration files, escape alias for cp -i
 	
-#	alias cp='cp -f'
-	if [ -f ${HOME}/conf/bashrc ]; then
-		cp ${HOME}/conf/bash_profile ${HOME}/.bash_profile
-		cp ${HOME}/conf/bashrc ${HOME}/.bashrc
+	if [ -f ${dir}/src/toolkits/edu_toolkit/conf/bashrc ]; then
+		cp ${content}/conf/bash_profile ${dir}/.bash_profile
+		cp ${content}/conf/bashrc ${dir}/.bashrc
 	else
 		echo "ERROR: The configuration file for bashrc is missing"
 	fi
@@ -115,8 +124,8 @@ function setup_conf() {
 function delete_dir() {
 # delete the student directories for training
 
-	cd ${HOME}
-	rm -r -f ansible bin conf data ddl notebook tutorial
+	cd ${dir}
+	rm -r -f bin conf data ddl notebook tutorial
 }
 
 function clean_dir() {
@@ -132,7 +141,7 @@ function clean_dir() {
 function list_dir() {
 # list the directory
 
-	ls ${HOME}
+	ls ${dir}
 }
 
 function run_option() {
@@ -148,6 +157,7 @@ function run_option() {
                         ;;
                 -s |--setup)
                         check_arg 1
+			make_dir
 			copy_dir
 			setup_conf
 			clean_dir

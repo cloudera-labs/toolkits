@@ -83,7 +83,7 @@ DESCRIPTION
 	-r, --run <remote_path/script>
 		Run an shell script on all hosts
 
-EXAMPLE
+INSTRUCTIONS
 	List cluster's hosts
 	$ cat /home/user/conf/list_host.txt
 
