@@ -37,6 +37,7 @@ num_arg=$#
 dir=${HOME}
 option=$1
 username=training
+
 #content=${dir}/training_materials/security
 content=${dir}/src/toolkits/edu_toolkit
 logfile=${dir}/log/$(basename $0).log
