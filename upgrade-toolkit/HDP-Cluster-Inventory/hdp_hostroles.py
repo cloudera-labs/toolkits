@@ -16,6 +16,7 @@ import subprocess
 import requests
 import json
 import xlsxwriter
+import sys
 
 requests.packages.urllib3.disable_warnings()
 
@@ -32,11 +33,16 @@ def hosts(args):
     AMBARI_USER_ID = "admin"
     AMBARI_USER_PW = "admin"
     AMBARI_DOMAIN = args
-    AMBARI_PORT = '8443'
-    api_version = 'v1'
+    HTTPS = False
+    if HTTPS:
+        AMBARI_PORT = '8443'
+        PROTOCOL = 'https://'
+    else:
+        AMBARI_PORT = '8080'
+        PROTOCOL = 'http://'
+    
     restAPI='/api/v1/clusters'
-
-    url="https://"+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
+    url=PROTOCOL+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
     
     #Get HDP Version
     r=requests.get('{0}'.format(url), verify=False, auth=(AMBARI_USER_ID, AMBARI_USER_PW))
@@ -44,7 +50,7 @@ def hosts(args):
     CLUSTER_NAME = json_data["items"][0]["Clusters"]["cluster_name"]
 
     restAPI="/api/v1/clusters/" + CLUSTER_NAME + "/stack_versions/"
-    url="https://"+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
+    url=PROTOCOL+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
     r1=requests.get('{0}'.format(url), verify=False, auth=(AMBARI_USER_ID, AMBARI_USER_PW))
     json_data=json.loads(r1.text)
 
@@ -63,7 +69,7 @@ def hosts(args):
     
     #Get the DB Type
     restAPI="/api/v1/services/AMBARI/components/AMBARI_SERVER?fields=RootServiceComponents/properties/server.jdbc.database"
-    url="https://"+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
+    url=PROTOCOL+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
     #http://c6401.ambari.apache.org:8080/api/v1/services/AMBARI/components/AMBARI_SERVER?fields=RootServiceComponents/properties/server.jdbc.database
     r2=requests.get('{0}'.format(url), verify=False, auth=(AMBARI_USER_ID, AMBARI_USER_PW))
     json_data=json.loads(r2.text)
@@ -76,7 +82,7 @@ def hosts(args):
     worksheet3 = workbook.add_worksheet('Active Services')
     worksheet3.write('A1', 'Service Name', cell_format)
     restAPI='/api/v1/clusters/' + CLUSTER_NAME +  '/services/'
-    url="https://"+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
+    url=PROTOCOL+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
     r3=requests.get('{0}'.format(url), verify=False, auth=(AMBARI_USER_ID, AMBARI_USER_PW))
     json_data=json.loads(r3.text)
     count=0
@@ -94,20 +100,20 @@ def hosts(args):
                   "Java Version", "System Python Version")
     worksheet1.write_row('A1', header, cell_format)
     restAPI = "/api/v1/hosts"
-    url="https://"+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
+    url=PROTOCOL+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI
     r=requests.get('{0}'.format(url), verify=False, auth=(AMBARI_USER_ID, AMBARI_USER_PW))
     json_data=json.loads(r.text)
     cnt=0
     r=1
     for j in json_data["items"]:
         hostname=json_data["items"][cnt]["Hosts"]["host_name"]
-        rhel_version = subprocess.getoutput("ssh %s 'cat /etc/redhat-release'" % hostname)
-        dmi_product = subprocess.getoutput("ssh %s 'cat /sys/class/dmi/id/product_name'" % hostname)
-        java_version = subprocess.getoutput("ssh %s 'java -version'" % hostname)
-        python_version = subprocess.getoutput("ssh %s 'python -V'" % hostname)
+        rhel_version = subprocess.getoutput(f"ssh {hostname} 'cat /etc/redhat-release'")
+        dmi_product = subprocess.getoutput(f"ssh {hostname} 'cat /sys/class/dmi/id/product_name'")
+        java_version = subprocess.getoutput(f"ssh {hostname} 'java -version'")
+        python_version = subprocess.getoutput(f"ssh {hostname} 'python -V'")
 
         restAPI1 = "/api/v1/clusters/" + CLUSTER_NAME + "/hosts/" + hostname + "/host_components/"
-        url1="https://"+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI1
+        url1=PROTOCOL+AMBARI_DOMAIN+":"+AMBARI_PORT+restAPI1
         r4=requests.get('{0}'.format(url1), verify=False, auth=(AMBARI_USER_ID, AMBARI_USER_PW))
         json_data1=json.loads(r4.text)
         roles = ""
