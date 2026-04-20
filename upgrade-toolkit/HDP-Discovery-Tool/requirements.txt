@@ -1,4 +1,4 @@
-requests==2.27.1
+requests==2.31.0
 PyYAML==6.0
 jaydebeapi==1.2.3
 hdfs==2.6.0
