@@ -1,0 +1,52 @@
+# Copyright 2022 Cloudera, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# NOTE: update the hosts field to a section in ansible that points to the PostgreSQL database server
+---
+- hosts: cm_server
+  gather_facts: True
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+   - name: "Set timestamp of the backup"
+     set_fact:
+       now: "{{ ansible_date_time.iso8601_basic }}"
+
+   - name: "Create a backup directory"
+     file:
+       path: "{{ backup_root_dir }}/backups/{{ now }}/"
+       mode: 0777
+       state: directory
+
+   - name: Dump PostgreSQL Database
+     become: yes
+     become_user: postgres
+     vars:
+       ansible_ssh_pipelining: true
+     postgresql_db:
+       name: "{{ item }}"
+       state: dump
+       target: "{{ backup_root_dir }}/backups/{{ now }}/{{ item }}.dump.gz"
+     with_items: "{{ databases }}"
+
+   - name: Fetch backup from the server
+     fetch:
+       src: "{{ backup_root_dir }}/backups/{{ now }}/{{ item }}.dump.gz"
+       dest: "backups/{{ now }}/{{ item }}.dump.gz"
+       flat: yes
+     when: fetch_local == true
+     with_items: "{{ databases }}"

@@ -1,0 +1,114 @@
+# Copyright 2022 Cloudera, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+- hosts: scm
+  gather_facts: False
+  tasks:
+   - name: Dump scm Database
+     become: yes
+     vars:
+       ansible_ssh_pipelining: true
+     mysql_db:
+      name: scm
+      state: dump
+      target: /var/scm_621.sql
+
+#- hosts: amon
+#  gather_facts: False
+#  tasks:
+#   - name: Dump amon Database
+#     become: yes
+#     vars:
+#     mysql_db:
+#      name: amon
+#      state: dump
+#      target: /var/amon_621.sql
+
+- hosts: rman
+  gather_facts: False
+  tasks:
+   - name: Dump rman Database
+     become: yes
+     vars:
+     mysql_db:
+      name: rman
+      state: dump
+      target: /var/rman_621.sql
+
+- hosts: hue
+  gather_facts: False
+  tasks:
+   - name: Dump hue Database
+     become: yes
+     vars:
+     mysql_db:
+      name: hue
+      state: dump
+      target: /var/hue_621.sql
+
+- hosts: metastore
+  gather_facts: False
+  tasks:
+   - name: Dump metastore Database
+     become: yes
+     vars:
+     mysql_db:
+      name: metastore
+      state: dump
+      target: /var/metastore_621.sql
+
+- hosts: sentry
+  gather_facts: False
+  tasks:
+   - name: Dump sentry Database
+     become: yes
+     vars:
+     mysql_db:
+      name: sentry
+      state: dump
+      target: /var/sentry_621.sql
+
+- hosts: oozie
+  gather_facts: False
+  tasks:
+   - name: Dump oozie Database
+     become: yes
+     vars:
+     mysql_db:
+      name: oozie
+      state: dump
+      target: /var/oozie_621.sql
+
+- hosts: navms
+  gather_facts: False
+  tasks:
+   - name: Dump navigator meta server Database
+     become: yes
+     vars:
+     mysql_db:
+      name: navms
+      state: dump
+      target: /var/navms_621.sql
+
+- hosts: nav
+  gather_facts: False
+  tasks:
+   - name: Dump navigator server Database
+     become: yes
+     vars:
+     mysql_db:
+      name: nav
+      state: dump
+      target: /var/nav_621.sql
